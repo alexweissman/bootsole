@@ -69,7 +69,7 @@ Sub-array data:
 ````
 
 The double-bracket notation indicates that a particular field is an array, rather than a single value.  Templates for this notation will be the field name, followed by a space, followed by the template, inside double brackets.
-In this example, the engine will look for a sub-array in each row named "names".  Each element in `$rows[$i]['names']` will be rendered according to the template "<span data-id={{id}}>{{name}}</span> ".  The results for the entire sub-array will be concatenated.
+In this example, the engine will look for a sub-array in each row named "names".  Each element in `$rows[$i]['names']` will be rendered according to the template `"<span data-id={{id}}>{{name}}</span> "`.  The results for the entire sub-array will be concatenated.
 
 
 ## Dependencies
