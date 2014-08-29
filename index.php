@@ -29,7 +29,8 @@
             'info' =>  [
                 'label' => 'Teacher',
                 'sorter' => 'metatext',
-                'meta_field' => 'user_name',
+                'sort_field' => 'user_name',
+                'sort' => 'asc',
                 'template' => "
                         <div class='h4'>
                             <a href='user_details.php?id={{teacher_id}}'>{{display_name}} ({{user_name}})</a>
@@ -43,9 +44,8 @@
             ],
             'num_students' => [
                 'label' => 'Students',
-                'sort' => 'desc',
                 'sorter' => 'metanum',
-                'meta_field' => 'count_students',
+                'sort_field' => 'num_students',
                 'template' => "<a class='btn btn-success' href='students.php?teacher_id={{teacher_id}}'>{{num_students}}</a>",
                 'empty_field' => 'num_students',
                 'empty_value' => '0',
@@ -54,7 +54,7 @@
             'students' => [
                 'label' => 'Student List',
                 'sorter' => 'metanum',
-                'meta_field' => 'count_students',
+                'sort_field' => 'num_students',
                 'template' => "[[students <a class='btn btn-success' href='student_details.php?student_id={{student_id}}'>{{display_name}}</a> ]]",
                 'empty_field' => 'students',
                 'empty_value' => [],
