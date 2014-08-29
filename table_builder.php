@@ -1,5 +1,7 @@
 <?php
 
+require_once("template_functions.php");
+
 class TableBuilder {
 
     protected $_columns = array();
@@ -204,7 +206,7 @@ class TableBuilder {
                     if (gettype($array_el) != "array")
                         continue;
                     //error_log("Replacing hooks in $array_template");
-                    $array_instance = $this->replaceKeyHooks($array_el, $array_template);
+                    $array_instance = replaceKeyHooks($array_el, $array_template);
                     // Append the array instance to the overall array result
                     $array_result .= $array_instance;
                 }
@@ -215,19 +217,7 @@ class TableBuilder {
 
         }
         // Then, replace all remaining scalar values
-        $result = $this->replaceKeyHooks($row, $result);
+        $result = replaceKeyHooks($row, $result);
         return $result;
     }
-
-    private function replaceKeyHooks($row, $template){
-        foreach ($row as $key => $value){
-            if (gettype($value) != "array" && gettype($value) != "object") {
-                $find = '{{' . $key . '}}';
-                $template = str_replace($find, $value, $template);
-            }
-        }
-        return $template;
-    }
-        
-    
 }

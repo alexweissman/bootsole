@@ -24,7 +24,9 @@
         <?php
         
         require_once('table_builder.php');
-        
+        require_once('form_builder.php');
+
+        // Table Demo
         $columns = [
             'info' =>  [
                 'label' => 'Teacher',
@@ -120,7 +122,125 @@
         
         $tb = new TableBuilder($columns, $rows, $menu_items, "Do Stuff");
         echo $tb->render();
- 
+
+        
+        // Form Demo
+        
+        $template = "
+        <form method='post' class='col-md-6 col-md-offset-3'>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    {{user_name}}
+                </div>
+                <div class='col-sm-6'>
+                    {{display_name}}
+                </div>            
+            </div>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    {{email}}
+                </div>
+                <div class='col-sm-6'>
+                    {{title}}
+                </div>            
+            </div>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    {{beard}}
+                </div>
+                <div class='col-sm-6'>
+                    {{fav_polyhedron}}
+                </div>
+        </form>";
+        
+        $fields = [
+            'user_name' => [
+                'type' => 'text',
+                'label' => 'Username',
+                'display' => 'disabled',
+                'validator' => [
+                    'minLength' => 1,
+                    'maxLength' => 25,
+                    'label' => 'Username'
+                ],
+                'placeholder' => 'Please enter the user name'
+            ],
+            'display_name' => [
+                'type' => 'text',
+                'label' => 'Display Name',
+                'validator' => [
+                    'minLength' => 1,
+                    'maxLength' => 50,
+                    'label' => 'Display name'
+                ],
+                'placeholder' => 'Please enter the display name'
+            ],          
+            'email' => [
+                'type' => 'text',
+                'label' => 'Email',
+                'icon' => 'fa fa-envelope',
+                'icon_link' => 'mailto: {{value}}',
+                'validator' => [
+                    'minLength' => 1,
+                    'maxLength' => 150,
+                    'email' => true,
+                    'label' => 'Email'
+                ],
+                'placeholder' => 'Email goes here'
+            ],
+            'title' => [
+                'type' => 'text',
+                'label' => 'Title',
+                'validator' => [
+                    'minLength' => 1,
+                    'maxLength' => 100,
+                    'label' => 'Title'
+                ],
+                'default' => 'New User'
+            ],
+            'beard' => [
+                'type' => 'toggle',
+                'label' => 'Beard',
+                'icon' => 'fa fa-trophy',
+                'display' => 'disabled',
+                'validator' => [
+                    'selected' => true,
+                    'label' => 'Beard'
+                ],
+                'choices' => [
+                    'fluffy' => 'Fluffy',
+                    'scraggly' => 'Scraggly',
+                    'pointy' => 'Pointy'
+                ],
+                'default' => 'fluffy'
+            ],
+            'fav_polyhedron' => [
+                'type' => 'select',
+                'label' => 'Favorite Polyhedron',
+                'icon' => 'fa fa-cubes',
+                'validator' => [
+                    'selected' => true,
+                    'label' => 'Favorite Polyhedron'
+                ],
+                'choices' => [
+                    'tetrahedron' => 'Tetrahedron',
+                    'cube' => 'Cube',
+                    'octahedron' => 'Octahedron',
+                    'dodecahedron' => 'Dodecahedron',
+                    'icosohedron' => 'Icosohedron'
+                ]              
+            ]
+        ];
+
+        $data = [
+            'user_name' => "Bob",
+            'email' => "bob@bob.com",
+            'beard' => "scraggly"
+        ];
+                
+        $fb = new FormBuilder($template, $fields, $data);
+        echo $fb->render();
+        
         ?>
     </div>
 
