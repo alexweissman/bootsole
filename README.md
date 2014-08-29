@@ -15,6 +15,11 @@ A PHP templating engine for rendering Bootstrap-themed, [Tablesorter](https://mo
 - Alternative templates for empty table cells
 - Iterative rendering of sub-array data
 
+## Screenshot
+
+![Tablebuilder](/screenshots/tablebuilder.png "Tablebuilder")
+
+
 ## Usage
 
 ````
