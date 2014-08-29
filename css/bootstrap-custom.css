@@ -1,0 +1,13 @@
+body {
+  padding-top: 50px;
+}
+
+.pager-lg {
+    font-size: large;
+}
+
+.pager-control {
+    font-size: x-large;
+    padding: 4px 8px;
+    cursor: pointer;
+}
