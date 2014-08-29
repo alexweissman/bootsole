@@ -11,7 +11,7 @@ A PHP templating engine for rendering Bootstrap-themed, [Tablesorter](https://mo
 - Custom sorting parameters
 - Pagination
 - Column filtering
-- Row actions dropdown
+- Row menus for performing actions on rows
 - Alternative templates for empty table cells
 - Iterative rendering of sub-array data
 
@@ -51,8 +51,20 @@ $rows = [
     ]
 ]
 
+// The following are all optional parameters
 
-$tb = new TableBuilder($columns, $rows, $actions);
+$menu_items = [
+    'item1' => [
+        'template => :template for this menu item:
+    ],
+    ...
+]
+
+$menu_label = :column label for menu items:
+$menu_state_field = :row field to use for the menu button state:
+$menu_style_field = :row field to use for the menu button style:
+
+$tb = new TableBuilder($columns, $rows, $actions, $menu_label, $menu_state_field, $menu_style_field);
 echo $tb->render();
 
 ````

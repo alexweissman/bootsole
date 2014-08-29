@@ -85,7 +85,7 @@
                 'teacher_id' => '2',
                 'user_name' => 'seamus',
                 'display_name' => 'Seamus',
-                'title' => 'Smelly Dude',
+                'title' => 'Beanmaster',
                 'email' => 'seamus@cardboardbox.com',
                 'num_students' => '0',
                 'students' => []
@@ -94,7 +94,7 @@
                 'teacher_id' => '3',
                 'user_name' => 'zizzo',
                 'display_name' => 'Plato',
-                'title' => 'Perfectionist',
+                'title' => 'Idealist',
                 'email' => 'plato@athens.gov',
                 'num_students' => '1',
                 'students' => [
@@ -106,9 +106,19 @@
             ]
         ];
         
-        $actions = array();
+        $menu_items = [
+            'get_podcast' => [
+                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-get-podcast'><i class='fa fa-headphones'></i> Get podcast</a>"
+            ],
+            'poison' => [
+                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-poison'><i class='fa fa-flask'></i> Poison</a>"
+            ],
+            'change' => [
+                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-give-change'><i class='fa fa-money'></i> Give change for the bus</a>"
+            ]
+        ];
         
-        $tb = new TableBuilder($columns, $rows, $actions);
+        $tb = new TableBuilder($columns, $rows, $menu_items, "Do Stuff");
         echo $tb->render();
  
         ?>

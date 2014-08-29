@@ -4,14 +4,21 @@ class TableBuilder {
 
     protected $_columns = array();
     
-    protected $_actions = array();
-    
     protected $_rows = array();
     
-    public function __construct($columns, $rows = array(), $actions = array()) {
+    protected $_menu_items = array();
+    
+    protected $_menu_label;
+    protected $_menu_state_field;
+    protected $_menu_style_field;   
+    
+    public function __construct($columns, $rows = array(), $menu_items = array(), $menu_label = "Status/Actions", $menu_state_field = null, $menu_style_field = null) {
         $this->_columns = $columns;
         $this->_rows = $rows;
-        $this->_actions = $actions;
+        $this->_menu_items = $menu_items;
+        $this->_menu_label = $menu_label;
+        $this->_menu_state_field = $menu_state_field;
+        $this->_menu_style_field = $menu_style_field;           
     }
     
     public function addRow($row){
@@ -48,9 +55,9 @@ class TableBuilder {
             $result .= "<th class=$sorter>{$column['label']} <i class='fa fa-sort'></i></th>";
         }
         
-        // Add action column, if specified
-        if (!empty($this->_actions)){
-            $result .= "<th>Status/Actions <i class='fa fa-sort'></i></th>";
+        // Add menu items column, if specified
+        if (!empty($this->_menu_items)){
+            $result .= "<th>{$this->_menu_label} <i class='fa fa-sort'></i></th>";
         }
         
         $result .= "</tr></thead><tbody>";
@@ -94,91 +101,9 @@ class TableBuilder {
              $result .= $this->renderCell($row_id, $column_name);
          }
          
-         // Build action menu
-         if (!empty($this->_actions)){
-             $menu = "";
-             foreach ($this->_actions as $action_name => $action) {
-                 if ($action_name == "user_activate"){
-                     if ($row['active'] == '0') {
-                         $menu .= "
-                             <li>
-                                 <a href='#' data-id='{$row_id}' class='btn-activate-user'><i class='fa fa-bolt'></i> {$action['label']}</a>
-                             </li>
-                             <li class='divider'>
-                             </li>";
-                     }
-                 }
- 
-                 if ($action_name == 'user_edit') {
-                     $menu .= "
-                         <li>
-                             <a href='#' data-target='#user-update-dialog' data-toggle='modal' data-id='{$row_id}' class='btn-edit-user'><i class='fa fa-edit'></i> {$action['label']}</a>
-                         </li>
-                         <li class='divider'>
-                         </li>";            
-                 }
-                 
-                 if ($action_name == 'user_disable') {
-                     if ($row['enabled'] == '1') {
-                         $menu .= "
-                             <li>
-                                 <a href='#' data-id='{$row_id}' class='btn-disable-user'><i class='fa fa-minus-circle'></i> {$action['label-disable']}</a>
-                             </li>";
-                     } else {
-                         $menu .= "
-                             <li>
-                                 <a href='#' data-id='{$row_id}' class='btn-enable-user'><i class='fa fa-plus-circle'></i> {$action['label-enable']}</a>
-                             </li>";
-                     }
-                 }
-                 
-                 if ($action_name == 'user_delete') {
-                     $menu .= "
-                         <li>
-                             <a href='#' data-target='#user-delete-dialog' data-toggle='modal' data-id='{$row_id}' data-user_name='{$row['user_name']}' class='btn-delete-user'><i class='fa fa-trash-o'></i> {$action['label']}</a>
-                         </li>";       
-                 }
-
-                 if ($action_name == 'student_assign') {
-                     $menu .= $this->renderString($row, "
-                         <li>
-                             <a href='#' data-target='#student-assign-dialog' data-toggle='modal' data-id='{{id}}' data-name='{{first_name}} {{last_name}}' class='btn-assign-student'><i class='fa fa-thumb-tack'></i> {$action['label']}</a>
-                         </li>
-                         <li class='divider'></li>");       
-                 }
-                 if ($action_name == 'student_edit') {
-                     $menu .= $this->renderString($row, "
-                         <li>
-                             <a href='#' data-target='#student-edit-dialog' data-toggle='modal' data-id='{{id}}' class='btn-edit-student'><i class='fa fa-edit'></i> {$action['label']}</a>
-                         </li>");       
-                 }                    
-                 if ($action_name == 'student_deactivate') {
-                     $menu .= $this->renderString($row, "
-                         <li>
-                             <a href='#' data-target='#student-deactivate-dialog' data-toggle='modal' data-id='{{id}}' data-name='{{first_name}} {{last_name}}' class='btn-deactivate-student'><i class='fa fa-minus-circle'></i> {$action['label-disable']}</a>
-                         </li>");       
-                 }
-                 if ($action_name == 'student_delete') {
-                     $menu .= $this->renderString($row, "
-                         <li>
-                             <a href='#' data-target='#student-delete-dialog' data-toggle='modal' data-id='{{id}}' data-name='{{first_name}} {{last_name}}' class='btn-delete-student'><i class='fa fa-trash-o'></i> {$action['label']}</a>
-                         </li>");       
-                 }
-             }
-             
-             
-             $result .= "
-                 <td>
-                     <div class='btn-group'>
-                         <button type='button' class='btn btn-primary'>actions</button>
-                         <button type='button' class='btn btn-primary dropdown-toggle' data-toggle='dropdown'>
-                         <span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button>
-                         <ul class='dropdown-menu' role='menu'>
-                             {$menu}
-                         </ul>
-                     </div>
-                 </td>";            
-             
+         // Build menu
+         if (!empty($this->_menu_items)){
+             $result .= $this->renderRowMenu($row_id);
          }  
         // Close row
         $result .= "</tr>";
@@ -186,6 +111,41 @@ class TableBuilder {
         return $result;
     }
     
+    
+    private function renderRowMenu($row_id){
+        $row = $this->_rows[$row_id];
+        if (isset($row[$this->_menu_style_field])){
+            $row_style = $row[$this->_menu_style_field];
+        } else {
+            $row_style = "primary";
+        }
+        if (isset($row[$this->_menu_state_field])){
+            $row_state = $row[$this->_menu_state_field];
+        } else {
+            $row_state = "Options";
+        }
+        
+        $result = "
+            <td>
+                <div class='btn-group'>
+                    <button type='button' class='btn btn-$row_style dropdown-toggle' data-toggle='dropdown'>
+                      $row_state <span class='caret'></span>
+                    </button>
+                    <ul class='dropdown-menu' role='menu'>";
+        foreach ($this->_menu_items as $item_name => $item) {
+            if (isset($item['template']))
+                $item_template = $item['template'];
+            else
+                continue;
+            $result .= "<li>" . $this->renderString($row, $item_template) . "</li>";      
+        }                     
+                    
+        $result .= "</ul>
+                </div>
+            </td>";     
+    
+        return $result;
+    }
     
     private function renderCell($row_id, $column_name){
         $row = $this->_rows[$row_id];
