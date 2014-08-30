@@ -91,6 +91,17 @@ In this example, the engine will look for a sub-array in each row named "names".
 
 ## Forms
 
+### Supports
+
+- text, password, toggle, and dropdown inputs
+- pre-populate field with values from an array.  Useful for forms that "update" some information.
+- fields can be hidden or disabled programmatically
+- default field values
+- field placeholders and icons
+- preprocessor functions (PHP) for formatting data in certain fields
+- field validation info
+- customizable form buttons, with button types for submitting the form, launching and canceling modals
+
 ### Screenshot
 
 
@@ -164,6 +175,25 @@ $fb = new FormBuilder($template, $fields, $buttons, $data);
 echo $fb->render();
 
 ````
+
+### Field types
+
+#### <code>text</code>
+
+Standard input field with label.  Wrapped in `input_group`, then in `form_group`.
+
+#### <code>password</code>
+
+Standard password field with label.  Wrapped in `input_group`, then in `form_group`.
+
+#### <code>toggle</code>
+
+Set of toggle buttons with label, overlays the `radio` input type.  Buttons are grouped in `btn-group`, then together with label wrapped in `input_group`, then in `form_group`.
+
+#### <code>select</code>
+
+Dropdown menu with label, overlays the `select` input type.  Wrapped in `input_group`, then in `form_group`.
+
 
 ### Button types
 
