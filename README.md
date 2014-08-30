@@ -37,7 +37,7 @@ $columns = [
     ],
     'col2' => ...
 
-]
+];
 
 $rows = [
     'row1' => [
@@ -50,7 +50,7 @@ $rows = [
         ],
         ...
     ]
-]
+];
 
 // The following are all optional parameters
 
@@ -59,7 +59,7 @@ $menu_items = [
         'template => :template for this menu item:
     ],
     ...
-]
+];
 
 $menu_label = :column label for menu items:
 $menu_state_field = :row field to use for the menu button state:
@@ -96,6 +96,96 @@ In this example, the engine will look for a sub-array in each row named "names".
 
 ![FormBuilder](/screenshots/formbuilder.png "FormBuilder")
 
+### Usage
+
+````
+
+$template = :form template.  Use the double-handlebar notation to reference the names of the fields and buttons.:
+// Example
+$template = "<form method='post' class='col-md-6 col-md-offset-3'>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    {{field1}}
+                </div>
+                <div class='col-sm-6'>
+                    {{field2}}
+                </div>            
+            </div>
+            <div class='row'>
+                <div class='col-xs-12 col-sm-6 hideable'>
+                    {{btn_1}}
+                </div>
+                <div class='col-xs-12 col-sm-3 hideable'>
+                    {{btn_2}}
+                </div> 
+        </form>";
+
+
+$fields = [
+    'field1' =>
+        'name' => :field name attribute.  Default is array key (i.e. 'field1').     
+        'label' => :Field label:,
+        'type' => :'text'|'password'|'toggle'|'select':,
+        'display' => :'show'|'hidden'|'disabled':,
+        'icon' => :field add-on icon:,
+        'icon_link' => :icon target link: (optional)
+        'placeholder' => :field placeholder:
+        'default' => :default value for field if empty:,
+        'validator' => :validation array (UserFrosting only, will soon be replaced with the Bootstrapvalidator plugin):,
+        'preprocess' => :PHP function to preprocess field values:,
+        'choices' => :array of options.  'toggle' and 'select' types only.:
+    ],
+    'field2' => ...
+
+];
+
+$buttons = [
+    'btn_1' => [
+        'name' => :button name attribute.  Default is array key (i.e. 'btn_1'). 
+        'type' => :'button'|'submit'|'launch'|'cancel',
+        'display' => :'show'|'hidden'|'disabled':,
+        'label' => :Button label:,
+        'icon' => :Button icon:
+        'size' => :'xs'|'sm'|'md'|'lg':,
+        'style' => :'primary'|'success'|'warning'|'danger'|'info'|'default',
+        'data' => :array of additional data attributes to add to this button.:
+    ],
+    'btn_2' => ...
+];
+    
+$data = [
+    'field1' => 'value1',
+    'field2' => 'value2',
+    ...
+
+];
+
+$fb = new FormBuilder($template, $fields, $buttons, $data);
+echo $fb->render();
+
+````
+
+### Button types
+
+#### <code>submit</code>
+
+Creates a button that is used to submit the form.  Gets the HTML5 button attribute `type="submit"`.
+
+#### <code>launch</code>
+
+Creates a button that is used to launch a modal.  Useful for launching "edit" and "delete" dialogs.  Gets the HTML5 button attribute `type="button"` and the bootstrap `data-toggle="modal"` attribute.
+
+#### <code>cancel</code>
+
+Creates a button that is used to cancel a modal.  Useful for forms that are contained inside a modal dialog.  Gets the HTML5 button attribute `type="button"` and the bootstrap `data-dismiss="modal"` attribute.
+
+#### <code>button</code>
+
+Creates a button that is used for any other form action.  Gets the HTML5 button attribute `type="button"`.
+
+## CSS
+
+Use the <code>hideable</code> class to make Bootstrap columns that will collapse when empty.  This is useful for creating templates for forms with buttons that appear or disappear in different contexts.
 
 ## Dependencies
 
@@ -107,4 +197,3 @@ In this example, the engine will look for a sub-array in each row named "names".
 - Bootstrap 3.0.2
 - Tablesorter 2.17.7 with the pager and filter widgets
 - FontAwesome 4.1
-
