@@ -4,9 +4,11 @@
 
 Copyright (c) 2014
 
-A PHP templating engine for rendering Bootstrap-themed, [Tablesorter](https://mottie.github.io/tablesorter/docs/) tables from arrays of raw data.
+A PHP templating engine for rendering Bootstrap-themed, [Tablesorter](https://mottie.github.io/tablesorter/docs/) tables and forms from arrays of raw data.
 
-## Supports
+## Tables
+
+### Supports
 
 - Custom sorting parameters
 - Pagination
@@ -15,12 +17,11 @@ A PHP templating engine for rendering Bootstrap-themed, [Tablesorter](https://mo
 - Alternative templates for empty table cells
 - Iterative rendering of sub-array data
 
-## Screenshot
+### Screenshot
 
-![Tablebuilder](/screenshots/tablebuilder.png "Tablebuilder")
+![TableBuilder](/screenshots/tablebuilder.png "TableBuilder")
 
-
-## Usage
+### Usage
 
 ````
 $columns = [
@@ -69,7 +70,7 @@ echo $tb->render();
 
 ````
 
-## Templates
+### Templates
 
 Uses the double-handlebar notation:
 
@@ -87,6 +88,13 @@ Sub-array data:
 
 The double-bracket notation indicates that a particular field is an array, rather than a single value.  Templates for this notation will be the field name, followed by a space, followed by the template, inside double brackets.
 In this example, the engine will look for a sub-array in each row named "names".  Each element in `$rows[$i]['names']` will be rendered according to the template `"<span data-id={{id}}>{{name}}</span> "`.  The results for the entire sub-array will be concatenated.
+
+## Forms
+
+### Screenshot
+
+
+![FormBuilder](/screenshots/formbuilder.png "FormBuilder")
 
 
 ## Dependencies

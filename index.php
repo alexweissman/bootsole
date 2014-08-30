@@ -85,8 +85,8 @@
             ],
             '2' => [
                 'teacher_id' => '2',
-                'user_name' => 'seamus',
-                'display_name' => 'Seamus',
+                'user_name' => 'zizzo',
+                'display_name' => 'Randy',
                 'title' => 'Beanmaster',
                 'email' => 'seamus@cardboardbox.com',
                 'num_students' => '0',
@@ -94,7 +94,7 @@
             ],    
             '3' => [
                 'teacher_id' => '3',
-                'user_name' => 'zizzo',
+                'user_name' => 'plato',
                 'display_name' => 'Plato',
                 'title' => 'Idealist',
                 'email' => 'plato@athens.gov',
@@ -151,6 +151,25 @@
                 <div class='col-sm-6'>
                     {{fav_polyhedron}}
                 </div>
+            </div>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    {{password}}
+                </div>
+                <div class='col-sm-6'>
+
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-xs-12 col-sm-6 hideable'>
+                    {{btn_submit}}
+                </div>
+                <div class='col-xs-12 col-sm-3 hideable'>
+                    {{btn_poison}}
+                </div>
+                <div class='col-xs-12 col-sm-3 hideable'>
+                    {{btn_cancel}}
+                </div> 
         </form>";
         
         $fields = [
@@ -229,7 +248,17 @@
                     'dodecahedron' => 'Dodecahedron',
                     'icosohedron' => 'Icosohedron'
                 ]              
-            ]
+            ],
+            'password' => [
+                'type' => 'password',
+                'label' => 'Password',
+                'icon' => 'fa fa-key',
+                'validator' => [
+                    'minLength' => 8,
+                    'maxLength' => 50,
+                    'label' => 'Password'
+                ]
+            ],
         ];
 
         $data = [
@@ -237,8 +266,31 @@
             'email' => "bob@bob.com",
             'beard' => "scraggly"
         ];
-                
-        $fb = new FormBuilder($template, $fields, $data);
+        
+        $buttons = [
+            'btn_poison' => [
+                'label' => 'Poison',
+                'type' => 'button',
+                'style' => 'danger',
+                'size' => 'lg',
+                'display' => 'disabled',
+                'icon' => 'fa fa-flask'
+            ],
+            'btn_submit' => [
+                'label' => 'Create Philosopher',
+                'type' => 'submit',
+                'size' => 'lg',
+                'style' => 'success'
+            ],
+            'btn_cancel' => [
+                'label' => 'Cancel',
+                'type' => 'cancel',
+                'size' => 'lg',
+                'style' => 'link'
+            ]       
+        ];
+            
+        $fb = new FormBuilder($template, $fields, $buttons, $data);
         echo $fb->render();
         
         ?>

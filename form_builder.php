@@ -6,7 +6,12 @@ class FormBuilder {
 
     /* Information about the fields to render.
      * Allowed field options:
-     * 'display': 'hidden', 'readonly', 'show'
+     * 'label'
+     * 'display': 'hidden', 'disabled', 'show'
+     * 'placeholder'
+     * 'icon'
+     * 'icon_link'
+     * 'type': 'text', 'password', 'toggle', 'select'
      * 'preprocess' : a function to call to process the value before rendering.
      * 'default' : the default value to use if a value is not specified
      */
@@ -18,7 +23,7 @@ class FormBuilder {
     
     protected $_template = "";
     
-    public function __construct($template, $fields = array(), $data = array(), $buttons = array()) {
+    public function __construct($template, $fields = array(), $buttons = array(), $data = array()) {
         $this->_fields = $fields;
         $this->_buttons = $buttons;
         $this->_data = $data;
@@ -28,15 +33,22 @@ class FormBuilder {
     public function render(){
         $result = $this->_template;
         $rendered_fields = array();        
+        // Render fields
         foreach ($this->_fields as $field_name => $field){
             $type = isset($field['type']) ? $field['type'] : "text";
             if ($type == "text"){
                 $rendered_fields[$field_name] = $this->renderTextField($field_name);
+            } else if ($type == "password") {
+                $rendered_fields[$field_name] = $this->renderPasswordField($field_name);
             } else if ($type == "toggle") {
                 $rendered_fields[$field_name] = $this->renderToggleField($field_name);
             } else if ($type == "select") {
                 $rendered_fields[$field_name] = $this->renderSelectField($field_name);
             }
+        }
+        // Render buttons
+        foreach ($this->_buttons as $button_name => $button){
+            $rendered_fields[$button_name] = $this->renderButton($button_name);
         }
             
         return replaceKeyHooks($rendered_fields, $result);
@@ -57,7 +69,23 @@ class FormBuilder {
         
         return replaceKeyHooks($field_data, $result);
     }
-    
+
+    // Renders a password field with the specified name.
+    private function renderPasswordField($field_name){
+        $field_data = $this->generateFieldData($field_name);
+        
+        $result = "
+            <div class='form-group {{hidden}}'>
+                <label>{{label}}</label>
+                <div class='input-group'>
+                    <span class='input-group-addon'>{{addon}}</span>
+                    <input type='password' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>
+                </div>
+            </div>";
+        
+        return replaceKeyHooks($field_data, $result);
+    }    
+        
     // Renders a toggle button toggle group.
     private function renderToggleField($field_name){
         $field_data = $this->generateFieldData($field_name);
@@ -126,6 +154,50 @@ class FormBuilder {
         return replaceKeyHooks($field_data, $result);
     }
 
+    private function renderButton($button_name){
+        $button = $this->_buttons[$button_name];
+        $display = isset($button['display']) ? $button['display'] : "show";
+        if ($display == "hidden")
+            return "";
+        $button_data = array();
+        $button_data['name'] = $button_name;
+        $button_data['label'] = isset($button['label']) ? $button['label'] : $button_name;        
+        $button_data['icon'] = isset($button['icon']) ? $button['icon'] : "";        
+        $button_data['size'] = isset($button['size']) ? $button['size'] : "md";
+        $button_data['style'] = isset($button['style']) ? $button['style'] : "primary";
+        $data = isset($button['data']) ? $button['data'] : array();
+        $button_data['data_disp'] = "";
+        foreach ($data as $data_name => $data_val){
+            $button_data['data_disp'] .= "data-$data_name='$data_val' ";
+        }
+        $button_data['disabled'] = ($display == "disabled") ? "disabled" : "";
+        $type = isset($button['type']) ? $button['type'] : "button";
+        
+        if ($type == "submit"){
+            $result = "
+                <div class='vert-pad'>
+                    <button name='{{name}}' type='submit' class='btn btn-block btn-{{size}} btn-{{style}}' {{data_disp}} data-loading-text='Please wait...' {{disabled}}><i class='{{icon}}'></i> {{label}}</button>
+                </div>";                
+        } else if ($type == "launch"){
+            $result = "
+                <div class='vert-pad'>
+                    <button name='{{name}}' type='button' class='btn btn-block btn-{{size}} btn-{{style}}' {{data_disp}} {{disabled}} data-toggle='modal'><i class='{{icon}}'></i> {{label}}</button>
+                </div>";                
+        } else if ($type == "cancel"){
+            $result = "
+                <div class='vert-pad'>
+                    <button name='{{name}}' type='button' class='btn btn-block btn-{{size}} btn-{{style}}' {{data_disp}} {{disabled}} data-dismiss='modal'><i class='{{icon}}'></i> {{label}}</button>
+                </div>";                
+        } else {
+                $result = "
+            <div class='vert-pad'>
+                <button name='{{name}}' type='button' class='btn btn-block btn-{{size}} btn-{{style}}' {{data_disp}} {{disabled}}><i class='{{icon}}'></i> {{label}}</button>
+            </div>";
+        }
+    
+        return replaceKeyHooks($button_data, $result);
+    }
+    
     private function generateFieldData($field_name){
         $field = $this->_fields[$field_name];
         
