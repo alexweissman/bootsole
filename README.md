@@ -145,7 +145,9 @@ $fields = [
         'validator' => :validation array (UserFrosting only, will soon be replaced with the Bootstrapvalidator plugin):,
         'preprocess' => :PHP function to preprocess field values:,
         'choices' => :array of options.  'toggle' and 'select' types only.:
-    ],
+        'on' => :label for switches when they are turned on.  'switch' type only.:
+        'off' => :label for switches when they are turned off.  'switch' type only.:
+        ],
     'field2' => ...
 
 ];
@@ -194,6 +196,14 @@ Set of toggle buttons with label, overlays the `radio` input type.  Buttons are 
 
 Dropdown menu with label, overlays the `select` input type.  Wrapped in `input_group`, then in `form_group`.
 
+#### <code>switch</code>
+
+[Bootstrap Switch](http://www.bootstrap-switch.org/) switch, overlays the `checkbox` input type.  Wrapped in `form_group`.
+
+#### <code>radioGroup</code>
+
+Group of [Bootstrapradio](https://github.com/alexweissman/bootstrapradio) buttons, overlays the `button` input type.  Wrapped in `input_group`, then in `form_group`.
+
 
 ### Button types
 
@@ -227,3 +237,5 @@ Use the <code>hideable</code> class to make Bootstrap columns that will collapse
 - Bootstrap 3.0.2
 - Tablesorter 2.17.7 with the pager and filter widgets
 - FontAwesome 4.1
+- Bootstrap Switch 3
+- Bootstrapradio 0.1

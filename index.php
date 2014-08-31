@@ -7,15 +7,17 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Bootsole Table</title>
+  <title>Bootsole Demo</title>
   
   <!-- Core CSS -->
   <link rel="stylesheet" href="css/bootstrap-3.0.2.css">
+  <link rel="stylesheet" href="css/bootstrap-switch.min.css">
+  <link rel="stylesheet" href="css/bootstrapradio.css">
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/tablesorter/theme.bootstrap.css">
   <link rel="stylesheet" href="css/tablesorter/jquery.tablesorter.pager.css">
   <link rel="stylesheet" href="css/bootstrap-custom.css">
-  
+
 </head>
 <body>
 
@@ -154,10 +156,15 @@
             </div>
             <div class='row'>
                 <div class='col-sm-6'>
-                    {{password}}
+                    {{school}}
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    {{shopping_bags}}
                 </div>
                 <div class='col-sm-6'>
-
+                    {{tenure}}
                 </div>
             </div>
             <div class='row'>
@@ -259,12 +266,46 @@
                     'label' => 'Password'
                 ]
             ],
+            'tenure' => [
+                'type' => 'switch',
+                'label' => 'Has tenure?',
+                'on' => 'Yes',
+                'off' => 'No'
+            ],
+            'shopping_bags' => [
+                'type' => 'switch',
+                'label' => 'Shopping bags',
+                'on' => 'Paper',
+                'off' => 'Plastic',
+                'icon' => 'fa fa-briefcase'
+            ],
+            'school' => [
+                'type' => 'radioGroup',
+                'label' => 'School',
+                'choices' => [
+                    'epicurist' => [
+                        'label' => 'Epicurist.  Relax and enjoy life.',
+                        'icon' => 'fa fa-cutlery'
+                    ],
+                    'futurist' => [
+                        'label' => 'Futurist.  Cyborgs unite!',
+                        'icon' => 'fa fa-space-shuttle'
+                    ],
+                    'stoic' => [
+                        'label' => 'Stoic.  Grin and bear it.',
+                        'icon' => 'fa fa-tree'
+                    ]
+                ]                  
+            ]
         ];
 
         $data = [
             'user_name' => "Bob",
             'email' => "bob@bob.com",
-            'beard' => "scraggly"
+            'beard' => "scraggly",
+            'tenure' => true,
+            'shopping_bags' => false,
+            'school' => 'futurist'
         ];
         
         $buttons = [
@@ -299,38 +340,13 @@
     <!-- Core JavaScript -->
     <script src="js/jquery-1.10.2.min.js"></script>
     <script src="js/bootstrap-3.0.2.js"></script> 
+    <script src="js/bootstrap-switch.min.js"></script>
+    <script src="js/bootstrapradio.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.min.js"></script>
     <script src="js/tablesorter/tables.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.pager.min.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.widgets.min.js"></script>
-  
-    <script>
-        $(document).ready(function() {
-            // define tablesorter pager options
-            var pagerOptions = {
-              // target the pager markup - see the HTML block below
-              container: $('#teachers .pager'),
-              // output string - default is '{page}/{totalPages}'; possible variables: {page}, {totalPages}, {startRow}, {endRow} and {totalRows}
-              output: '{startRow} - {endRow} / {filteredRows} ({totalRows})',
-              // if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
-              // table row set to a height to compensate; default is false
-              fixedHeight: true,
-              // remove rows from the table to speed up the sort of large tables.
-              // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-              removeRows: false,
-              // go to page selector - select dropdown that sets the current page
-              cssGoto: '.gotoPage'
-            };
-            
-            // Initialize the tablesorter
-            $('#teachers .table').tablesorter({
-                debug: false,
-                theme: 'bootstrap',
-                widthFixed: true,
-                widgets: ['filter']
-            }).tablesorterPager(pagerOptions);
-        });
-    </script>
+    <script src="js/bootsole.js"></script>
   
 </body>
 </html>
