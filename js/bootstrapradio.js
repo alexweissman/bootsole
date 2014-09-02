@@ -54,9 +54,11 @@ THE SOFTWARE.
                 var btn_name = $(this).attr("name");
                 $.fn._init($(this));
                 // Set default value
-                if ($(this).val() == options['default']) {
+                if ($(this).val() == options['default'] || $(this).attr("data-selected") == "true") {
                     $(this).attr("data-selected", "true");
                     $(this).addClass('bootstrapradio-on');
+                    // Store value in corresponding input field
+                    $( "input[name='" + btn_name + "']").val($(this).val());
                 }
             });            
 
@@ -69,6 +71,18 @@ THE SOFTWARE.
                 $("button[name='" + btn_name + "'][value='" + new_val + "']").addClass('bootstrapradio-on');
                 return $( "input[name='" + btn_name + "']").val(new_val);
             }
+        },
+        disabled : function(disabled) {
+            var btn_name = this.attr('name');
+            if (disabled === true) {
+                if ($( "input[name='" + btn_name + "']").val() == $(this).val()) {
+                    $( "input[name='" + btn_name + "']").val("");
+                    $(this).attr("data-selected", "false");
+                    $(this).removeClass('bootstrapradio-on');
+                }
+            }
+            $(this).prop('disabled', disabled);
+            return $(this); 
         }
     };        
         

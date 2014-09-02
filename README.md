@@ -136,7 +136,7 @@ $fields = [
     'field1' =>
         'name' => :field name attribute.  Default is array key (i.e. 'field1').     
         'label' => :Field label:,
-        'type' => :'text'|'password'|'toggle'|'select':,
+        'type' => :'text'|'password'|'toggle'|'select'|'switch'|'radioGroup':,
         'display' => :'show'|'hidden'|'disabled':,
         'icon' => :field add-on icon:,
         'icon_link' => :icon target link: (optional)
@@ -144,7 +144,7 @@ $fields = [
         'default' => :default value for field if empty:,
         'validator' => :validation array (UserFrosting only, will soon be replaced with the Bootstrapvalidator plugin):,
         'preprocess' => :PHP function to preprocess field values:,
-        'choices' => :array of options.  'toggle' and 'select' types only.:
+        'choices' => :array of options.  'toggle', 'select', and 'radioGroup' types only.:
         'on' => :label for switches when they are turned on.  'switch' type only.:
         'off' => :label for switches when they are turned off.  'switch' type only.:
         ],
