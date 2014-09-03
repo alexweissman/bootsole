@@ -1,4 +1,4 @@
-# Bootsole 0.1.1
+# Bootsole 0.1.2
 
 ### By Alex Weissman
 
@@ -56,7 +56,10 @@ $rows = [
 
 $menu_items = [
     'item1' => [
-        'template => :template for this menu item:
+        'template' => :template for this menu item:,
+        'show_field' => :if specified, the name of the row field to check in deciding whether or not to render this menu item:,
+        'show_field_values' => :array of values for which this menu item will be rendered.:,
+        'type' => :'addon'|'divider'|'item':  // You can have divider elements, as well as menu addon buttons
     ],
     ...
 ];
@@ -93,7 +96,7 @@ In this example, the engine will look for a sub-array in each row named "names".
 
 ### Supports
 
-- text, password, toggle, and dropdown inputs
+- text, password, toggle, select, [select2](https://ivaynberg.github.io/select2/), [bootstrapradio](https://github.com/alexweissman/bootstrapradio), and [bootstrap-switch](http://www.bootstrap-switch.org/) input controls
 - pre-populate field with values from an array.  Useful for forms that "update" some information.
 - fields can be hidden or disabled programmatically
 - default field values
@@ -136,15 +139,16 @@ $fields = [
     'field1' =>
         'name' => :field name attribute.  Default is array key (i.e. 'field1').     
         'label' => :Field label:,
-        'type' => :'text'|'password'|'toggle'|'select'|'switch'|'radioGroup':,
+        'type' => :'text'|'password'|'toggle'|'select'|'select2'|'switch'|'radioGroup':,
         'display' => :'show'|'hidden'|'disabled':,
         'icon' => :field add-on icon:,
-        'icon_link' => :icon target link: (optional)
-        'placeholder' => :field placeholder:
+        'icon_link' => :icon target link: (optional),
+        'addon_end' => :addon content to be placed after this field:,
+        'placeholder' => :field placeholder:,
         'default' => :default value for field if empty:,
         'validator' => :validation array (UserFrosting only, will soon be replaced with the Bootstrapvalidator plugin):,
         'preprocess' => :PHP function to preprocess field values:,
-        'choices' => :array of options.  'toggle', 'select', and 'radioGroup' types only.:
+        'choices' => :array of options.  'toggle', 'select', 'select2', and 'radioGroup' types only.:
         'on' => :label for switches when they are turned on.  'switch' type only.:
         'off' => :label for switches when they are turned off.  'switch' type only.:
         ],
@@ -158,7 +162,7 @@ $buttons = [
         'type' => :'button'|'submit'|'launch'|'cancel',
         'display' => :'show'|'hidden'|'disabled':,
         'label' => :Button label:,
-        'icon' => :Button icon:
+        'icon' => :Button icon:,
         'size' => :'xs'|'sm'|'md'|'lg':,
         'style' => :'primary'|'success'|'warning'|'danger'|'info'|'default',
         'data' => :array of additional data attributes to add to this button.:
@@ -196,6 +200,10 @@ Set of toggle buttons with label, overlays the `radio` input type.  Buttons are 
 
 Dropdown menu with label, overlays the `select` input type.  Wrapped in `input_group`, then in `form_group`.
 
+#### <code>select2</code>
+
+[Select2](https://ivaynberg.github.io/select2/) searchable dropdown with label, overlays the `select` input type.  Wrapped in `input_group`, then in `form_group`.
+
 #### <code>switch</code>
 
 [Bootstrap Switch](http://www.bootstrap-switch.org/) switch, overlays the `checkbox` input type.  Wrapped in `form_group`.
@@ -227,6 +235,14 @@ Creates a button that is used for any other form action.  Gets the HTML5 button 
 
 Use the <code>hideable</code> class to make Bootstrap columns that will collapse when empty.  This is useful for creating templates for forms with buttons that appear or disappear in different contexts.
 
+## Changelog
+
+### 0.1.2
+
+- Added the 'select2' input type.
+- Added table menu item options 'type', 'show_field', and 'show_field_values'.
+- Added 'addon_end' for input and password fields.
+
 ## Dependencies
 
 ### PHP
@@ -238,4 +254,5 @@ Use the <code>hideable</code> class to make Bootstrap columns that will collapse
 - Tablesorter 2.17.7 with the pager and filter widgets
 - FontAwesome 4.1
 - Bootstrap Switch 3
+- Select2 3.5.1
 - Bootstrapradio 0.1

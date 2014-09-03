@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="css/bootstrap-switch.min.css">
   <link rel="stylesheet" href="css/bootstrapradio.css">
   <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/select2/select2.css">
+  <link rel="stylesheet" href="css/select2/select2-bootstrap.css">
   <link rel="stylesheet" href="css/tablesorter/theme.bootstrap.css">
   <link rel="stylesheet" href="css/tablesorter/jquery.tablesorter.pager.css">
   <link rel="stylesheet" href="css/bootstrap-custom.css">
@@ -111,14 +113,30 @@
         ];
         
         $menu_items = [
+            'star' => [
+                'type' => "addon",
+                'template' => "<button type='button' data-id='{{teacher_id}}' class='btn btn-{{row_style}}'><i class='fa fa-star'></i></button>",
+                'show_field' => 'num_students',
+                'show_field_values' => [
+                    2
+                ]                
+            ],
             'get_podcast' => [
                 'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-get-podcast'><i class='fa fa-headphones'></i> Get podcast</a>"
             ],
+            'divider_1' => [
+                'type' => 'divider'
+            ],
             'poison' => [
-                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-poison'><i class='fa fa-flask'></i> Poison</a>"
+                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-poison'><i class='fa fa-flask'></i> Poison</a>",
             ],
             'change' => [
-                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-give-change'><i class='fa fa-money'></i> Give change for the bus</a>"
+                'template' => "<a href='#' data-id='{{teacher_id}}' class='btn-give-change'><i class='fa fa-money'></i> Give change for the bus</a>",
+                'show_field' => "num_students",
+                'show_field_values' => [
+                    0,
+                    1
+                ]
             ]
         ];
         
@@ -215,14 +233,22 @@
                 'placeholder' => 'Email goes here'
             ],
             'title' => [
-                'type' => 'text',
+                'type' => 'select2',
                 'label' => 'Title',
                 'validator' => [
-                    'minLength' => 1,
-                    'maxLength' => 100,
+                    'selected' => true,
                     'label' => 'Title'
                 ],
-                'default' => 'New User'
+                'choices' => [
+                    'ta' => 'Teaching Assistant',
+                    'street_lord' => 'Street Lord',
+                    'adjunct' => 'Adjunct Instructor',
+                    'assistant' => 'Assistant Professor',
+                    'associate' => 'Associate Professor',
+                    'professor' => 'Professor',
+                    'emeritus' => 'Professor Emeritus'
+                ],
+                'default' => 'assistant'
             ],
             'beard' => [
                 'type' => 'toggle',
@@ -342,6 +368,7 @@
     <script src="js/bootstrap-3.0.2.js"></script> 
     <script src="js/bootstrap-switch.min.js"></script>
     <script src="js/bootstrapradio.js"></script>
+    <script src="js/select2/select2.min.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.min.js"></script>
     <script src="js/tablesorter/tables.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.pager.min.js"></script>

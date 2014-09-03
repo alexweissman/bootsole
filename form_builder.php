@@ -11,7 +11,8 @@ class FormBuilder {
      * 'placeholder'
      * 'icon'
      * 'icon_link'
-     * 'type': 'text', 'password', 'toggle', 'select'
+     * 'addon_end'
+     * 'type': 'text', 'password', 'toggle', 'select', 'select2', 'switch', 'radioGroup'
      * 'preprocess' : a function to call to process the value before rendering.
      * 'default' : the default value to use if a value is not specified
      */
@@ -44,6 +45,8 @@ class FormBuilder {
                 $rendered_fields[$field_name] = $this->renderToggleField($field_name);
             } else if ($type == "select") {
                 $rendered_fields[$field_name] = $this->renderSelectField($field_name);
+            } else if ($type == "select2") {
+                $rendered_fields[$field_name] = $this->renderSelect2Field($field_name);
             } else if ($type == "switch") {
                 $rendered_fields[$field_name] = $this->renderSwitchField($field_name);
             } else if ($type == "radioGroup") {
@@ -67,13 +70,16 @@ class FormBuilder {
                 <label>{{label}}</label>
                 <div class='input-group'>
                     <span class='input-group-addon'>{{addon}}</span>
-                    <input type='text' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>
+                    <input type='text' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>";
+        if ($field_data['addon_end'])
+            $result .= "<span class='input-group-addon'>{{addon_end}}</span>";
+        $result .= "
                 </div>
             </div>";
         
         return replaceKeyHooks($field_data, $result);
-    }
-
+    }  
+    
     // Renders a password field with the specified name.
     private function renderPasswordField($field_name){
         $field_data = $this->generateFieldData($field_name);
@@ -83,7 +89,10 @@ class FormBuilder {
                 <label>{{label}}</label>
                 <div class='input-group'>
                     <span class='input-group-addon'>{{addon}}</span>
-                    <input type='password' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>
+                    <input type='password' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>";
+        if ($field_data['addon_end'])
+            $result .= "<span class='input-group-addon'>{{addon_end}}</span>";                    
+        $result .= "
                 </div>
             </div>";
         
@@ -158,6 +167,38 @@ class FormBuilder {
         return replaceKeyHooks($field_data, $result);
     }
 
+    // Renders a select2 field with the specified name.
+    private function renderSelect2Field($field_name){
+        $field_data = $this->generateFieldData($field_name);
+        
+        $field = $this->_fields[$field_name];
+        $choices = isset($field['choices']) ? $field['choices'] : array();
+        
+        $result = "
+        <div class='form-group {{hidden}}'>
+            <label>{{label}}</label>
+            <div class='input-group select2-bootstrap-prepend'>
+              <span class='input-group-addon'>{{addon}}</span>
+              <select class='form-control select2' name='{{name}}' {{disabled}}>";
+        
+        // Render choices (toggles)
+        foreach ($choices as $choice => $choice_label){
+            // Special trick for making readonly radio buttons: make one checked and the rest disabled
+            if ($field_data['value'] == $choice){ 
+                $result .=  "<option value='$choice' selected>$choice_label</option>";
+            } else {
+                $result .=  "<option value='$choice'>$choice_label</option>";     
+            }	
+        }
+        
+        $result .= "
+              </select>
+            </div>
+        </div>";
+        
+        return replaceKeyHooks($field_data, $result);
+    }      
+    
     private function renderSwitchField($field_name){
     
         $field_data = $this->generateFieldData($field_name);
@@ -264,6 +305,7 @@ class FormBuilder {
         $field_data['name'] = $field_name;
         $field_data['label'] = isset($field['label']) ? $field['label'] : $field_name;
         $field_data['placeholder'] = isset($field['placeholder']) ? $field['placeholder'] : "";
+        $field_data['addon_end'] = isset($field['addon_end']) ? $field['addon_end'] : null;
         
         $icon = isset($field['icon']) ? $field['icon'] : "fa fa-edit";
         $icon_link = isset($field['icon_link']) ? $field['icon_link'] : null;

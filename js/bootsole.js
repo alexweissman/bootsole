@@ -25,5 +25,9 @@ $(document).ready(function() {
     }).tablesorterPager(pagerOptions);
     
     // Initialize bootstrap switches
-    $('.bootstrapswitch').bootstrapSwitch(); 
+    $('.bootstrapswitch').bootstrapSwitch();
+    
+    // Initialize select2 dropdowns
+    $('.select2').select2();
+    
 });

@@ -127,19 +127,27 @@ class TableBuilder {
             $row_state = "Options";
         }
         
+        $row['row_style'] = $row_style;
+        
         $result = "
             <td>
-                <div class='btn-group'>
-                    <button type='button' class='btn btn-$row_style dropdown-toggle' data-toggle='dropdown'>
+                <div class='btn-group'>";
+                
+        // Add any 'addon' type items
+        foreach ($this->_menu_items as $item_name => $item) {
+            if (isset($item['type']) && $item['type'] == "addon") {
+                $result .= $this->renderRowMenuItem($row, $item);
+            }
+        }
+
+        $result .= "<button type='button' class='btn btn-$row_style dropdown-toggle' data-toggle='dropdown'>
                       $row_state <span class='caret'></span>
                     </button>
                     <ul class='dropdown-menu' role='menu'>";
         foreach ($this->_menu_items as $item_name => $item) {
-            if (isset($item['template']))
-                $item_template = $item['template'];
-            else
-                continue;
-            $result .= "<li>" . $this->renderString($row, $item_template) . "</li>";      
+            if (!(isset($item['type']) && $item['type'] == "addon")) {
+                $result .= $this->renderRowMenuItem($row, $item);
+            }
         }                     
                     
         $result .= "</ul>
@@ -148,6 +156,29 @@ class TableBuilder {
     
         return $result;
     }
+    
+    private function renderRowMenuItem($row, $item){
+        // Determine if menu option should be shown for this row
+        if (isset($item['show_field'])){
+            $show_field_value = isset($row[$item['show_field']]) ? $row[$item['show_field']] : null;
+            $show_field_values = isset($item['show_field_values']) ? $item['show_field_values'] : array();
+            if (!in_array($show_field_value, $show_field_values))
+                return "";
+        }
+        
+        if (isset($item['type']) && $item['type'] == "divider") {
+            return "<li class='divider'></li>";
+        } else if (isset($item['type']) && $item['type'] == "addon") {
+            $item_template = $item['template'];
+            return $this->renderString($row, $item_template);
+        } else if (isset($item['template'])) {
+            $item_template = $item['template'];
+            return "<li>" . $this->renderString($row, $item_template) . "</li>";
+        } else  {
+            return "";
+        }
+    }
+    
     
     private function renderCell($row_id, $column_name){
         $row = $this->_rows[$row_id];
