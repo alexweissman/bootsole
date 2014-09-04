@@ -12,7 +12,7 @@ class FormBuilder {
      * 'icon'
      * 'icon_link'
      * 'addon_end'
-     * 'type': 'text', 'password', 'toggle', 'select', 'select2', 'switch', 'radioGroup'
+     * 'type': 'hidden', 'text', 'password', 'toggle', 'select', 'select2', 'selectTime', 'switch', 'radioGroup'
      * 'preprocess' : a function to call to process the value before rendering.
      * 'default' : the default value to use if a value is not specified
      */
@@ -37,7 +37,9 @@ class FormBuilder {
         // Render fields
         foreach ($this->_fields as $field_name => $field){
             $type = isset($field['type']) ? $field['type'] : "text";
-            if ($type == "text"){
+            if ($type == "hidden"){
+                $rendered_fields[$field_name] = $this->renderHiddenField($field_name);
+            } else if ($type == "text"){
                 $rendered_fields[$field_name] = $this->renderTextField($field_name);
             } else if ($type == "password") {
                 $rendered_fields[$field_name] = $this->renderPasswordField($field_name);
@@ -47,6 +49,8 @@ class FormBuilder {
                 $rendered_fields[$field_name] = $this->renderSelectField($field_name);
             } else if ($type == "select2") {
                 $rendered_fields[$field_name] = $this->renderSelect2Field($field_name);
+            } else if ($type == "selectTime") {
+                $rendered_fields[$field_name] = $this->renderSelectTimeField($field_name);
             } else if ($type == "switch") {
                 $rendered_fields[$field_name] = $this->renderSwitchField($field_name);
             } else if ($type == "radioGroup") {
@@ -59,6 +63,12 @@ class FormBuilder {
         }
             
         return replaceKeyHooks($rendered_fields, $result);
+    }
+    
+    private function renderHiddenField($field_name){
+        $field_data = $this->generateFieldData($field_name);
+        $result = "<input type='hidden' name='{{name}}' value='{{value}}' {{disabled}}>";
+        return replaceKeyHooks($field_data, $result);    
     }
     
     // Renders a text field with the specified name.
@@ -147,11 +157,10 @@ class FormBuilder {
             <label>{{label}}</label>
             <div class='input-group'>
               <span class='input-group-addon'>{{addon}}</span>
-              <select class='form-control' name='{{name}}' {{disabled}}>";
+              <select class='form-control' name='{{name}}' data-validate='{{validator_str}}' {{disabled}}>";
         
-        // Render choices (toggles)
+        // Render choices (options)
         foreach ($choices as $choice => $choice_label){
-            // Special trick for making readonly radio buttons: make one checked and the rest disabled
             if ($field_data['value'] == $choice){ 
                 $result .=  "<option value='$choice' selected>$choice_label</option>";
             } else {
@@ -170,8 +179,8 @@ class FormBuilder {
     // Renders a select2 field with the specified name.
     private function renderSelect2Field($field_name){
         $field_data = $this->generateFieldData($field_name);
-        
         $field = $this->_fields[$field_name];
+        $field_data['data_placeholder'] = isset($field['placeholder']) ? "data-placeholder='{$field['placeholder']}'": "";
         $choices = isset($field['choices']) ? $field['choices'] : array();
         
         $result = "
@@ -179,15 +188,26 @@ class FormBuilder {
             <label>{{label}}</label>
             <div class='input-group select2-bootstrap-prepend'>
               <span class='input-group-addon'>{{addon}}</span>
-              <select class='form-control select2' name='{{name}}' {{disabled}}>";
+              <select class='form-control select2' name='{{name}}' {{data_placeholder}} data-validate='{{validator_str}}' {{disabled}}>";
         
-        // Render choices (toggles)
-        foreach ($choices as $choice => $choice_label){
-            // Special trick for making readonly radio buttons: make one checked and the rest disabled
-            if ($field_data['value'] == $choice){ 
-                $result .=  "<option value='$choice' selected>$choice_label</option>";
+        // Required empty option for placeholders
+        if (isset($field['placeholder'])){
+            $result .= "<option></option>";
+        }
+        
+        // Render choices (options)
+        foreach ($choices as $choice_value => $choice){
+            $label = isset($choice['label']) ? $choice['label'] : $choice_value;
+            $data = isset($choice['data']) ? $choice['data'] : array();
+            // Render additional data fields, if any
+            $data_str = "";
+            foreach ($data as $name => $value){
+                $data_str .= "data-$name='$value' ";
+            }
+            if ($field_data['value'] == $choice_value){ 
+                $result .=  "<option value='$choice_value' $data_str selected>$label</option>";
             } else {
-                $result .=  "<option value='$choice'>$choice_label</option>";     
+                $result .=  "<option value='$choice_value' $data_str>$label</option>";     
             }	
         }
         
@@ -198,7 +218,25 @@ class FormBuilder {
         
         return replaceKeyHooks($field_data, $result);
     }      
-    
+
+    // Dropdown for selecting times
+    private function renderSelectTimeField($field_name){
+        $field = $this->_fields[$field_name];
+        $time_start = isset($field['time_start']) ? $field['time_start'] : "12:00 am";
+        $time_end = isset($field['time_end']) ? $field['time_end'] : "11:30 pm";
+        $time_increment = isset($field['time_increment']) ? $field['time_increment'] : 15;        
+        // Build time choices
+        $this->_fields[$field_name]['choices'] = array();
+        $range = range(strtotime($time_start),strtotime($time_end),$time_increment*60);
+        foreach($range as $time){
+            $time_val = date("g:i a",$time);
+            $this->_fields[$field_name]['choices'][$time_val] = [
+                'label' => $time_val
+                ];
+        }
+        return $this->renderSelect2Field($field_name);
+        
+    }
     private function renderSwitchField($field_name){
     
         $field_data = $this->generateFieldData($field_name);

@@ -176,6 +176,9 @@
                 <div class='col-sm-6'>
                     {{school}}
                 </div>
+                <div class='col-sm-6'>
+                    {{wakeup}}
+                </div>
             </div>
             <div class='row'>
                 <div class='col-sm-6'>
@@ -232,6 +235,18 @@
                 ],
                 'placeholder' => 'Email goes here'
             ],
+            'wakeup' => [
+                'type' => 'selectTime',
+                'label' => 'Wakeup Call',
+                'icon' => 'fa fa-clock-o',
+                'validator' => [
+                    'selected' => true,
+                    'label' => 'Wakeup Call'
+                ],
+                'time_start' => '5:00 am',
+                'time_end' => '12:00 pm',
+                'time_increment' => 30
+            ],    
             'title' => [
                 'type' => 'select2',
                 'label' => 'Title',
@@ -240,13 +255,27 @@
                     'label' => 'Title'
                 ],
                 'choices' => [
-                    'ta' => 'Teaching Assistant',
-                    'street_lord' => 'Street Lord',
-                    'adjunct' => 'Adjunct Instructor',
-                    'assistant' => 'Assistant Professor',
-                    'associate' => 'Associate Professor',
-                    'professor' => 'Professor',
-                    'emeritus' => 'Professor Emeritus'
+                    'ta' => [
+                        'label' => 'Teaching Assistant'
+                        ],
+                    'street_lord' => [
+                        'label' => 'Street Lord'
+                        ],
+                    'adjunct' => [
+                        'label' => 'Adjunct Instructor'
+                        ],
+                    'assistant' => [
+                        'label' => 'Assistant Professor'
+                        ],
+                    'associate' => [
+                        'label' => 'Associate Professor'
+                        ],
+                    'professor' => [
+                        'label' => 'Professor'
+                        ],
+                    'emeritus' => [
+                        'label' => 'Professor Emeritus'
+                        ]
                 ],
                 'default' => 'assistant'
             ],

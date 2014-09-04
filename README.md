@@ -96,7 +96,7 @@ In this example, the engine will look for a sub-array in each row named "names".
 
 ### Supports
 
-- text, password, toggle, select, [select2](https://ivaynberg.github.io/select2/), [bootstrapradio](https://github.com/alexweissman/bootstrapradio), and [bootstrap-switch](http://www.bootstrap-switch.org/) input controls
+- text, password, hidden, toggle, select, [select2](https://ivaynberg.github.io/select2/), selectTime, [bootstrapradio](https://github.com/alexweissman/bootstrapradio), and [bootstrap-switch](http://www.bootstrap-switch.org/) input controls
 - pre-populate field with values from an array.  Useful for forms that "update" some information.
 - fields can be hidden or disabled programmatically
 - default field values
@@ -139,7 +139,7 @@ $fields = [
     'field1' =>
         'name' => :field name attribute.  Default is array key (i.e. 'field1').     
         'label' => :Field label:,
-        'type' => :'text'|'password'|'toggle'|'select'|'select2'|'switch'|'radioGroup':,
+        'type' => :'hidden'|'text'|'password'|'toggle'|'select'|'select2'|'selectTime'|'switch'|'radioGroup':,
         'display' => :'show'|'hidden'|'disabled':,
         'icon' => :field add-on icon:,
         'icon_link' => :icon target link: (optional),
@@ -151,6 +151,9 @@ $fields = [
         'choices' => :array of options.  'toggle', 'select', 'select2', and 'radioGroup' types only.:
         'on' => :label for switches when they are turned on.  'switch' type only.:
         'off' => :label for switches when they are turned off.  'switch' type only.:
+        'time_start' => :a string representing the first time option ('selectTime' only):
+        'time_end' => :a string representing the last time option ('selectTime' only):
+        'time_increment' => :a string representing the increment between time options ('selectTime' only):
         ],
     'field2' => ...
 
@@ -184,6 +187,10 @@ echo $fb->render();
 
 ### Field types
 
+#### <code>hidden</code>
+
+Standard hidden input field.  Can have a name, value, and disabled status.
+
 #### <code>text</code>
 
 Standard input field with label.  Wrapped in `input_group`, then in `form_group`.
@@ -203,6 +210,10 @@ Dropdown menu with label, overlays the `select` input type.  Wrapped in `input_g
 #### <code>select2</code>
 
 [Select2](https://ivaynberg.github.io/select2/) searchable dropdown with label, overlays the `select` input type.  Wrapped in `input_group`, then in `form_group`.
+
+#### <code>selectTime</code>
+
+Searchable dropdown for picking a time of day.  Implemented using the [Select2](https://ivaynberg.github.io/select2/) plugin (included).  Wrapped in `input_group`, then in `form_group`.
 
 #### <code>switch</code>
 
@@ -236,6 +247,11 @@ Creates a button that is used for any other form action.  Gets the HTML5 button 
 Use the <code>hideable</code> class to make Bootstrap columns that will collapse when empty.  This is useful for creating templates for forms with buttons that appear or disappear in different contexts.
 
 ## Changelog
+
+### 0.1.3
+
+- Added the 'selectTime' and 'hidden' input types.
+- Added placeholders, data-* fields for options in select2 fields.
 
 ### 0.1.2
 
