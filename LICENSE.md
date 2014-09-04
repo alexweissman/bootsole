@@ -1,5 +1,3 @@
-<?php
-/***********
 bootsole, v0.1.3
 
 Copyright 2014 by Alex Weissman
@@ -22,18 +20,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
-**********/
-
-function replaceKeyHooks($data, $template){
-    foreach ($data as $key => $value){
-        if (gettype($value) != "array" && gettype($value) != "object") {
-            $find = '{{' . $key . '}}';
-            $template = str_replace($find, $value, $template);
-        }
-    }
-    return $template;
-}
-
-?>
