@@ -27,6 +27,7 @@ A PHP templating engine for rendering Bootstrap-themed, [Tablesorter](https://mo
 $columns = [
     'col1' =>
         'label' => :Column label:,
+        'display' => :'show'|'hidden':
         'sort' => :'asc'|'desc':,
         'sorter' => :'metatext'|'metanum':,
         'sort_field' => :field to sort on:,

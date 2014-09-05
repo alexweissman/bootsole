@@ -75,6 +75,10 @@ class TableBuilder {
             <table class='tablesorter table table-bordered table-hover table-striped tablesorter-bootstrap' data-sortlist='$initial_sort'>
                 <thead><tr>";
         foreach($this->_columns as $column_name => $column) {
+            $display = isset($column['display']) ? $column['display'] : "show";
+            if ($display == "hidden")
+                continue;
+            
             if (isset($column['sorter'])){
                 $sorter = 'sorter-' . $column['sorter'];
             } else {
@@ -127,7 +131,10 @@ class TableBuilder {
     
         $result = "<tr>";
          foreach($this->_columns as $column_name => $column) {
-             $result .= $this->renderCell($row_id, $column_name);
+            $display = isset($column['display']) ? $column['display'] : "show";
+            if ($display == "hidden")
+                continue;
+            $result .= $this->renderCell($row_id, $column_name);
          }
          
          // Build menu
