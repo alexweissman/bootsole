@@ -69,14 +69,14 @@ THE SOFTWARE.
                 return $( "input[name='" + btn_name + "']").val();
             } else {
                 $("button[name='" + btn_name + "'][value='" + new_val + "']").addClass('bootstrapradio-on');
-                return $( "input[name='" + btn_name + "']").val(new_val);
+                return $( "input[name='" + btn_name + "']").val(new_val).trigger('change');
             }
         },
         disabled : function(disabled) {
             var btn_name = this.attr('name');
             if (disabled === true) {
                 if ($( "input[name='" + btn_name + "']").val() == $(this).val()) {
-                    $( "input[name='" + btn_name + "']").val("");
+                    $( "input[name='" + btn_name + "']").val("").trigger('change');
                     $(this).attr("data-selected", "false");
                     $(this).removeClass('bootstrapradio-on');
                 }
@@ -115,7 +115,9 @@ THE SOFTWARE.
         }
 
         // Apply default classes
-        el.addClass('btn btn-xs bootstrapradio');
+        var size = typeof el.attr("data-size") !== 'undefined' ? el.attr("data-size") : "xs";
+        
+        el.addClass('btn btn-' + size + ' bootstrapradio');
         
         // Attach handler for clicking a choice     
         el.click(function() {
@@ -125,7 +127,7 @@ THE SOFTWARE.
             $("button[name='" + btn_name + "'].bootstrapradio-on").removeClass('bootstrapradio-on');
             el.addClass('bootstrapradio-on');
             // Store value in corresponding input field
-            $( "input[name='" + btn_name + "']").val(el.val());                  
+            $( "input[name='" + btn_name + "']").val(el.val()).trigger('change');                  
         });
     };
     

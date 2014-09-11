@@ -103,9 +103,11 @@ class FormBuilder {
         $field_data = $this->generateFieldData($field_name);
         
         $result = "
-            <div class='form-group {{hidden}}'>
-                <label>{{label}}</label>
-                <div class='input-group'>
+            <div class='form-group {{hidden}}'>";
+        if ($field_data['label'] !== null){
+            $result .= "<label>{{label}}</label>";
+        }        
+        $result .= "<div class='input-group'>
                     <span class='input-group-addon'>{{addon}}</span>
                     <input type='text' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>";
         if ($field_data['addon_end'])
@@ -304,10 +306,16 @@ class FormBuilder {
         
         // Render choices (buttons)
         foreach ($choices as $choice_value => $choice){
-            if ($field_data['value'] == $choice_value){ 
-                $result .=  "<button type='button' class='bootstrapradio' name='{{name}}' value='$choice_value' title='{$choice['label']}' {{disabled}} data-selected='true'><i class='{$choice['icon']}'></i></button> ";
+            if (isset($choice['size'])){
+                $size = $choice['size'];
             } else {
-                $result .=  "<button type='button' class='bootstrapradio' name='{{name}}' value='$choice_value' title='{$choice['label']}' {{disabled}} data-selected='false'><i class='{$choice['icon']}'></i></button> ";
+                $size = "xs";
+            }
+        
+            if ($field_data['value'] == $choice_value){ 
+                $result .=  "<button type='button' class='bootstrapradio' name='{{name}}' value='$choice_value' title='{$choice['label']}' {{disabled}} data-selected='true' data-size='$size'><i class='{$choice['icon']}'></i></button> ";
+            } else {
+                $result .=  "<button type='button' class='bootstrapradio' name='{{name}}' value='$choice_value' title='{$choice['label']}' {{disabled}} data-selected='false' data-size='$size'><i class='{$choice['icon']}'></i></button> ";
             }	
         }
         
@@ -368,7 +376,7 @@ class FormBuilder {
         $field_data = array();
         
         $field_data['name'] = $field_name;
-        $field_data['label'] = isset($field['label']) ? $field['label'] : $field_name;
+        $field_data['label'] = isset($field['label']) ? $field['label'] : null;
         $field_data['placeholder'] = isset($field['placeholder']) ? $field['placeholder'] : "";
         $field_data['addon_end'] = isset($field['addon_end']) ? $field['addon_end'] : null;
         
