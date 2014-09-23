@@ -1,0 +1,53 @@
+{
+    "user_name" : {
+        "validators" : {
+            "length" : {
+                "min" : 1,
+                "max" : 50,
+                "message" : "'Username' must be between 1 and 50 characters long."
+            }
+        }
+    },
+    "display_name" : {
+        "validators" : {
+            "length" : {
+                "min" : 1,
+                "max" : 50,
+                "message" : "'Display name' must be between 1 and 50 characters long."
+            },
+            "required" : {
+                "message" : "'Display name' is required."
+            }
+        }
+    },          
+    "email" : {
+        "validators" : {
+            "length" : {
+                "min" : 1,
+                "max" : 150,
+                "message" : "'Email' must be between 1 and 150 characters long."
+            },
+            "email" : {
+                "message" : "'Email' must be a valid email address."
+            }
+        }
+    },
+    "title" : {
+        "validators" : {
+            "length" : {
+                "min" : 1,
+                "max" : 150,
+                "message" : "'Title' must be between 1 and 150 characters long."
+            }
+        }
+    },
+    "password" : {
+        "validators" : {
+            "length" : {
+                "min" : 8,
+                "max" : 50,
+                "message" : "'Password' must be between 8 and 50 characters long."
+            }
+        }      
+    }
+}

@@ -1,4 +1,4 @@
-# Bootsole 0.1.3
+# Bootsole 0.1.4
 
 ### By Alex Weissman
 
@@ -103,7 +103,7 @@ In this example, the engine will look for a sub-array in each row named "names".
 - default field values
 - field placeholders and icons
 - preprocessor functions (PHP) for formatting data in certain fields
-- field validation info
+- field validation via [bootstrapvalidator](http://bootstrapvalidator.com/)
 - customizable form buttons, with button types for submitting the form, launching and canceling modals
 
 ### Screenshot
@@ -147,7 +147,6 @@ $fields = [
         'addon_end' => :addon content to be placed after this field:,
         'placeholder' => :field placeholder:,
         'default' => :default value for field if empty:,
-        'validator' => :validation array (UserFrosting only, will soon be replaced with the Bootstrapvalidator plugin):,
         'preprocess' => :PHP function to preprocess field values:,
         'choices' => :array of options.  'toggle', 'select', 'select2', and 'radioGroup' types only.:
         'on' => :label for switches when they are turned on.  'switch' type only.:
@@ -181,7 +180,10 @@ $data = [
 
 ];
 
-$fb = new FormBuilder($template, $fields, $buttons, $data);
+// Load validation schema
+$vs = new ValidationSchema("validators/philosophers.json");
+
+$fb = new FormBuilder($template, $fields, $buttons, $data, $vs->clientRules());
 echo $fb->render();
 
 ````
@@ -243,11 +245,42 @@ Creates a button that is used to cancel a modal.  Useful for forms that are cont
 
 Creates a button that is used for any other form action.  Gets the HTML5 button attribute `type="button"`.
 
+### Validation schema and validation rules
+
+Bootsole can load validation schema information from a JSON file using the ValidationSchema class.  For example,
+
+````
+$vs = new ValidationSchema("validators/philosophers.json");
+````
+
+will load validation information from the 'philosophers' schema.  This can then be exported as [bootstrapValidator](http://bootstrapvalidator.com/) `data-*` attributes, which tell the bootstrapValidator plugin how to validate the fields.
+
+````
+$validation_rules = $vs->clientRules();
+````
+
+This will return an array of validation strings, keyed by the field name.  For example, they might look something like:
+
+````
+Array
+(
+    [foo] => data-bv-notempty=true data-bv-notempty-message="foo is required" data-bv-stringlength=true data-bv-stringlength-min="10" data-bv-stringlength-max="12" data-bv-stringlength-message="foo must be between 10 and 12 characters" data-bv-identical=true data-bv-identical-field="bar" data-bv-identical-message="foo must be the same as 'bar'" 
+    [bar] => data-bv-choice=true data-bv-choice-min="1" data-bv-choice-message="bar must be accepted" data-bv-integer=true data-bv-integer-message="bar must be an integer (0-9)" data-bv-greaterthan=true data-bv-greaterthan-value="10" data-bv-greaterthan-inclusive="true" data-bv-greaterthan-message="bar must be at least 10" data-bv-identical=true data-bv-identical-field="foo" data-bv-identical-message="bar must be the same as 'foo'" 
+)
+````
+
+You can then pass these rules into the last parameter of the FormBuilder constructor, and they will be automatically added to the corresponding fields.
+
+
 ## CSS
 
 Use the <code>hideable</code> class to make Bootstrap columns that will collapse when empty.  This is useful for creating templates for forms with buttons that appear or disappear in different contexts.
 
 ## Changelog
+
+### 0.1.4
+
+- Switched over to BootstrapValidator and began implementing validation schema
 
 ### 0.1.3
 
@@ -269,6 +302,7 @@ Use the <code>hideable</code> class to make Bootstrap columns that will collapse
 - jQuery 1.10.2
 - Bootstrap 3.0.2
 - Tablesorter 2.17.7 with the pager and filter widgets
+- BootstrapValidator v0.5.1
 - FontAwesome 4.1
 - Bootstrap Switch 3
 - Select2 3.5.1

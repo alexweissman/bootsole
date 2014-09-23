@@ -29,5 +29,12 @@ $(document).ready(function() {
     
     // Initialize select2 dropdowns
     $('.select2').select2();
-    
+
+    // Initialize bootstrapvalidator and validate the form immediately
+    $('form').bootstrapValidator({
+        live: 'enabled',
+        message: 'This value is not valid',
+        submitButtons: 'button[type="submit"]'
+    }).bootstrapValidator('validate');
+        
 });

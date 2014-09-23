@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/tablesorter/theme.bootstrap.css">
   <link rel="stylesheet" href="css/tablesorter/jquery.tablesorter.pager.css">
   <link rel="stylesheet" href="css/bootstrap-custom.css">
+  <link rel="stylesheet" href="css/bootstrapValidator.min.css">
 
 </head>
 <body>
@@ -29,7 +30,8 @@
         
         require_once('table_builder.php');
         require_once('form_builder.php');
-
+        require_once('validation.php');
+        
         // Table Demo
         $columns = [
             'info' =>  [
@@ -205,21 +207,11 @@
                 'type' => 'text',
                 'label' => 'Username',
                 'display' => 'disabled',
-                'validator' => [
-                    'minLength' => 1,
-                    'maxLength' => 25,
-                    'label' => 'Username'
-                ],
                 'placeholder' => 'Please enter the user name'
             ],
             'display_name' => [
                 'type' => 'text',
                 'label' => 'Display Name',
-                'validator' => [
-                    'minLength' => 1,
-                    'maxLength' => 50,
-                    'label' => 'Display name'
-                ],
                 'placeholder' => 'Please enter the display name'
             ],          
             'email' => [
@@ -227,22 +219,12 @@
                 'label' => 'Email',
                 'icon' => 'fa fa-envelope',
                 'icon_link' => 'mailto: {{value}}',
-                'validator' => [
-                    'minLength' => 1,
-                    'maxLength' => 150,
-                    'email' => true,
-                    'label' => 'Email'
-                ],
                 'placeholder' => 'Email goes here'
             ],
             'wakeup' => [
                 'type' => 'selectTime',
                 'label' => 'Wakeup Call',
                 'icon' => 'fa fa-clock-o',
-                'validator' => [
-                    'selected' => true,
-                    'label' => 'Wakeup Call'
-                ],
                 'time_start' => '5:00 am',
                 'time_end' => '12:00 pm',
                 'time_increment' => 30
@@ -250,10 +232,6 @@
             'title' => [
                 'type' => 'select2',
                 'label' => 'Title',
-                'validator' => [
-                    'selected' => true,
-                    'label' => 'Title'
-                ],
                 'choices' => [
                     'ta' => [
                         'label' => 'Teaching Assistant'
@@ -284,10 +262,6 @@
                 'label' => 'Beard',
                 'icon' => 'fa fa-trophy',
                 'display' => 'disabled',
-                'validator' => [
-                    'selected' => true,
-                    'label' => 'Beard'
-                ],
                 'choices' => [
                     'fluffy' => 'Fluffy',
                     'scraggly' => 'Scraggly',
@@ -299,10 +273,6 @@
                 'type' => 'select',
                 'label' => 'Favorite Polyhedron',
                 'icon' => 'fa fa-cubes',
-                'validator' => [
-                    'selected' => true,
-                    'label' => 'Favorite Polyhedron'
-                ],
                 'choices' => [
                     'tetrahedron' => 'Tetrahedron',
                     'cube' => 'Cube',
@@ -314,12 +284,7 @@
             'password' => [
                 'type' => 'password',
                 'label' => 'Password',
-                'icon' => 'fa fa-key',
-                'validator' => [
-                    'minLength' => 8,
-                    'maxLength' => 50,
-                    'label' => 'Password'
-                ]
+                'icon' => 'fa fa-key'
             ],
             'tenure' => [
                 'type' => 'switch',
@@ -386,7 +351,10 @@
             ]       
         ];
             
-        $fb = new FormBuilder($template, $fields, $buttons, $data);
+        // Load validation schema
+        $vs = new ValidationSchema("validators/philosophers.json");
+        
+        $fb = new FormBuilder($template, $fields, $buttons, $data, $vs->clientRules());
         echo $fb->render();
         
         ?>
@@ -402,6 +370,7 @@
     <script src="js/tablesorter/tables.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.pager.min.js"></script>
     <script src="js/tablesorter/jquery.tablesorter.widgets.min.js"></script>
+    <script src="js/bootstrapValidator.min.js"></script>
     <script src="js/bootsole.js"></script>
   
 </body>

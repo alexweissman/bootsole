@@ -1,7 +1,7 @@
 <?php
 /**********
 
-bootsole, v0.1.3
+bootsole, v0.1.4
 
 Copyright 2014 by Alex Weissman
 
@@ -49,14 +49,17 @@ class FormBuilder {
     
     protected $_buttons = array();
     
+    protected $_validators = array();
+    
     protected $_template = "";
     
-    public function __construct($template, $fields = array(), $buttons = array(), $data = array()) {
+    public function __construct($template, $fields = array(), $buttons = array(), $data = array(), $validators = array()) {
         $this->_fields = $fields;
         $this->_buttons = $buttons;
         $this->_data = $data;
         $this->_template = $template;
-    }
+        $this->_validators = $validators;
+        }
     
     public function render(){
         $result = $this->_template;
@@ -94,7 +97,7 @@ class FormBuilder {
     
     private function renderHiddenField($field_name){
         $field_data = $this->generateFieldData($field_name);
-        $result = "<input type='hidden' name='{{name}}' value='{{value}}' {{disabled}}>";
+        $result = "<input type='hidden' name='{{name}}' value='{{value}}' {{validator}} {{disabled}}>";
         return replaceKeyHooks($field_data, $result);    
     }
     
@@ -109,7 +112,7 @@ class FormBuilder {
         }        
         $result .= "<div class='input-group'>
                     <span class='input-group-addon'>{{addon}}</span>
-                    <input type='text' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>";
+                    <input type='text' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' {{validator}} {{disabled}}>";
         if ($field_data['addon_end'])
             $result .= "<span class='input-group-addon'>{{addon_end}}</span>";
         $result .= "
@@ -128,7 +131,7 @@ class FormBuilder {
                 <label>{{label}}</label>
                 <div class='input-group'>
                     <span class='input-group-addon'>{{addon}}</span>
-                    <input type='password' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' data-validate='{{validator_str}}' {{disabled}}>";
+                    <input type='password' class='form-control' name='{{name}}' autocomplete='off' value='{{value}}' placeholder='{{placeholder}}' {{validator}} {{disabled}}>";
         if ($field_data['addon_end'])
             $result .= "<span class='input-group-addon'>{{addon_end}}</span>";                    
         $result .= "
@@ -157,11 +160,11 @@ class FormBuilder {
             // Special trick for making readonly radio buttons: make one checked and the rest disabled
             if ($field_data['value'] == $choice){ 
                 $result .=  "<label class='btn btn-primary active'>
-                  <input class='form-control' type='radio' name='{{name}}' value='$choice' data-validate='{{validator_str}}' checked> $choice_label
+                  <input class='form-control' type='radio' name='{{name}}' value='$choice' {{validator}} checked> $choice_label
                   </label>";
             } else {
                 $result .=  "<label class='btn btn-primary' {{disabled}}>
-                  <input class='form-control' type='radio' name='{{name}}' value='$choice' data-validate='{{validator_str}}' {{disabled}}> $choice_label
+                  <input class='form-control' type='radio' name='{{name}}' value='$choice' {{validator}} {{disabled}}> $choice_label
                   </label>";     
             }	
         }
@@ -186,7 +189,7 @@ class FormBuilder {
             <label>{{label}}</label>
             <div class='input-group'>
               <span class='input-group-addon'>{{addon}}</span>
-              <select class='form-control' name='{{name}}' data-validate='{{validator_str}}' {{disabled}}>";
+              <select class='form-control' name='{{name}}' {{validator}} {{disabled}}>";
         
         // Render choices (options)
         foreach ($choices as $choice => $choice_label){
@@ -217,7 +220,7 @@ class FormBuilder {
             <label>{{label}}</label>
             <div class='input-group select2-bootstrap-prepend'>
               <span class='input-group-addon'>{{addon}}</span>
-              <select class='form-control select2' name='{{name}}' {{data_placeholder}} data-validate='{{validator_str}}' {{disabled}}>";
+              <select class='form-control select2' name='{{name}}' {{data_placeholder}} {{validator}} {{disabled}}>";
         
         // Required empty option for placeholders
         if (isset($field['placeholder'])){
@@ -399,8 +402,7 @@ class FormBuilder {
             $field_data['disabled'] = "";            
         }
 
-        $validator = isset($field['validator']) ? $field['validator'] : array();
-        $field_data['validator_str'] = json_encode($validator, JSON_FORCE_OBJECT);
+        $field_data['validator'] = isset($this->_validators[$field_name]) ? $this->_validators[$field_name] : "";
         
         if (isset($this->_data[$field_name]))
             $field_data['value'] = $this->_data[$field_name];

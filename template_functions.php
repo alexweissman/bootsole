@@ -1,6 +1,6 @@
 <?php
 /***********
-bootsole, v0.1.3
+bootsole, v0.1.4
 
 Copyright 2014 by Alex Weissman
 
