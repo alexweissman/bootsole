@@ -30,12 +30,16 @@ THE SOFTWARE.
 class ValidationSchema {
 
     protected $_schema = array();
+    protected $_locale = "";
 
     // Load schema from a file
-    public function __construct($file) {
+    public function __construct($file, $locale = "en_US") {
         $this->_schema = json_decode(file_get_contents($file),true);
-        if ($this->_schema === null)
+        if ($this->_schema === null) {
             error_log(json_last_error());
+            // Throw error
+        }
+        $this->_locale = $locale;
     }
 
     public function clientRules(){
@@ -48,44 +52,49 @@ class ValidationSchema {
                 // Required validator
                 if ($validator_name == "required"){
                     $prefix = "data-bv-notempty";
-                    $field_rules .= "$prefix=true ";
-                    if (isset($validator['message']))
-                        $field_rules .= "$prefix-message=\"{$validator['message']}\" ";                        
+                    $field_rules = $this->html5Attributes($validator, $prefix);
                 }
                 // String length validator
                 if ($validator_name == "length"){
                     $prefix = "data-bv-stringlength";
-                    $field_rules .= "$prefix=true ";
+                    $field_rules = $this->html5Attributes($validator, $prefix);
                     if (isset($validator['min']))
                         $field_rules .= "$prefix-min={$validator['min']} ";
                     if (isset($validator['max']))
                         $field_rules .= "$prefix-max={$validator['max']} ";
-                    if (isset($validator['message']))
-                        $field_rules .= "$prefix-message=\"{$validator['message']}\" ";                        
+                }
+                // Integer validator
+                if ($validator_name == "integer"){
+                    $prefix = "data-bv-integer";
+                    $field_rules = $this->html5Attributes($validator, $prefix);   
+                }                  
+                // Choice validator
+                if ($validator_name == "choice"){
+                    $prefix = "data-bv-choice";
+                    $field_rules = $this->html5Attributes($validator, $prefix);
+                    if (isset($validator['min']))
+                        $field_rules .= "$prefix-min={$validator['min']} ";
+                    if (isset($validator['max']))
+                        $field_rules .= "$prefix-max={$validator['max']} ";                    
                 }
                 // Email validator
                 if ($validator_name == "email"){
                     $prefix = "data-bv-emailaddress";
-                    $field_rules .= "$prefix=true ";
-                    if (isset($validator['message']))
-                        $field_rules .= "$prefix-message=\"{$validator['message']}\" ";                        
+                    $field_rules = $this->html5Attributes($validator, $prefix); 
                 }            
                 // Equals validator
                 if ($validator_name == "equals"){
                     $prefix = "data-bv-identical";
-                    $field_rules .= "$prefix=true ";
                     if (isset($validator['field'])){
                         $field_rules .= "$prefix-field={$validator['field']} ";
                     } else {
                         return null;    // TODO: throw exception
                     }
+                    
+                    $field_rules = $this->html5Attributes($validator, $prefix);
                     // Generates validator for matched field
-                    $implicit_rules[$validator['field']] = "$prefix=true ";
+                    $implicit_rules[$validator['field']] = $field_rules;
                     $implicit_rules[$validator['field']] .= "$prefix-field=$field_name ";
-                    if (isset($validator['message'])){
-                        $field_rules .= "$prefix-message=\"{$validator['message']}\" ";
-                        $implicit_rules[$validator['field']] .= "$prefix-message=\"{$validator['message']}\" ";
-                    }
                 }
             }
 
@@ -98,5 +107,21 @@ class ValidationSchema {
         }
         
         return $client_rules;    
+    }
+    
+    public function html5Attributes($validator, $prefix){
+        $attr = "$prefix=true ";
+        if (isset($validator['messages'])){
+            $msg = "";
+            if (isset($validator['messages'][$this->_locale])){
+                $msg = $validator['messages'][$this->_locale];
+            } else if (isset($validator['messages']["default"])){
+                $msg = $validator['messages']["default"];
+            } else {
+                return $attr;
+            }
+            $attr .= "$prefix-message=\"$msg\" ";    
+        }
+        return $attr;
     }
 }

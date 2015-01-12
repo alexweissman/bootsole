@@ -1,0 +1,37 @@
+<?php
+
+// Set true for running unminified/merged CSS, false to run minified CSS.  Don't forget to reminify your CSS!
+defined("CSS_DEV")
+	or define("CSS_DEV", true);
+
+// Set true for running unminified/merged JS, false to run minified JS.  Don't forget to reminify your JS!
+defined("JS_DEV")
+	or define("JS_DEV", true);
+
+/***** Document (URL) paths ******/
+defined("PUBLIC_ROOT")
+    or define("PUBLIC_ROOT", "/bootsole/");
+
+/***** File (local) paths ******/
+
+defined("RESOURCES_ROOT")
+    or define("RESOURCES_ROOT", realpath(dirname(__FILE__)));
+
+defined("TEMPLATES_PATH")
+    or define("TEMPLATES_PATH", RESOURCES_ROOT . "/" . "templates");
+
+defined("PAGE_INCLUDES_SCHEMA_PATH")
+    or define("PAGE_INCLUDES_SCHEMA_PATH", RESOURCES_ROOT . "/" . "schema/includes/includes.json");
+
+defined("SITE_TITLE")
+    or define("SITE_TITLE", "Bootsole");
+    
+// Set true to show missing (undefined) hooks in templates when rendering, false to replace them with an empty string
+defined("OPTION_SHOW_MISSING_HOOKS")
+	or define("OPTION_SHOW_MISSING_HOOKS", false);
+    
+require_once("resources/htmlbuilder/htmlbuilder.php");
+require_once("resources/htmlbuilder/pagebuilder.php");
+require_once("resources/htmlbuilder/navbuilder.php");
+require_once("resources/htmlbuilder/tablebuilder.php");
+?>

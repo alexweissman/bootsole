@@ -261,13 +261,11 @@
                 'type' => 'toggle',
                 'label' => 'Beard',
                 'icon' => 'fa fa-trophy',
-                'display' => 'disabled',
                 'choices' => [
                     'fluffy' => 'Fluffy',
                     'scraggly' => 'Scraggly',
                     'pointy' => 'Pointy'
-                ],
-                'default' => 'fluffy'
+                ]
             ],
             'fav_polyhedron' => [
                 'type' => 'select',
@@ -322,10 +320,8 @@
         $data = [
             'user_name' => "Bob",
             'email' => "bob@bob.com",
-            'beard' => "scraggly",
             'tenure' => true,
-            'shopping_bags' => false,
-            'school' => 'futurist'
+            'shopping_bags' => false
         ];
         
         $buttons = [
