@@ -9,54 +9,54 @@ $home = new NavItemBuilder([
     ]);
 
 $nb = new NavbarBuilder([
-        "brand_label" => "Bootsole is Great!",
-        "brand_url" => "http://github.com/alexweissman/bootsole",
-        "@components" => [
-            "btn1" => [
-                "@type" => "button",
-                "styles" => "btn-danger",
-                "label" => "Self-Destruct!"
-            ],
-            "search-form" => [
-                "@type" => "form",
-                "@align" => "right",
-                "form" => '<form role="search">
-                    <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Search">
-                    </div>*
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>'
-            ],            
-            // Declaring a nav group, mixed arrays and objects
-            "main-menu" => [
-                "@type" => "nav",
-                "@align" => "right",
-                "@items" => [
-                    "home" => $home,
-                    "about" => [
-                        "label" => "About",
-                        "url" => PUBLIC_ROOT. "about"
-                    ],
-                    "courses" => [
-                        "active" => "active",
-                        "label" => "Courses",
-                        "url" => PUBLIC_ROOT . "courses",
-                        "@position" => "right",
-                        "@items" => [
-                            "algebra" => [
-                                "label" => "Algebra",
-                                "url" => PUBLIC_ROOT. "courses/algebra"
-                            ],
-                            "calculus" => [
-                                "label" => "Calculus",
-                                "url" => PUBLIC_ROOT. "courses/calculus"
-                            ]
+    "brand_label" => "Bootsole is Great!",
+    "brand_url" => "http://github.com/alexweissman/bootsole",
+    "@components" => [
+        "btn1" => [
+            "@type" => "button",
+            "styles" => "btn-danger",
+            "label" => "Self-Destruct!"
+        ],
+        "search-form" => [
+            "@type" => "form",
+            "@align" => "right",
+            "form" => '<form role="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Search">
+                </div>*
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>'
+        ],            
+        // Declaring a nav group, mixed arrays and objects
+        "main-menu" => [
+            "@type" => "nav",
+            "@align" => "right",
+            "@items" => [
+                "home" => $home,
+                "about" => [
+                    "label" => "About",
+                    "url" => PUBLIC_ROOT. "about"
+                ],
+                "courses" => [
+                    "active" => "active",
+                    "label" => "Courses",
+                    "url" => PUBLIC_ROOT . "courses",
+                    "@position" => "right",
+                    "@items" => [
+                        "algebra" => [
+                            "label" => "Algebra",
+                            "url" => PUBLIC_ROOT. "courses/algebra"
+                        ],
+                        "calculus" => [
+                            "label" => "Calculus",
+                            "url" => PUBLIC_ROOT. "courses/calculus"
                         ]
                     ]
                 ]
             ]
         ]
-    ]);
+    ]
+]);
 
 // You can add a component like this, too
 

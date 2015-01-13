@@ -84,9 +84,9 @@ class NavbarBuilder extends HtmlBuilder {
     }
 }
 
-// A generic nav component.  Should be abstract.
+// A generic nav component.
 
-class NavComponentBuilder extends HtmlBuilder {
+abstract class NavComponentBuilder extends HtmlBuilder {
     protected $_align = "";
     
     public function __construct($content = [], $template_file = null, $options = []){

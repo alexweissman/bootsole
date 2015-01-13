@@ -134,9 +134,10 @@ class HtmlBuilder {
         
             // Skip undefined hooks (either display placeholder, or replace with blank space)
             if (!isset($content[$hook])){
-                error_log("The hook '$hook' has not been defined in the contents.");
-                if (isset($this->_options['show_missing_hooks']) && $this->_options['show_missing_hooks'] == true)
+                if (isset($this->_options['show_missing_hooks']) && $this->_options['show_missing_hooks'] == true) {
                     $replacements[] = "{{$hook}}";
+                    error_log("The hook '$hook' has not been defined in the contents.");
+                }
                 else
                     $replacements[] = "";
                 continue;

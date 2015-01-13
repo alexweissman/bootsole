@@ -367,11 +367,15 @@ For more information about minified Javascript and CSS, see [Minification](https
 
 #### `@header`
 
-Objects of type `PageHeaderBuilder` are used to represent the `<head>` block of a page.  They have one directive, `@css_includes`, which represent the manifest group to be used in rendering the CSS.  Typically there is no need to specify this directive explicitly - `PageBuilder` will do it automatically for you when it constructs the page! 
+Objects of type `PageHeaderBuilder` are used to represent the `<head>` block of a page.  `PageBuilder` will look for a special placeholder in the page template, `_header`, to insert the rendered header.  **Therefore, any custom templates you write for `PageBuilder` should have a `_header` placeholder!**
+
+`PageHeaderBuilder` objects themselves have one directive, `@css_includes`, which represent the manifest group to be used in rendering the CSS.  Typically there is no need to specify this directive explicitly - `PageBuilder` will do it automatically for you when it constructs the page! 
 
 #### `@footer`
 
-Objects of type `PageFooterBuilder` are used to represent the `<footer>` block of a page.  They have one directive, `@js_includes`, which represent the manifest group to be used in rendering the JS.  Typically there is no need to specify this directive explicitly - `PageBuilder` will do it automatically for you when it constructs the page! 
+Objects of type `PageFooterBuilder` are used to represent the `<footer>` block of a page.  `PageBuilder` will look for a special placeholder in the page template, `_footer`, to insert the rendered footer.
+
+They have one directive, `@js_includes`, which represent the manifest group to be used in rendering the JS.  Typically there is no need to specify this directive explicitly - `PageBuilder` will do it automatically for you when it constructs the page! 
 
 #### Example
 
@@ -414,6 +418,7 @@ echo $pb->render();
 ```
 
 **Output:**
+
 ![PageBuilder](/screenshots/bootsole-page-1.png "PageBuilder")
 
 ```
@@ -462,6 +467,94 @@ echo $pb->render();
 ```
 
 ### NavbarBuilder
+
+The `NavbarBuilder` class constructs a Bootstrap [navbar](http://getbootstrap.com/components/#navbar) for a page.  A navbar contains a list of components, specified by the `@components` directive:
+
+```
+$nb = new NavbarBuilder([
+    "brand_label" => "Bootsole is Great!",
+    "brand_url" => "http://github.com/alexweissman/bootsole",
+    "@components" => [
+        "destroy" => [
+            "@type" => "button",
+            "styles" => "btn-danger",
+            "label" => "Self-Destruct!"
+        ],          
+        // Implicitly declaring a NavBuilder object
+        "main-menu" => [
+            "@type" => "nav",
+            "@align" => "right",
+            "@items" => [
+                "home" =>  [
+                    "active" => "active",
+                    "label" => "Home",
+                    "url" => PUBLIC_ROOT
+                ],
+                "about" => [
+                    "label" => "About",
+                    "url" => PUBLIC_ROOT. "about"
+                ],
+                "contact" => [
+                    "label" => "Contact",
+                    "url" => PUBLIC_ROOT. "contact"
+                ]
+            ]
+        ]
+    ]
+]);
+```
+**Outputs:**
+
+![NavbarBuilder](/screenshots/bootsole-navbar-1.png "NavbarBuilder")
+
+```
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav-default" aria-expanded="false" aria-controls="main-nav-default">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+         <a class='navbar-brand' href='http://github.com/alexweissman/bootsole'>Bootsole is Great!</a>
+        </div>
+        <div id="main-nav-default" class="navbar-collapse collapse">
+            <button type='button' class='btn btn-danger navbar-btn '>Self-Destruct!</button>
+            <ul class='nav navbar-nav navbar-right'><li class='active'><a href='/bootsole/'>Home</a></li>
+                <li class=''><a href='/bootsole/about'>About</a></li>
+                <li class=''><a href='/bootsole/contact'>Contact</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+```
+
+The default navbar is a [fixed top navbar](http://getbootstrap.com/components/#navbar-fixed-top) specified in `templates/navs/main-nav-default`, but you may adapt this template to your own design needs.
+
+####`@components`
+
+`NavbarBuilder` currently supports the following types of Bootstrap components:
+
+- [Navs](http://getbootstrap.com/components/#nav) via the `NavBuilder` class.
+- [Forms](http://getbootstrap.com/components/#navbar-forms) via the `NavFormBuilder` class.
+- [Buttons](http://getbootstrap.com/components/#navbar-buttons) via the `NavButtonBuilder` class
+- [Text](http://getbootstrap.com/components/#navbar-text) via the `NavTextBuilder` class
+- [Links](http://getbootstrap.com/components/#navbar-links) via the `NavLinkBuilder` class
+
+Each component is built off of the abstract `NavComponentBuilder` class.  To declare a component implicitly, rather than explicitly defining `NavBuilder`, `NavFormBuilder`, etc objects, use an array containing the `@type` directive:
+
+| @type  | object created   |
+| ------ | ---------------- |
+| nav    | NavBuilder       |
+| form   | NavFormBuilder   |
+| button | NavButtonBuilder |
+| text   | NavTextBuilder   |
+| link   | NavLinkBuilder   |
+
+
+
 
 
 ### TableBuilder
