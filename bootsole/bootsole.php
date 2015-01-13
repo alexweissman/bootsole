@@ -14,14 +14,17 @@ defined("PUBLIC_ROOT")
 
 /***** File (local) paths ******/
 
+defined("LOCAL_ROOT")
+	or define ("LOCAL_ROOT", realpath(dirname(__FILE__)."/..") . "/");
+
 defined("RESOURCES_ROOT")
-    or define("RESOURCES_ROOT", realpath(dirname(__FILE__)));
+    or define("RESOURCES_ROOT", realpath(dirname(__FILE__)) . "/");
 
 defined("TEMPLATES_PATH")
-    or define("TEMPLATES_PATH", RESOURCES_ROOT . "/" . "templates");
+    or define("TEMPLATES_PATH", RESOURCES_ROOT . "templates/");
 
 defined("PAGE_INCLUDES_SCHEMA_PATH")
-    or define("PAGE_INCLUDES_SCHEMA_PATH", RESOURCES_ROOT . "/" . "schema/includes/includes.json");
+    or define("PAGE_INCLUDES_SCHEMA_PATH", RESOURCES_ROOT . "schema/pages/pages.json");
 
 defined("SITE_TITLE")
     or define("SITE_TITLE", "Bootsole");
@@ -30,8 +33,8 @@ defined("SITE_TITLE")
 defined("OPTION_SHOW_MISSING_HOOKS")
 	or define("OPTION_SHOW_MISSING_HOOKS", false);
     
-require_once("resources/htmlbuilder/htmlbuilder.php");
-require_once("resources/htmlbuilder/pagebuilder.php");
-require_once("resources/htmlbuilder/navbuilder.php");
-require_once("resources/htmlbuilder/tablebuilder.php");
+require_once(RESOURCES_ROOT . "htmlbuilder/htmlbuilder.php");
+require_once(RESOURCES_ROOT . "htmlbuilder/pagebuilder.php");
+require_once(RESOURCES_ROOT . "htmlbuilder/navbuilder.php");
+require_once(RESOURCES_ROOT . "htmlbuilder/tablebuilder.php");
 ?>

@@ -93,7 +93,7 @@ class HtmlBuilder {
     }
     
     protected function loadTemplate($path){
-        $template = file_get_contents(TEMPLATES_PATH . "/" . $path);
+        $template = file_get_contents(TEMPLATES_PATH . $path);
             
         //Check to see if we can access the file / it has some contents
         if(!$template || empty($template)) {

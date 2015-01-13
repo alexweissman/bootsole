@@ -1,6 +1,6 @@
 <?php
 
-require_once("resources/config.php");
+require_once("bootsole/bootsole.php");
 
 // Declaring a menu item OOPishly
 $home = new NavItemBuilder([
@@ -84,37 +84,23 @@ $header_content = [
     "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
 ];
 
-// Can specify 'header' as an object...
-$header = new HtmlBuilder($header_content, "pages/headers/header-default.html");
-
 $content = [
     //"header" => $header,
     // ...or as an array...
-    /*
-    "header" => [
-        "@source" => "pages/headers/header-default.html",
-        "@content" => $header_content
-    ],
-    */
+    "@header" => $header_content,
+    "@name" => "test",
     "main-nav" => $nb,
     "heading_main" => "Welcome to Bootsole",
     "content" => "Hey, I'm the content!",
-    "footer" => [
+    "@footer" => [
         "@source" => "pages/footers/footer-default.html",
         "@content" => []
     ]
 ];
 
-$pb = new PageBuilder("test", $content, "pages/page-jumbotron.html");
+$pb = new PageBuilder($content, "pages/page-jumbotron.html");
 // ...or set it later!
 //$pb->header($header);
-
-// Yup, you can use an array here too...
-$pb->header([
-        "@source" => "pages/headers/header-default.html",
-        "@content" => $header_content
-    ]);
-
 
 // Build a dropdown:
 $dropdown_content = [

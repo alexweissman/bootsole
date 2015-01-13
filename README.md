@@ -276,6 +276,8 @@ Glad you asked - read on!
 Bootsole comes with many classes, called **components**, that extend the basic `HtmlBuilder` class for additional functionality.
 
 - PageBuilder
+- PageHeaderBuilder
+- PageFooterBuilder
 - NavbarBuilder
 - NavComponentBuilder
 - NavBuilder
@@ -291,6 +293,173 @@ Bootsole comes with many classes, called **components**, that extend the basic `
 
 ### PageBuilder
 
+The `PageBuilder` class builds a fully renderable HTML document.  This will usually be your "top-level" templating object when developing websites and web applications.  A `PageBuilder` object, in addition to the user-defined placeholders, accepts four directives: `@name`, `@schema`, `@header`, and `@footer`.
+
+#### `@name`
+Every page must have a unique name.  This is used to reference the page, for example, when using the `PageSchema` class to automatically include relevant CSS and JS files.
+
+#### `@schema`
+The `@schema` directive takes a path to a JSON schema file.  The schema file for pages consists of groups of pages, called **manifests**, and a corresponding list of paths to javascript and css files (relative to the `LOCAL_ROOT` directory):
+
+```
+{
+    "terran" : {
+        "pages": [
+            "marine",
+            "firebat",
+            "ghost"
+        ],
+        "css": [
+            "css/bootstrap-3.3.1.css",
+            "css/font-awesome.min.css",
+            "css/terran.css"
+        ],
+        "js": [
+            "js/jquery-1.10.2.min.js",
+            "js/bootstrap-3.3.1.js"
+            ],
+        "min_css": "css/min/terran.min.css",
+        "min_js": "js/min/terran.min.js"    
+    },
+    "zerg" : {
+        "pages": [
+            "zergling",
+            "hydralisk",
+            "ultralisk"
+        ],
+        "css": [
+            "css/bootstrap-3.3.1.css",
+            "css/font-awesome.min.css",
+            "css/zerg.css"
+        ],
+        "js": [
+            "js/jquery-1.10.2.min.js",
+            "js/bootstrap-3.3.1.js"
+            ],
+        "min_css": "css/min/zerg.min.css",
+        "min_js": "js/min/zerg.min.js"    
+    },    
+    "default" : {
+        "pages": [
+            "about",
+            "contact"
+        ],
+        "css": [
+            "css/bootstrap-3.3.1.css",
+            "css/font-awesome.min.css"
+        ],
+        "js": [
+            "js/jquery-1.10.2.min.js",
+            "js/bootstrap-3.3.1.js"     
+            ],
+        "min_css": "css/min/default.min.css",
+        "min_js": "js/min/default.min.js"
+    }
+}
+
+```
+
+When a `PageBuilder` object is rendered, the schema file will be searched for a manifest group that matches the page's `name`.  If found, it will automatically include the specified CSS and JS files into the `<head>` and `<footer>` elements, respectively.  If a manifest is not found, the `default` manifest will be used.  The default schema file is in `schema/pages/pages.json`.
+
+Schemas can also be used to quickly toggle minified/merged Javascript and CSS for production environments.  When the global constant `JS_DEV` in `bootsole/bootsole.php` is set to `false`, the single javascript file specified in `min_js` will be used instead of the files specified in `js`.  Likewise, the CSS file specified in `min_css` will be used if `CSS_DEV` is set to false.  To automatically generate the minified CSS and JS for each manifest group, use the script provided in `build/build.php`.  **The build script should only be used on the development server**, immediately before pushing to the production server.  This script requires write access to the directories in which the minified JS and CSS files are to be written; consult your server manual for more information on setting directory permissions for PHP.
+
+For more information about minified Javascript and CSS, see [Minification](https://en.wikipedia.org/wiki/Minification_%28programming%29#Web_development).
+
+#### `@header`
+
+Objects of type `PageHeaderBuilder` are used to represent the `<head>` block of a page.  They have one directive, `@css_includes`, which represent the manifest group to be used in rendering the CSS.  Typically there is no need to specify this directive explicitly - `PageBuilder` will do it automatically for you when it constructs the page! 
+
+#### `@footer`
+
+Objects of type `PageFooterBuilder` are used to represent the `<footer>` block of a page.  They have one directive, `@js_includes`, which represent the manifest group to be used in rendering the JS.  Typically there is no need to specify this directive explicitly - `PageBuilder` will do it automatically for you when it constructs the page! 
+
+#### Example
+
+**pages/page-default.html**
+```
+<!DOCTYPE html>
+<html lang="en">
+    {{_header}}
+    <body>
+        <div class="container" role="main">
+            <h1>{{heading_main}}</h1>
+            <p>{{content}}</p>
+        </div>
+        {{_footer}}
+    </body>    
+</html>
+```
+...
+
+```
+require_once("bootsole/bootsole.php");
+
+$header_content = [
+    "author" => "Alex Weissman",
+    "site_title" => SITE_TITLE,
+    "page_title" => "Simple, nested templating for rendering Bootstrap themed pages with PHP",
+    "description" => "A sample page for Bootsole",
+    "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
+];
+
+$content = [
+    "@header" => $header_content,
+    "@name" => "test",
+    "heading_main" => "Welcome to Bootsole",
+    "content" => "Hey, I'm the content!"
+];
+
+$pb = new PageBuilder($content);
+echo $pb->render();
+```
+
+**Output:**
+![PageBuilder](/screenshots/bootsole-page-1.png "PageBuilder")
+
+```
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Common header includes for all account pages -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A sample page for Bootsole">
+        <meta name="author" content="Alex Weissman">
+        
+        <title>Bootsole | Simple, nested templating for rendering Bootstrap themed pages with PHP</title>
+        
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/bootsole/css/favicon.ico" />
+        
+        <link href='/bootsole/css/bootstrap-3.3.1.css' rel='stylesheet'>
+        <link href='/bootsole/css/bootstrap-custom.css' rel='stylesheet'>
+        <link href='/bootsole/css/font-awesome.min.css' rel='stylesheet'>
+        <link href='/bootsole/css/tablesorter/theme.bootstrap.css' rel='stylesheet'>
+        <link href='/bootsole/css/tablesorter/jquery.tablesorter.pager.css' rel='stylesheet'>
+        <!-- Conditional formatting -->
+    </head>
+    <body> 
+        <div class="container" role="main">
+            <h1>Welcome to Bootsole</h1>
+            <p>Hey, I'm the content!</p>
+        </div>
+        <footer>
+            <div class="container">
+              <p>
+                  <a href="https://github.com/alexweissman/bootsole">Bootsole</a>, 2015
+              </p>
+            </div>
+        </footer>
+        <script src='/bootsole/js/jquery-1.10.2.min.js'></script>
+        <script src='/bootsole/js/bootstrap-3.3.1.js'></script>
+        <script src='/bootsole/js/bootsole.js'></script>
+        <script src='/bootsole/js/tablesorter/jquery.tablesorter.min.js'></script>
+        <script src='/bootsole/js/tablesorter/tables.js'></script>
+        <script src='/bootsole/js/tablesorter/jquery.tablesorter.pager.min.js'></script>
+        <script src='/bootsole/js/tablesorter/jquery.tablesorter.widgets.min.js'></script>
+    </body>    
+</html>
+```
 
 ### NavbarBuilder
 
