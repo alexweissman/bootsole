@@ -46,6 +46,7 @@ echo $hb->render();
 
 **Output:**
 
+![Basic Usage](/screenshots/bootsole-example-1.png "Basic usage")
 ```
 <div class='media'>
   <a class='media-left' href='#'>
@@ -57,10 +58,6 @@ echo $hb->render();
   </div>
 </div>
 ```
-
-### Screenshot
-
-![Basic Usage](/screenshots/bootsole-example-1.png "Basic usage")
 
 Wow, amazing!  So far, this is just simple find-and-replace.  But we can also nest `HtmlBuilder` objects in the content of other `HtmlBuilder` objects:
 
@@ -85,6 +82,7 @@ echo $jumbotron->render();
 
 **Output:**
 
+![Nested Templates](/screenshots/bootsole-example-2.png "Nested templates")
 ```
 <div class='jumbotron'>
     <h1>Developers</h1>        
@@ -99,10 +97,6 @@ echo $jumbotron->render();
     </div>
 </div>
 ```
-
-### Screenshot
-
-![Nested Templates](/screenshots/bootsole-example-2.png "Nested templates")
 
 > Alright, that's kind of cool.  But what if I need a whole list of developers?  Do I need a placeholder for each one?
 
@@ -149,6 +143,7 @@ echo $jumbotron->render();
 
 **Output:**
 
+![Array Templates](/screenshots/bootsole-example-3.png "Array templates")
 ```
 <div class='jumbotron'>
     <h1>Developers</h1>
@@ -185,10 +180,6 @@ echo $jumbotron->render();
 
 </div>
 ```
-
-### Screenshot
-
-![Array Templates](/screenshots/bootsole-example-3.png "Array templates")
 
 > Ok, but can I load templates from files?
 
@@ -436,9 +427,10 @@ $table = new TableBuilder($table_content);
 
 ```
 
-### Screenshot
+**Output:**
 
 ![TableBuilder](/screenshots/bootsole-example-4.png "TableBuilder")
+
 
 ## Changelog
 
