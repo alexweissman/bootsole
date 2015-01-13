@@ -1,6 +1,6 @@
-bootsole, v0.1.4
+bootsole, v0.2.0
 
-Copyright 2014 by Alex Weissman
+Copyright 2015 by Alex Weissman
 
 MIT License:
 
