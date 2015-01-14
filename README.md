@@ -275,19 +275,19 @@ Glad you asked - read on!
 
 Bootsole comes with many classes, called **components**, that extend the basic `HtmlBuilder` class for additional functionality.
 
-- PageBuilder
+- [PageBuilder](#pagebuilder)
 - PageHeaderBuilder
 - PageFooterBuilder
-- NavbarBuilder
+- [NavbarBuilder](#navbarbuilder)
 - NavComponentBuilder
-- NavBuilder
-- NavItemBuilder
-- NavDropdownBuilder
+- [NavBuilder](#navbuilder)
+- [NavItemBuilder](#navitembuilder-and-navdropdownbuilder)
+- [NavDropdownBuilder](#navitembuilder-and-navdropdownbuilder)
 - NavFormBuilder
 - NavTextBuilder
 - NavButtonBuilder
 - NavLinkBuilder
-- TableBuilder
+- [TableBuilder](#tablebuilder)
 - TableColumnBuilder
 
 
