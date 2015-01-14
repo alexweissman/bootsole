@@ -17,6 +17,15 @@ $nb = new NavbarBuilder([
             "styles" => "btn-danger",
             "label" => "Self-Destruct!"
         ],
+        "message" => [
+            "@type" => "text",
+            "text" => "Whazzup!!!"
+        ],
+        "link" => [
+            "@type" => "link",
+            "label" => "UserFrosting",
+            "url" => "https://www.userfrosting.com"
+        ],
         "search-form" => [
             "@type" => "form",
             "@align" => "right",
@@ -34,14 +43,15 @@ $nb = new NavbarBuilder([
             "@items" => [
                 "home" => $home,
                 "about" => [
+                    "@disabled" => "disabled",
                     "label" => "About",
                     "url" => PUBLIC_ROOT. "about"
                 ],
                 "courses" => [
-                    "active" => "active",
+                    "@active" => "active",
                     "label" => "Courses",
                     "url" => PUBLIC_ROOT . "courses",
-                    "@position" => "right",
+                    "@align" => "right",
                     "@items" => [
                         "algebra" => [
                             "label" => "Algebra",
@@ -74,7 +84,7 @@ $new_component = [
 $nb->addComponent("side-menu", $new_component);
 
 // ..and set an active item
-$nb->getComponent("main-menu")->setActiveItem("about");
+//$nb->getComponent("main-menu")->setActiveItem("about");
 
 $header_content = [
     "author" => "Alex Weissman",

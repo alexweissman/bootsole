@@ -176,9 +176,9 @@ class NavBuilder extends NavComponentBuilder {
     // Set the active menu item
     public function setActiveItem($name){
         foreach ($this->_items as $item){
-            $item->active(false);
+            $item->active("");
         }
-        $this->_items[$name]->active(true);
+        $this->_items[$name]->active("active");
         return $this->_items[$name];
     }
     
@@ -190,34 +190,53 @@ class NavBuilder extends NavComponentBuilder {
     
 }
 
-/* Builds a nav item, using the following default fields:
-    active
+/* Builds a nav item, using the following magic fields:
+    @active
+    @disabled
+    
+    The default template uses the following fields:
     url
     label
 */
 
 class NavItemBuilder extends HtmlBuilder {
+    protected $_active = "";
+    protected $_disabled = "";
+    
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<li class='{{active}}'><a href='{{url}}'>{{label}}</a></li>");
+            parent::setTemplate("<li class='{{_active}} {{_disabled}}'><a href='{{url}}'>{{label}}</a></li>");
         }
         
-        // Initialize active if not passed in
-        if (!isset($content['active']))
-            $this->setContent("active", "");                
+        // Initialize @active if passed in
+        if (isset($content['@active']))
+            $this->_active = $content['@active'];
+
+        // Initialize @disabled if passed in
+        if (isset($content['@disabled']))
+            $this->_disabled = $content['@disabled'];
+
     }      
 
     public function active($active){
-        if ($active){
-            $this->_content['active'] = "active";
-        } else {
-            $this->_content['active'] = "";
-        }
-    } 
+        $this->_active = $active;
+    }
+
+    public function disabled($disabled){
+        $this->_disabled = $disabled;
+    }    
+    
+    // Set styles and render
+    public function render(){
+        $this->setContent('_active', $this->_active);
+        $this->setContent('_disabled', $this->_disabled);        
+        return parent::render();
+    }
+    
 }
 
 /* Builds a navbar dropdown group, using the following magic fields:
@@ -235,7 +254,7 @@ class NavDropdownBuilder extends NavItemBuilder {
         else {
             parent::__construct($content, null, $options);
             parent::setTemplate("
-                <li class='{{active}} dropdown'>
+                <li class='dropdown {{_active}} {{_disabled}}'>
                     <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
                         {{label}} <span class='caret'></span>
                     </a>
@@ -324,7 +343,7 @@ class NavLinkBuilder extends NavComponentBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<p class='navbar-text {{_align}}'><a href='{{url}}' class='navbar-link'>{{text}}</a></p>");   // Hardcoded template for now
+            parent::setTemplate("<p class='navbar-text {{_align}}'><a href='{{url}}' class='navbar-link'>{{label}}</a></p>");   // Hardcoded template for now
         }
     }
 }

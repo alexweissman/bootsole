@@ -486,7 +486,7 @@ $nb = new NavbarBuilder([
             "@align" => "right",
             "@items" => [
                 "home" =>  [
-                    "active" => "active",
+                    "@active" => "active",
                     "label" => "Home",
                     "url" => PUBLIC_ROOT
                 ],
@@ -522,7 +522,8 @@ $nb = new NavbarBuilder([
         </div>
         <div id="main-nav-default" class="navbar-collapse collapse">
             <button type='button' class='btn btn-danger navbar-btn '>Self-Destruct!</button>
-            <ul class='nav navbar-nav navbar-right'><li class='active'><a href='/bootsole/'>Home</a></li>
+            <ul class='nav navbar-nav navbar-right'>
+                <li class='active'><a href='/bootsole/'>Home</a></li>
                 <li class=''><a href='/bootsole/about'>About</a></li>
                 <li class=''><a href='/bootsole/contact'>Contact</a></li>
             </ul>
@@ -553,9 +554,136 @@ Each component is built off of the abstract `NavComponentBuilder` class.  To dec
 | text   | NavTextBuilder   |
 | link   | NavLinkBuilder   |
 
+All `NavComponentBuilder` objects support the `@align` directive, which describes how the component will be aligned within the navbar.  Permitted values include `left`, `right`, and `inherit`.  All templates for classes derived from `NavComponentBuilder` should use a `_align` placeholder, where the corresponding component will try to place the CSS classes for alignment. 
 
+##### NavBuilder
 
+`NavBuilder` builds a collection of navigation items, which will be structured as an unordered list.  The items are an array of `NavItemBuilder` objects, specified using the `@items` directive.  Each `NavItemBuilder` object may be declared explicitly, or you can implicitly define them in nested subarrays:
 
+```
+$navb = new NavBuilder([
+    "@align" => "right",
+    "@items" => [
+        "home" =>  [
+            "@active" => "active",
+            "label" => "Home",
+            "url" => PUBLIC_ROOT
+        ],
+        "about" => [
+            "label" => "About",
+            "url" => PUBLIC_ROOT. "about"
+        ],
+        "contact" => [
+            "label" => "Contact",
+            "url" => PUBLIC_ROOT. "contact"
+        ]
+    ]
+]);
+```
+
+**Output:**
+
+```
+<ul class='nav navbar-nav navbar-right'>
+    <li class='active'><a href='/bootsole/'>Home</a></li>
+    <li class=''><a href='/bootsole/about'>About</a></li>
+    <li class=''><a href='/bootsole/contact'>Contact</a></li>
+</ul>
+
+```
+
+Every item in a `NavBuilder` has a name.  This is automatically drawn from the keys in the `@items` array, or specified when you add the item via the `addItem($name, $content)` function.
+
+Call the function `setActiveItem($name)` on a NavBuilder object to set the a nav item as active.  All other items in the nav will automatically become inactive, so that only one menu item will be active at any time.
+
+Use the function `getItem($name)` to get an item by name. 
+
+###### NavItemBuilder and NavDropdownBuilder
+
+The items in a `NavBuilder` are represented using the `NavItemBuilder` and `NavDropdownBuilder` classes.
+
+`NavItemBuilder` objects can be declared with two optional directives, `@active` and `@disabled`.  Setting `@active` to `active` will make the specified item be highlighted as active in the nav.  Setting `@disabled` to `disabled` will make the specified item be disabled.
+
+A `NavDropdownBuilder` builds a dropdown with submenu items.  It is called in the same way as `NavBuilder`, with an `@items` directive specifying the child `NavItemBuilder` objects.
+
+##### NavFormBuilder
+
+`NavFormBuilder` wraps a form in a simple `div` with the `navbar-form` class.  Bootstrap will automatically render the content as an inline form:
+
+```
+$navform = new NavFormBuilder([
+    "@align" => "right",
+    "form" => '<form role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>*
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>'    
+]);
+```
+
+**Output:**
+
+```
+<div class='navbar-form navbar-right'>
+    <form role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>*
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+```
+
+You may also supply a `FormBuilder` object for the `form` field.
+
+##### NavButtonBuilder
+
+`NavButtonBuilder` renders a button with the `navbar-btn` CSS class.  Bootstrap will automatically align the button in the navbar:
+
+```
+$navbtn = new NavButtonBuilder([
+    "styles" => "btn-danger",
+    "label" => "Self-Destruct!"
+]);
+```
+
+**Output:**
+
+```
+<button type='button' class='btn btn-danger navbar-btn '>Self-Destruct!</button>
+```
+
+##### NavTextBuilder
+
+`NavTextBuilder` wraps the specified text in a `<p>` tag with the `navbar-text` CSS class.  This formats it for display in the navbar:
+
+```
+$navtext = new NavTextBuilder([
+    "text" => "Whazzup!!!"
+]);
+```
+
+**Output:**
+
+```
+<p class='navbar-text '>Whazzup!!!</p>
+```
+
+##### NavLinkBuilder
+
+`NavLinkBuilder` creates a non-nav link in your navbar, using the `navbar-link` CSS class:
+
+$navlink = new NavLinkBuilder([
+    "label" => "UserFrosting",
+    "url" => "https://www.userfrosting.com"
+]);
+
+**Output:**
+
+```
+<p class='navbar-text '><a href='https://www.userfrosting.com' class='navbar-link'>UserFrosting</a></p>
+```
 
 ### TableBuilder
 
@@ -693,6 +821,9 @@ $table = new TableBuilder($table_content);
 
 ![TableBuilder](/screenshots/bootsole-example-4.png "TableBuilder")
 
+### FormBuilder
+
+Coming soon!
 
 ## Changelog
 
