@@ -24,11 +24,19 @@ $(document).ready(function() {
         widgets: ['filter']
     }).tablesorterPager(pagerOptions);
     
-    // Initialize bootstrap switches
-    $('.bootstrapswitch').bootstrapSwitch();
+    // Initialize bootstrap switches, if enabled
+    if (jQuery().bootstrapSwitch){
+        $('.bootstrapswitch').bootstrapSwitch();
+    } else {
+        console.error("The bootstrap-switch plugin has not been added.");
+    }
     
-    // Initialize select2 dropdowns
-    $('.select2').select2();
+    // Initialize select2 dropdowns, if enabled
+    if (jQuery().select2){
+        $('.select2').select2();
+    } else {
+        console.error("The select2 plugin has not been added.");
+    }
 
     // Initialize bootstrapvalidator and validate the form immediately
     $('form').bootstrapValidator({

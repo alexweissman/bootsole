@@ -37,4 +37,5 @@ require_once(RESOURCES_ROOT . "htmlbuilder/htmlbuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/pagebuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/navbuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/tablebuilder.php");
+require_once(RESOURCES_ROOT . "htmlbuilder/formbuilder.php");
 ?>

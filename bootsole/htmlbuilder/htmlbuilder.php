@@ -170,10 +170,77 @@ class HtmlBuilder {
 
     public function print_r(){
         echo "<pre>";
-        echo htmlspecialchars(print_r($this->_content, true));
+        echo htmlspecialchars(print_r($this, true));
         echo "</pre>";
         
     }
 }
+
+/* Allows adding additional attributes to HTML tags, including classes, data attributes, etc */
+trait HtmlAttributesBuilder {
+    protected $_data = [];          // An array of additional data attributes to add to an HTML element (data->value)
+    protected $_css_classes = [];   // An array of additional CSS classes to add to an HTML element
+    
+    public function dataAttribute($name, $value){
+        $this->_data[$name] = $value;
+    }
+
+    public function dataAttributes($data){
+        if (is_array($data))
+            $this->_data = $data;
+        else
+            throw new Exception("'data' must be an array.");
+    }    
+    
+    public function getDataAttribute($name){
+        if (isset($this->_data[$name]))
+            return $this->_data[$name];
+        else
+            throw new Exception("The data attribute '$name' is undefined.");
+    }
+
+    public function removeDataAttribute($name){
+        if (isset($this->_data[$name]))
+            unset($this->_data[$name]);
+        else
+            throw new Exception("The data attribute '$name' is undefined.");
+    }        
+    
+    public function renderDataAttributes(){
+        $result = "";
+        foreach ($this->_data as $name => $value){
+            $result .= "data-$name='$value' ";
+        }
+        return $result;
+    }
+
+    
+    public function cssClass($class){
+        if (!in_array($class, $this->_css_classes))
+            $this->_css_classes[] = $class;
+    }
+
+    public function cssClasses($classes){
+        if (is_array($classes))
+            $this->_css_classes = $classes;
+        else
+            throw new Exception("'classes' must be an array.");
+    }    
+
+    public function removeCssClass($class){
+        if(($key = array_search($class, $this->_css_classes)) !== false) {
+           unset($this->_css_classes[$key]);
+        }
+    }        
+    
+    public function renderCssClasses(){
+        $result = "";
+        foreach ($this->_css_classes as $class){
+            $result .= "$class ";
+        }
+        return $result;
+    }      
+}
+
 
 ?>
