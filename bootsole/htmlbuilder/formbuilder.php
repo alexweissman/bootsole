@@ -57,7 +57,15 @@ class FormBuilder extends HtmlBuilder {
         // Set @label_width if specified
         if (isset($content['@label_width'])){
             $this->label_width($content['@label_width']);
-        } 
+        }
+        
+        if (isset($content['@data'])){
+            $this->dataAttributes($content['@data']);
+        }
+
+        if (isset($content['@css_classes'])){
+            $this->cssClasses($content['@css_classes']);
+        }        
     }
 
     // Clone components
@@ -122,6 +130,8 @@ class FormBuilder extends HtmlBuilder {
     public function render(){
         $this->setContent("_action", $this->_action);
         $this->setContent("_method", $this->_method);
+        $this->setContent("_classes", $this->renderCssClasses());
+        $this->setContent("_data", $this->renderDataAttributes());        
         
         switch($this->_layout){
             case "horizontal":  $this->setContent("_layout", "form-horizontal"); break;
@@ -205,6 +215,14 @@ abstract class FormComponentBuilder extends HtmlBuilder {
         // Set @default if specified
         if (isset($content['@default'])){
             $this->default_value($content['@default']);
+        }
+        
+        if (isset($content['@data'])){
+            $this->dataAttributes($content['@data']);
+        }
+
+        if (isset($content['@css_classes'])){
+            $this->cssClasses($content['@css_classes']);
         }        
     }
     
@@ -418,6 +436,8 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
             case "selecttime":  $field = new FormSelectTimeFieldBuilder($content, $source); break;
             case "hidden":      $field = new FormHiddenFieldBuilder($content, $source);     break;            
             case "textarea":    $field = new FormTextAreaFieldBuilder($content, $source);   break;
+            case "toggle":      $field = new FormToggleFieldBuilder($content, $source);   break;
+            case "bootstrapradio":      $field = new FormBootstrapRadioBuilder($content, $source);   break;
             default:            throw new Exception("Unknown form field type '$type'.");
         }
         // Set a template, if specified
@@ -511,7 +531,7 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
    * color
    * search
 
-    In general, this class should be used for fields that involve user-supplied text
+    In general, this class should be used for fields that involve user-supplied text.
    
 */
 
@@ -624,7 +644,7 @@ class FormSearchFieldBuilder extends FormTextFieldBuilder {
     }           
 }
 
-/* Represents a select field.
+/* Represents a field consisting of one or more options that can be selected.  Derived field types include:
 
    * select
    * select2
@@ -652,7 +672,11 @@ class FormSelectFieldBuilder extends FormFieldBuilder {
             $this->items($content['@items']);
 
         if (isset($content['@multiple']))
-            $this->_multiple = $content['@multiple'];            
+            $this->_multiple = $content['@multiple'];
+
+        if (isset($content['@item_classes']))
+            $this->itemClasses($content['@item_classes']);            
+            
     }
     
     // Select elements do not have a value attribute.  So, we override and select one of the child options. 
@@ -679,8 +703,8 @@ class FormSelectFieldBuilder extends FormFieldBuilder {
         if ($this->_placeholder)
             $items .= "<option></option>";
     
-        // Set the items
-        $items .= $this->renderItems();
+        // Render the items as select options
+        $items .= $this->renderItems("select");
         
         $this->setContent("_items", $items);
     
@@ -762,23 +786,15 @@ class FormSelectTimeFieldBuilder extends FormSelectFieldBuilder {
                 "@value" => $time_val,
                 "@label" => $time_val
             ];
-            $items[$time_val] = new FormSelectItemBuilder($content, null);
+            $items[$time_val] = new FormFieldOptionBuilder($content, null);
         }
         $this->items($items);    
     }
 }
 
+/* Represents a toggle group (checkbox or radio group) */
 
-/*
-  Represents an item in a 'select' field
-*/
-
-class FormSelectItemBuilder extends HtmlBuilder {
-    use HtmlAttributesBuilder;
-
-    protected $_value;          // The value of this item (required).  Not to be confused with the *selected* value.
-    protected $_label;          // The label to display for this item (set to value by default)
-    protected $_selected = "";  // Whether or not this option is selected (set to 'selected')
+class FormToggleFieldBuilder extends FormSelectFieldBuilder {
     
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
@@ -786,71 +802,41 @@ class FormSelectItemBuilder extends HtmlBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            $this->setTemplate("<option class='{{_classes}}' value='{{_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
-        }
-        
-        if (isset($content['@value'])){
-            $this->value($content['@value']);
-        }
-        
-        if (isset($content['@label'])){
-            $this->label($content['@label']);
-        }
-        
-        if (isset($content['@selected'])){
-            $this->selected($content['@selected']);
-        }
-        
-        if (isset($content['@data'])){
-            $this->dataAttributes($content['@data']);
-        }
-
-        if (isset($content['@css_classes'])){
-            $this->cssClasses($content['@css_classes']);
-        }
-    }    
-
-    public function value($content){
-        $this->_value = $content;
-    }
-    
-    public function label($content){
-        $this->_label = $content;
-    }
-
-    public function selected($content){
-        switch($content){
-            case "selected" :
-            case "" : $this->_selected = $content; break;
-            default: throw new Exception("'selected' must be either 'selected' or ''.");
-        }
-    }
-    
-    public function getValue(){
-        return $this->_value;
-    }
-    
-    public function getSelected(){
-        return $this->_selected;
+            $this->setTemplate("
+                <div class='btn-group' data-toggle='buttons'>
+                {{_items}}
+                </div>");
+        }        
     }
     
     public function render(){
-        if (!$this->_value)
-            throw new Exception("'value' not set in " . get_class($this));
+        // Pass on _name and _display to children
+        foreach ($this->_items as $item){
+            $item->setContent("_name", $this->_name);
+            $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
+        }
+    
+        // Select default item(s), if nothing is selected
+        if (count($this->getSelectedItems()) <= 0){
+            $this->selectItem($this->_default);     // Will only work if name = value for the option
+        }
+
+        // Render the items as radios or checkboxes, depending on value of _multiple
+        if ($this->_multiple)
+            $items = $this->renderItems("togglecheckbox");
         else
-            $this->setContent('_value', $this->_value);
-        if (!$this->_label)
-            $this->_label = $this->_value;
-        $this->setContent('_label', $this->_label);
-        $this->setContent('_selected', $this->_selected);
-        $this->setContent('_data', $this->renderDataAttributes());
-        return parent::render();
+            $items = $this->renderItems("toggleradio");
+        
+        $this->setContent("_items", $items);
+    
+        return $this->renderInputGroup();       // Call trait FormFieldAddonable's render() function instead of parent's function
     }
+    
 }
 
 
 /*
-Permitted field types:
+Other field types:
    
    (No input groups)
    * hidden
@@ -858,7 +844,7 @@ Permitted field types:
    * switch (bootstrap-switch)
    * radio
    * checkbox
-   * bootstrapradiogroup
+   * bootstrapradio
 */
 
 /* Represents a hidden field.
@@ -913,6 +899,204 @@ class FormTextAreaFieldBuilder extends FormFieldBuilder {
     }
 }
 
+/* A Bootstrap Radio group */
+
+class FormBootstrapRadioBuilder extends FormFieldBuilder {
+    protected $_multiple = "";   // Set to "multiple" if it is possible to have multiple selected items.
+    protected $_size = "xs";
+    
+    use FormFieldSelectable;
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("{{_items}}");
+        }
+        
+        if (isset($content['@items']))
+            $this->items($content['@items']);
+
+        if (isset($content['@multiple']))
+            $this->_multiple = $content['@multiple'];
+
+        if (isset($content['@size']))
+            $this->_size = $content['@size'];            
+    
+        if (isset($content['@item_classes']))
+            $this->itemClasses($content['@item_classes']);            
+            
+    }
+    
+    // Select elements do not have a value attribute.  So, we override and select one of the child options. 
+    public function value($content){
+        // If an array, automatically override the 'multiple' attribute
+        if (is_array($content))
+            $this->_multiple = "multiple";
+
+        $this->unselectItems();
+        $this->selectItems($content);        // Calling from trait FormFieldSelectable's
+    }
+    
+    public function render(){
+        // Pass on _name, _display, and _size to children
+        foreach ($this->_items as $item){
+            $item->setContent("_name", $this->_name);
+            $item->setContent("_size", $this->_size);
+            $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
+        }
+        
+        $this->setContent("_multiple", $this->_multiple);
+        
+        // Select default item(s), if nothing is selected
+        if (count($this->getSelectedItems()) <= 0){
+            $this->selectItem($this->_default);     // Will only work if name = value for the option
+        }
+    
+        // Render the items as bootstrapradio options
+        $items = "";
+        $items .= $this->renderItems("bootstrapradio");
+        
+        $this->setContent("_items", $items);
+    
+        return parent::render();
+    }
+    
+}
+
+/*
+  Represents an item in a 'select', 'toggleradio', 'togglecheckbox', or 'bootstrapradio' field
+*/
+
+class FormFieldOptionBuilder extends HtmlBuilder {
+    use HtmlAttributesBuilder;
+
+    protected $_value;          // The value of this item (required).  Not to be confused with the *selected* value.
+    protected $_label;          // The label to display for this item (set to value by default)
+    protected $_title = "";
+    protected $_selected = false;  // Whether or not this option is selected
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("<option class='{{_classes}}' value='{{_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
+        }
+        
+        if (isset($content['@value'])){
+            $this->value($content['@value']);
+        }
+        
+        if (isset($content['@label'])){
+            $this->label($content['@label']);
+        }
+
+        if (isset($content['@title'])){
+            $this->title($content['@title']);
+        }
+        
+        if (isset($content['@selected'])){
+            $this->selected($content['@selected']);
+        }
+        
+        if (isset($content['@data'])){
+            $this->dataAttributes($content['@data']);
+        }
+
+        if (isset($content['@css_classes'])){
+            $this->cssClasses($content['@css_classes']);
+        }
+    }    
+
+    public function value($content){
+        $this->_value = $content;
+    }
+    
+    public function label($content){
+        $this->_label = $content;
+    }
+
+    public function title($content){
+        $this->_title = $content;
+    }
+    
+    public function selected($content){
+        if (is_bool($content)) {
+            $this->_selected = $content;
+        }
+        else {
+            switch(strtolower($content)){
+                case "true":
+                case "1": $this->_selected = true;  break;     
+                case "false":
+                case "0": $this->_selected = false; break;            
+                default: throw new Exception("'selected' must be a boolean value.");
+            }
+        }
+    }
+    
+    public function getValue(){
+        return $this->_value;
+    }
+    
+    public function getSelected(){
+        return $this->_selected;
+    }
+    
+    /* Render field as a select, toggleradio, togglecheckbox, or bootstrapradio option. */
+    public function render($type = null){
+        /* If 'type' is specified, override the base template */
+        if ($type){
+            switch($type){
+                case 'select':          $this->setTemplate("<option class='{{_classes}}' value='{{_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
+                                        $this->setContent('_selected', $this->_selected ? "selected" : "");
+                                        break;
+                case 'toggleradio':     $this->setContent("_type", "radio");
+                                        $this->setInputTemplate($this->_selected);
+                                        break;
+                case 'togglecheckbox':  $this->setContent("_type", "checkbox");
+                                        $this->setInputTemplate($this->_selected);
+                                        break;
+                case 'bootstrapradio':  $this->setTemplate("<button type='button' class='bootstrapradio {{_classes}}' name='{{_name}}' value='{{_value}}' title='{{_title}}' {{_display}} data-selected='{{_selected}}' data-size='{{_size}}'>{{_label}}</button> ");
+                                        $this->setContent('_selected', ($this->_selected ? "true" : "false"));
+                                        break;
+                
+                default:   throw new Exception("'type' must be 'select', 'toggle', or 'bootstrapradio.");
+            }
+        }
+        
+        if (!$this->_value)
+            throw new Exception("'value' not set in " . get_class($this));
+        else
+            $this->setContent('_value', $this->_value);
+        if (!$this->_label)
+            $this->_label = $this->_value;
+        $this->setContent('_label', $this->_label);
+        $this->setContent('_title', $this->_title);
+        $this->setContent('_data', $this->renderDataAttributes());
+        $this->setContent("_classes", $this->renderCssClasses());
+        return parent::render();
+    }
+    
+    private function setInputTemplate($selected){
+        if ($selected)
+            $this->setTemplate("
+                <label class='btn {{_classes}} active {{_display}}'>
+                    <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_value}}' {{_data}} {{validator}} {{_display}} checked> {{_label}}
+                </label>");
+        else
+            $this->setTemplate("
+                <label class='btn {{_classes}} {{_display}}'>
+                    <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_value}}' {{_data}} {{validator}} {{_display}}> {{_label}}
+                </label>");  
+    }
+}
+
+
 // Gives FormFieldBuilder objects the ability to be wrapped in input groups, with pre/append items
 trait FormFieldAddonable {
 
@@ -944,7 +1128,13 @@ trait FormFieldAddonable {
 
 // Gives FormFieldBuilder objects the ability to have selections
 trait FormFieldSelectable {
-    protected $_items = [];     // An array of FormSelectItemBuilder objects
+    protected $_items = [];         // An array of FormFieldOptionBuilder objects
+    protected $_item_classes = [];  // An array of CSS classes to be applied to the children
+    
+    // Set classes for items
+    public function itemClasses($classes){
+        $this->_item_classes = $classes;
+    }
     
     // Set the items from an array
     public function items($items){
@@ -956,13 +1146,7 @@ trait FormFieldSelectable {
     // Set a given item as 'selected'   
     public function selectItem($name){
         if (isset($this->_items[$name]))
-            $this->_items[$name]->selected("selected");
-    }
-
-    // Set a given item as not 'selected'   
-    public function unselectItem($name){
-        if (isset($this->_items[$name]))
-            $this->_items[$name]->selected("");
+            $this->_items[$name]->selected(true);
     }
 
     // Select the item(s) corresponding to the given value(s)
@@ -970,43 +1154,53 @@ trait FormFieldSelectable {
         foreach($this->_items as $name => $item){
             if (is_array($content)){
                 if (in_array($item->getValue(), $content))
-                    $item->selected("selected");
+                    $item->selected(true);
             } else {
                 if ($item->getValue() == $content)
-                    $item->selected("selected");             
+                    $item->selected(true);             
             }
         }
     }
     
+    /* Returns an array of selected items (FormFieldOptionBuilder objects) */
     public function getSelectedItems(){
         $results = [];
         foreach($this->_items as $item){
-            if ($item->getSelected() == "selected")
+            if ($item->getSelected())
                 $results[] = $item;
         }
         return $results;     
+    }
+
+    // Set a given item as not 'selected'   
+    public function unselectItem($name){
+        if (isset($this->_items[$name]))
+            $this->_items[$name]->selected(false);
     }
     
     // Unselect all items
     public function unselectItems(){
         foreach($this->_items as $item)
-            $item->selected("");
+            $item->selected(false);
     }    
     
-    public function renderItems(){
+    public function renderItems($type = null){
         $result = "";
         foreach($this->_items as $name => $item){
-            $result .= $item->render() . PHP_EOL;
+            // Set CSS classes for item
+            $item->cssClasses($this->_item_classes);
+            $result .= $item->render($type) . PHP_EOL;
         }
         return $result;
     }
 
     private function parseItem($name, $item){
-        if (is_a($item, "FormSelectItemBuilder"))
+        if (is_a($item, "FormFieldOptionBuilder"))
             $result = $item;
         else
-            $result = new FormSelectItemBuilder($item);
+            $result = new FormFieldOptionBuilder($item);
         
+        // Set value to name of item, if not otherwise specified
         if (!$result->getValue())
             $result->value($name);
     

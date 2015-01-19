@@ -28,7 +28,7 @@ $(document).ready(function() {
     if (jQuery().bootstrapSwitch){
         $('.bootstrapswitch').bootstrapSwitch();
     } else {
-        console.error("The bootstrap-switch plugin has not been added.");
+        console.log("The bootstrap-switch plugin has not been added.");
     }
     
     // Initialize select2 dropdowns, if enabled
@@ -38,11 +38,13 @@ $(document).ready(function() {
         console.error("The select2 plugin has not been added.");
     }
 
+    /*
     // Initialize bootstrapvalidator and validate the form immediately
     $('form').bootstrapValidator({
         live: 'enabled',
         message: 'This value is not valid',
         submitButtons: 'button[type="submit"]'
     }).bootstrapValidator('validate');
+    */
         
 });

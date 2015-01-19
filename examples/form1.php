@@ -58,8 +58,7 @@ $fb = new FormBuilder([
                     '@label' => 'Professor'
                     ],
                 'emeritus' => [
-                    '@label' => 'Professor Emeritus',
-                    '@value' => 'big_cheese'
+                    '@label' => 'Professor Emeritus'
                     ]
             ],
             '@multiple' => "multiple",
@@ -99,6 +98,27 @@ $fb = new FormBuilder([
             '@placeholder' => 'So many...',
             'stuff' => "bunnies left to pet"
         ],
+        'beard' => [
+            '@type' => 'toggle',
+            '@label' => 'Beard',
+            '@multiple' => "multiple",
+            '@prepend' => "<span class='input-group-addon'><i class='fa fa-fw fa-trophy'></i></span>",
+            '@item_classes' => [
+                'btn-primary'
+            ],
+            '@items' => [
+                'fluffy' => [
+                    '@label' => 'Fluffy'
+                ],
+                'scraggly' => [
+                    '@label' => 'Scraggly'
+                ],
+                'pointy' => [
+                    '@label' => 'Pointy'
+                ]
+            ],
+            '@display' => 'disabled'
+        ],        
         'wakeup' => [
             '@type' => 'selecttime',
             '@label' => 'Wakeup Call',
@@ -108,15 +128,35 @@ $fb = new FormBuilder([
             '@time_increment' => 30,
             '@placeholder' => 'When?',
             '@default' => '10:30 am'
-        ]
+        ],
+        'school' => [
+            '@type' => 'bootstrapradio',
+            '@label' => 'School',
+            '@items' => [
+                'epicurist' => [
+                    '@title' => 'Epicurist.  Relax and enjoy life.',
+                    '@label' => "<i class='fa fa-cutlery'></i>"
+                ],
+                'futurist' => [
+                    '@title' => 'Futurist.  Cyborgs unite!',
+                    '@label' => "<i class='fa fa-space-shuttle'></i>"
+                ],
+                'stoic' => [
+                    '@title' => 'Stoic.  Grin and bear it.',
+                    '@label' => "<i class='fa fa-tree'></i>"
+                ]
+            ]                  
+        ]        
     ],
     "@values" => [
         'user_name' => "Bob",
         'email' => "bob@bob.com",
         //'wakeup' => "11:00 am",
         'title' => "adjunct",
-        'shopping_bags' => false,
-        'password' => "yo"
+        'beard' => 'pointy',
+        'password' => "yo",
+        'school' => 'epicurist'
+        
     ]
 ]);    
 
