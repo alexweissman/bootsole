@@ -4,7 +4,7 @@ class HtmlBuilder {
 
     protected $_options;       // Auxiliary options, directives, etc.
     protected $_template;      // The template (string) to be rendered.
-    protected $_content = [];  // An array mapping each placeholder to its contents.  Each content item can be either a string, or another HtmlBuilder object.
+    protected $_content = [];  // An array mapping each placeholder to its contents.  Each content item can be a string, another HtmlBuilder object, or a directive.
 
     public function __construct($content = [], $template_file = null, $options = []) {
         $this->_options = $options;
@@ -39,73 +39,11 @@ class HtmlBuilder {
         else
             return null;
     }
-    
-    // Parse content.  Inline arrays of content get converted to objects automatically.
-    public function parseContent($placeholder, $content){
-        $result = "";        
-     
-        // If child is an HtmlBuilder object, just add it
-        if (is_a($content, "HtmlBuilder")) {
-            $result = $content;
-        // If it is an array, then attempt to load a template specified by @source or @template and construct a new HtmlBuilder object 
-        } else if (is_array($content)){
-            $result = [];
-            // Load template, if specified
-            if(isset($content['@source'])){
-                // read in source template
-                $child_template = $this->loadTemplate($content['@source']);
-            } else if(isset($content['@template'])){
-                $child_template = $content['@template'];
-            }
-            // Array must have a '@content' or '@array' field, or be an array of HtmlBuilder objects.
-            if (isset($content['@content'])){
-                // Simple content fields
-                $hb = new HtmlBuilder($content['@content']);
-                $hb->setTemplate($child_template);
-                $result = $hb;                
-            } else if (isset($content['@array'])){
-                // Loop through array, creating new HtmlBuilder for each element.  They will be concatenated upon rendering.
-                $result = [];
-                foreach($content['@array'] as $i => $row){
-                   $hb = new HtmlBuilder($row);
-                   $hb->setTemplate($child_template);
-                   $result[] = $hb;
-                }
-                return $result;
-            } else {
-                // Check that every element is an HtmlBuilder object.  They will be concatenated upon rendering.
-                foreach ($content as $i => $row){
-                    if (!is_a($row, "HtmlBuilder"))
-                        throw new Exception("The array assigned to placeholder '$placeholder' must contain a '@content' or '@array' field, or be an array of HtmlBuilder objects.");
-                }
-                $result = $content;
-                return $result;
-            }
-        // If it is a scalar, just add it
-        } else if (is_scalar($content)) {
-            $result = $content;
-        // Otherwise throw an exception
-        } else {
-            throw new Exception("The contents of '$placeholder' must be a scalar value, HtmlBuilder object, or subarray.");
-        }
 
-        return $result;
-    }
-    
-    protected function loadTemplate($path){
-        $template = file_get_contents(TEMPLATES_PATH . $path);
-            
-        //Check to see if we can access the file / it has some contents
-        if(!$template || empty($template)) {
-            throw new Exception("The template '$path' could not be loaded.");
-        }
-        
-        return $template;
-    }
-    
     // Explicitly set the template (string)
     public function setTemplate($template){
         $this->_template = $template;
+        return $this;
     }
     
     // Merges this object's content with additional content.  Anything in this object's content will take priority over the merged content.
@@ -113,6 +51,10 @@ class HtmlBuilder {
         $this->_content = $this->_content + $content; 
     }
     
+    /**
+     * Renders the current object.
+     * @return string the fully rendered HTML.
+     */
     public function render(){
         if (!$this->_template)
             throw new Exception("The template is missing for this object!");
@@ -172,8 +114,71 @@ class HtmlBuilder {
         echo "<pre>";
         echo htmlspecialchars(print_r($this, true));
         echo "</pre>";
-        
     }
+        
+    // Parse content.  Inline arrays of content get converted to objects automatically.
+    private function parseContent($placeholder, $content){
+        $result = "";        
+     
+        // If child is an HtmlBuilder object, just add it
+        if (is_a($content, "HtmlBuilder")) {
+            $result = $content;
+        // If it is an array, then attempt to load a template specified by @source or @template and construct a new HtmlBuilder object 
+        } else if (is_array($content)){
+            $result = [];
+            // Load template, if specified
+            if(isset($content['@source'])){
+                // read in source template
+                $child_template = $this->loadTemplate($content['@source']);
+            } else if(isset($content['@template'])){
+                $child_template = $content['@template'];
+            }
+            // Array must have a '@content' or '@array' field, or be an array of HtmlBuilder objects.
+            if (isset($content['@content'])){
+                // Simple content fields
+                $hb = new HtmlBuilder($content['@content']);
+                $hb->setTemplate($child_template);
+                $result = $hb;                
+            } else if (isset($content['@array'])){
+                // Loop through array, creating new HtmlBuilder for each element.  They will be concatenated upon rendering.
+                $result = [];
+                foreach($content['@array'] as $i => $row){
+                   $hb = new HtmlBuilder($row);
+                   $hb->setTemplate($child_template);
+                   $result[] = $hb;
+                }
+                return $result;
+            } else {
+                // Check that every element is an HtmlBuilder object.  They will be concatenated upon rendering.
+                foreach ($content as $i => $row){
+                    if (!is_a($row, "HtmlBuilder"))
+                        throw new Exception("The array assigned to placeholder '$placeholder' must contain a '@content' or '@array' field, or be an array of HtmlBuilder objects.");
+                }
+                $result = $content;
+                return $result;
+            }
+        // If it is a scalar, just add it
+        } else if (is_scalar($content)) {
+            $result = $content;
+        // Otherwise throw an exception
+        } else {
+            throw new Exception("The contents of '$placeholder' must be a scalar value, HtmlBuilder object, or subarray.");
+        }
+
+        return $result;
+    }
+    
+    private function loadTemplate($path){
+        $template = file_get_contents(TEMPLATES_PATH . $path);
+            
+        //Check to see if we can access the file / it has some contents
+        if(!$template || empty($template)) {
+            throw new Exception("The template '$path' could not be loaded.");
+        }
+        
+        return $template;
+    }
+
 }
 
 /* Allows adding additional attributes to HTML tags, including classes, data attributes, etc */

@@ -1,24 +1,11 @@
 <?php
 
-/* Builds a form from a template, using the following magic fields:
-    @layout
-    @action
-    @method
-    @label_width
-    @components
-    @values
-
-*/
-
-
-class FormBuilder extends HtmlBuilder {
+abstract class FormFieldCollectionBuilder extends HtmlBuilder {
     use HtmlAttributesBuilder;
 
-    protected $_components = [];        // An array of FormComponentBuilder objects
+    protected $_components = [];        // An array of FormComponentBuilder or FormFieldsetBuilder objects
     protected $_values = [];            // An array of strings mapping field names to their values
     protected $_layout= "vertical";     // layout: horizontal, inline, or vertical
-    protected $_action = "";            // The url that this form should post/get
-    protected $_method = "post";        // "post" or "get"
     protected $_label_width = "4";      // The width of form group labels, for horizontal forms
 
     public function __construct($content = [], $template_file = null, $options = []){
@@ -26,8 +13,8 @@ class FormBuilder extends HtmlBuilder {
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else
-            parent::__construct($content, "forms/form-philosophers.html", $options);
-            
+            parent::__construct($content, null, $options);
+                    
         // Check if @components has been specified
         if (isset($content['@components'])){
             foreach ($content['@components'] as $name => $component){
@@ -43,17 +30,7 @@ class FormBuilder extends HtmlBuilder {
         if (isset($content['@layout'])){
             $this->layout($content['@layout']);
         }
-        
-        // Set @action if specified
-        if (isset($content['@action'])){
-            $this->action($content['@action']);
-        }
-
-        // Set @method if specified
-        if (isset($content['@method'])){
-            $this->method($content['@method']);
-        }
-        
+           
         // Set @label_width if specified
         if (isset($content['@label_width'])){
             $this->label_width($content['@label_width']);
@@ -71,7 +48,15 @@ class FormBuilder extends HtmlBuilder {
     // Clone components
     public function __clone() {
         foreach ($this->_components as $name => $component){
-            $this->_components[$name] = clone $component;
+            // Clone array of elements or individual elements
+            if (is_array($component)) {
+                $this->_components[$name] = [];
+                foreach($component as $sub_name => $subcomponent){
+                    $this->_components[$name][$sub_name] = clone $subcomponent;
+                }
+            } else {
+                $this->_components[$name] = clone $component;
+            }
         }
     }
     
@@ -83,11 +68,141 @@ class FormBuilder extends HtmlBuilder {
             case "vertical":    $this->_layout = $content; break;
             default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
         }
+    }
+
+    public function value($name, $value){
+        if (!isset($this->_fields[$name]))
+            throw new Exception("There is no field with name '$name'!");
+        $this->_values[$name] = $value;
+    }
+    
+    public function label_width($content){
+        $this->_label_width = $content;
+    }
+
+    public function getComponent($name){
+        if (isset($this->_components[$name])){
+            return $this->_components[$name];
+        }
+        else
+            throw new Exception("There is no component with name '$name'!");    
+    }
+    
+    public function render(){
+        $this->setContent("_classes", $this->renderCssClasses());
+        $this->setContent("_data", $this->renderDataAttributes());        
         
-        // Update layout of all FormGroupBuilder components
-        foreach ($this->_components as $component){
-            if (is_a($component, "FormGroupBuilder"))
-                $component->layout($content);
+        switch($this->_layout){
+            case "horizontal":  $this->setContent("_layout", "form-horizontal"); break;
+            case "inline":      $this->setContent("_layout", "form-inline"); break;
+            case "vertical":    $this->setContent("_layout", ""); break;
+            default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
+        }          
+    
+        // Set layout, label_width, and value of each component
+        foreach ($this->_components as $name => $component){
+
+            if (is_array($component)) {
+                foreach($component as $subcomponent){
+                    $sub_name = $subcomponent->getName();
+                    $this->cascadeProperties($sub_name, $subcomponent);
+                }
+            } else {
+                $this->cascadeProperties($name, $component);
+            }
+ 
+            $this->setContent($name, $component);
+        }
+        return parent::render();
+    }
+    
+    private function cascadeProperties($name, $component){
+        if (isset($this->_values[$name])){
+            $component->value($this->_values[$name]);
+        }
+        if (is_a($component, "FormGroupBuilder") || is_a($component, "FormFieldCollectionBuilder") ) {
+            $component->layout($this->_layout);
+            $component->label_width($this->_label_width);
+        }
+    }
+    
+    private function parseComponent($name, $content){
+        if (is_array($content)){           
+            // If the content specifies a "@type" field, create the corresponding FormFieldBuilder object and wrap it in the FormGroupBuilder object
+            if (isset($content['@type'])){
+                // Set '@name' directive, if not already set
+                if (!isset($content["@name"]))
+                    $content["@name"] = $name; 
+                // Create a FormGroup, unless @group is set to false or we have a hidden field
+                if ((isset($content['@group']) && $content['@group'] == "false") || $content['@type'] == 'hidden') {
+                    $component = FormFieldBuilder::generate($content['@type'], $content);              
+                } else {
+                    $component = new FormGroupBuilder($content);
+                    $component->layout($this->_layout);              // Pass on form layout to component.  Should be overridable?
+                    $component->label_width($this->_label_width);    // Pass on form label width to component.  Should be overridable?
+                }
+                return $component;
+            } else {
+                // Attempt to parse each element as a FormComponentBuilder object.  They will be concatenated upon rendering.
+                $result = [];
+                foreach ($content as $id => $subcomponent){
+                    $result[] = $this->parseComponent($name, $subcomponent);
+                }
+                return $result;
+            }
+        } else if (is_a($content, "FormFieldsetBuilder")){         
+            // Push down form properties
+            $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
+            $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
+            return $content;                               // FormGroupBuilder passed in            
+        } else if (is_a($content, "FormGroupBuilder")){
+            // Set name if not set in content
+            if (!$content->getName())
+                $content->name($name);            
+            // Push down form properties
+            $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
+            $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
+            return $content;                               // FormGroupBuilder passed in
+        } else if (is_a($content, "FormFieldBuilder")){
+            // Set name if not set in content
+            if (!$content->getName())
+                $content->name($name);  
+            return $content;
+        } else
+            throw new Exception("Invalid component type for this form: " . $content);
+    }
+}
+
+
+/* Builds a form from a template, using the following magic fields:
+    @layout
+    @action
+    @method
+    @label_width
+    @components
+    @values
+
+*/
+
+class FormBuilder extends FormFieldCollectionBuilder {
+    protected $_action = "";            // The url that this form should post/get
+    protected $_method = "post";        // "post" or "get"
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default form template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else
+            parent::__construct($content, "forms/form-philosophers.html", $options);
+        
+        // Set @action if specified
+        if (isset($content['@action'])){
+            $this->action($content['@action']);
+        }
+
+        // Set @method if specified
+        if (isset($content['@method'])){
+            $this->method($content['@method']);
         }
     }
     
@@ -102,84 +217,39 @@ class FormBuilder extends HtmlBuilder {
             default:          throw new Exception("method must be 'get' or 'post'.");
         }            
     }
-
-    public function value($name, $value){
-        if (!isset($this->_fields[$name]))
-            throw new Exception("There is no field with name '$name'!");
-        $this->_values[$name] = $value;
-    }
-    
-    public function label_width($content){
-        $this->_label_width = $content;
-        
-        // Update label width of all FormGroupBuilder components
-        foreach ($this->_components as $component){
-            if (is_a($component, "FormGroupBuilder"))
-                $component->label_width($content);
-        }
-    }
-
-    public function getComponent($name){
-        if (isset($this->_components[$name])){
-            return $this->_components[$name];
-        }
-        else
-            throw new Exception("There is no component with name '$name'!");    
-    }
     
     public function render(){
         $this->setContent("_action", $this->_action);
         $this->setContent("_method", $this->_method);
-        $this->setContent("_classes", $this->renderCssClasses());
-        $this->setContent("_data", $this->renderDataAttributes());        
-        
-        switch($this->_layout){
-            case "horizontal":  $this->setContent("_layout", "form-horizontal"); break;
-            case "inline":      $this->setContent("_layout", "form-inline"); break;
-            case "vertical":    $this->setContent("_layout", ""); break;
-            default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
-        }          
-    
-        // Set value of each component
-        foreach ($this->_components as $name => $component){
-            if (isset($this->_values[$name])){
-                $component->value($this->_values[$name]);
-            }
-            $this->setContent($name, $component);
-        }
         return parent::render();
     }
+}
+
+class FormFieldsetBuilder extends FormFieldCollectionBuilder {   
+    protected $_name;                // The name of the fieldset.
     
-    private function parseComponent($name, $content){
-        if (is_array($content)){           
-            // If the content specifies a "@type" field, create the corresponding FormFieldBuilder object and wrap it in the FormGroupBuilder object
-            if (isset($content['@type'])){
-                // Create a FormGroup, unless @group is set to false or we have a hidden field
-                if ((isset($content['@group']) && $content['@group'] == "false") || $content['@type'] == 'hidden') {
-                    $component = FormFieldBuilder::generate($content['@type'], $content);
-                    $component->name($name);                 
-                } else {
-                    $component = new FormGroupBuilder($content);
-                    $component->field($content);
-                    $component->layout($this->_layout);              // Should be overridable?
-                    $component->label_width($this->_label_width);    // Should be overridable?
-                    $component->name($name);
-                }
-                return $component;
-            } else
-                throw new Exception("FormBuilder components defined as arrays must specify a '@type' field.");
-        } else if (is_a($content, "FormGroupBuilder")){
-            // Push down form properties
-            $content->name($name);
-            $content->layout($this->_layout);             // Should be overridable?
-            $content->label_width($this->_label_width);    // Should be overridable?
-            return $content;                               // FormGroupBuilder passed in
-        } else if (is_a($content, "FormFieldBuilder")){
-            $content->name($name);
-            return $content;
-        } else
-            throw new Exception("Invalid component type for this form.");
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default form template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+        }
+        
+        // Set @name if specified
+        if (isset($content['@name'])){
+            $this->name($content['@name']);
+        }        
     }
+    
+    public function name($content){
+        $this->_name = $content;
+    }
+    
+    public function getName(){
+        return $this->_name;
+    }
+    
 }
 
 /* An abstract class representing a form component.  Uses the following magic fields:
@@ -228,6 +298,10 @@ abstract class FormComponentBuilder extends HtmlBuilder {
     
     public function name($content){
         $this->_name = $content;
+    }
+    
+    public function getName(){
+        return $this->_name;
     }
     
     public function value($content){
@@ -304,7 +378,11 @@ class FormGroupBuilder extends FormComponentBuilder {
             $this->_field = clone $this->_field;
         }
     }
-    
+
+    public function field($content){
+        $this->_field = $this->parseField($content);
+    }
+      
     public function display($content){
         switch($content){
             case "show":        
@@ -338,22 +416,15 @@ class FormGroupBuilder extends FormComponentBuilder {
         $this->_label = $content;           
     }
     
-    public function field($content){
-        $this->_field = $this->parseField($content);
-    }
-   
     // Set the group's field's name, rather than the group itself
+    /*
     public function name($name){
         if (is_a($this->_field, "FormFieldBuilder"))
-            $this->_field->name($name);
+            
         else
             throw new Exception("Field must be initialized before setting its name.");
     }
-
-    // Set the group's field's value, rather than the group itself
-    public function value($content){
-        $this->_field->value($content);
-    }      
+*/    
 
     public function getField(){
         return $this->_field;
@@ -362,6 +433,9 @@ class FormGroupBuilder extends FormComponentBuilder {
     public function render(){
         // Set label
         $this->setContent("_label", $this->_label);
+        // Pass value on to field
+        $this->_field->value($this->_value);
+        
         
         // For 'hidden' fields, disable their inputs so they won't be submitted
         if ($this->_display == "hidden") {
@@ -401,10 +475,10 @@ class FormGroupBuilder extends FormComponentBuilder {
         } else {
             // If the content specifies a "@type" field, create the corresponding subtype of FormFieldBuilder object
             if (isset($content['@type'])){
-                $field = FormFieldBuilder::generate($content['@type'], $content);
+                $field = FormFieldBuilder::generate($content['@type'], $content);                 
                 return $field;
             } else
-                throw new Exception("Must specify a '@type' field.");
+                throw new Exception("FormFieldBuilders must specify a '@type' field.");
         }  
     }
 }
@@ -436,8 +510,11 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
             case "selecttime":  $field = new FormSelectTimeFieldBuilder($content, $source); break;
             case "hidden":      $field = new FormHiddenFieldBuilder($content, $source);     break;            
             case "textarea":    $field = new FormTextAreaFieldBuilder($content, $source);   break;
-            case "toggle":      $field = new FormToggleFieldBuilder($content, $source);   break;
-            case "bootstrapradio":      $field = new FormBootstrapRadioBuilder($content, $source);   break;
+            case "checkbox":    $field = new FormCheckboxFieldBuilder($content, $source);   break;
+            case "radio":       $field = new FormRadioFieldBuilder($content, $source);      break;
+            case "switch":      $field = new FormSwitchFieldBuilder($content, $source);     break;
+            case "toggle":      $field = new FormToggleFieldBuilder($content, $source);     break;
+            case "bootstrapradio": $field = new FormBootstrapRadioBuilder($content, $source);   break;
             default:            throw new Exception("Unknown form field type '$type'.");
         }
         // Set a template, if specified
@@ -510,7 +587,6 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
             $this->_content['_value'] =     $this->_default;
         $this->_content['_placeholder'] =   $this->_placeholder;
         $this->_content['_validator'] =     $this->_validator;
-        $this->_content['_name'] =          $this->_name;
         if ($this->_display == 'readonly' || $this->_display == 'disabled')
             $this->_content['_display'] = $this->_display;
         else
@@ -899,6 +975,130 @@ class FormTextAreaFieldBuilder extends FormFieldBuilder {
     }
 }
 
+/* A checkbox */
+
+class FormCheckboxFieldBuilder extends FormFieldBuilder {
+     
+    use FormFieldSelectableItem {
+        render as renderSelectableItem;
+    }
+    
+    protected $_text = "";
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+            <div class='checkbox {{_display}}'>
+                <label>
+                    <input type='checkbox' class='{{_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}}> {{_text}}
+                </label>
+            </div>");
+        }
+        
+        if (isset($content['@item_value'])){
+            $this->item_value($content['@item_value']);
+        }
+        
+        if (isset($content['@text'])){
+            $this->text($content['@text']);
+        }
+        
+        if (isset($content['@title'])){
+            $this->title($content['@title']);
+        }
+        
+        if (isset($content['@selected'])){
+            $this->selected($content['@selected']);
+        }
+        
+    }
+    
+    // If set to the item_value, automatically select the checkbox
+    public function value($value){
+        if ($value == $this->_item_value)
+            $this->selected(true);
+        else
+            $this->selected(false);
+        return parent::value($value);
+    }
+    
+    public function text($text){
+        $this->_text = $text;
+    }
+    
+    public function render(){
+        $this->setContent('_selected', ($this->_selected ? "checked" : ""));
+        $this->setContent('_text', $this->_text);
+        return $this->renderSelectableItem();
+    }
+
+}
+
+/* A radio button */
+
+class FormRadioFieldBuilder extends FormCheckboxFieldBuilder {    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+            <div class='radio {{_display}}'>
+                <label>
+                    <input type='radio' class='{{_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}}> {{_text}}
+                </label>
+            </div>");
+        }
+    }
+}
+
+class FormSwitchFieldBuilder  extends FormCheckboxFieldBuilder {    
+    protected $_text_on;
+    protected $_text_off;
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+            <div>
+                <input type='checkbox' class='form-control bootstrapswitch {{_classes}}' name='{{name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}} data-on-text='{{_text_on}}' data-off-text='{{_text_off}}'> {{_text}}
+            </div>
+            ");
+        }
+        
+        if (isset($content['@text_on'])){
+            $this->text_on($content['@text_on']);
+        }        
+
+        if (isset($content['@text_off'])){
+            $this->text_off($content['@text_off']);
+        } 
+    }
+
+    public function text_on($text){
+        $this->_text_on = $text;
+    }
+
+    public function text_off($text){
+        $this->_text_off = $text;
+    }
+    
+    public function render(){
+        $this->setContent('_text_on', $this->_text_on);
+        $this->setContent('_text_off', $this->_text_off);
+        return parent::render();
+    }
+}
+
+
 /* A Bootstrap Radio group */
 
 class FormBootstrapRadioBuilder extends FormFieldBuilder {
@@ -913,7 +1113,7 @@ class FormBootstrapRadioBuilder extends FormFieldBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            $this->setTemplate("{{_items}}");
+            $this->setTemplate("<div>{{_items}}</div>");
         }
         
         if (isset($content['@items']))
@@ -971,24 +1171,19 @@ class FormBootstrapRadioBuilder extends FormFieldBuilder {
 */
 
 class FormFieldOptionBuilder extends HtmlBuilder {
-    use HtmlAttributesBuilder;
+    use HtmlAttributesBuilder, FormFieldSelectableItem;
 
-    protected $_value;          // The value of this item (required).  Not to be confused with the *selected* value.
-    protected $_label;          // The label to display for this item (set to value by default)
-    protected $_title = "";
-    protected $_selected = false;  // Whether or not this option is selected
-    
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            $this->setTemplate("<option class='{{_classes}}' value='{{_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
+            $this->setTemplate("<option class='{{_classes}}' value='{{_item_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
         }
         
-        if (isset($content['@value'])){
-            $this->value($content['@value']);
+        if (isset($content['@item_value'])){
+            $this->item_value($content['@item_value']);
         }
         
         if (isset($content['@label'])){
@@ -1011,92 +1206,8 @@ class FormFieldOptionBuilder extends HtmlBuilder {
             $this->cssClasses($content['@css_classes']);
         }
     }    
-
-    public function value($content){
-        $this->_value = $content;
-    }
-    
-    public function label($content){
-        $this->_label = $content;
-    }
-
-    public function title($content){
-        $this->_title = $content;
-    }
-    
-    public function selected($content){
-        if (is_bool($content)) {
-            $this->_selected = $content;
-        }
-        else {
-            switch(strtolower($content)){
-                case "true":
-                case "1": $this->_selected = true;  break;     
-                case "false":
-                case "0": $this->_selected = false; break;            
-                default: throw new Exception("'selected' must be a boolean value.");
-            }
-        }
-    }
-    
-    public function getValue(){
-        return $this->_value;
-    }
-    
-    public function getSelected(){
-        return $this->_selected;
-    }
-    
-    /* Render field as a select, toggleradio, togglecheckbox, or bootstrapradio option. */
-    public function render($type = null){
-        /* If 'type' is specified, override the base template */
-        if ($type){
-            switch($type){
-                case 'select':          $this->setTemplate("<option class='{{_classes}}' value='{{_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
-                                        $this->setContent('_selected', $this->_selected ? "selected" : "");
-                                        break;
-                case 'toggleradio':     $this->setContent("_type", "radio");
-                                        $this->setInputTemplate($this->_selected);
-                                        break;
-                case 'togglecheckbox':  $this->setContent("_type", "checkbox");
-                                        $this->setInputTemplate($this->_selected);
-                                        break;
-                case 'bootstrapradio':  $this->setTemplate("<button type='button' class='bootstrapradio {{_classes}}' name='{{_name}}' value='{{_value}}' title='{{_title}}' {{_display}} data-selected='{{_selected}}' data-size='{{_size}}'>{{_label}}</button> ");
-                                        $this->setContent('_selected', ($this->_selected ? "true" : "false"));
-                                        break;
-                
-                default:   throw new Exception("'type' must be 'select', 'toggle', or 'bootstrapradio.");
-            }
-        }
-        
-        if (!$this->_value)
-            throw new Exception("'value' not set in " . get_class($this));
-        else
-            $this->setContent('_value', $this->_value);
-        if (!$this->_label)
-            $this->_label = $this->_value;
-        $this->setContent('_label', $this->_label);
-        $this->setContent('_title', $this->_title);
-        $this->setContent('_data', $this->renderDataAttributes());
-        $this->setContent("_classes", $this->renderCssClasses());
-        return parent::render();
-    }
-    
-    private function setInputTemplate($selected){
-        if ($selected)
-            $this->setTemplate("
-                <label class='btn {{_classes}} active {{_display}}'>
-                    <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_value}}' {{_data}} {{validator}} {{_display}} checked> {{_label}}
-                </label>");
-        else
-            $this->setTemplate("
-                <label class='btn {{_classes}} {{_display}}'>
-                    <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_value}}' {{_data}} {{validator}} {{_display}}> {{_label}}
-                </label>");  
-    }
 }
-
-
+    
 // Gives FormFieldBuilder objects the ability to be wrapped in input groups, with pre/append items
 trait FormFieldAddonable {
 
@@ -1153,10 +1264,10 @@ trait FormFieldSelectable {
     public function selectItems($content){
         foreach($this->_items as $name => $item){
             if (is_array($content)){
-                if (in_array($item->getValue(), $content))
+                if (in_array($item->getItemValue(), $content))
                     $item->selected(true);
             } else {
-                if ($item->getValue() == $content)
+                if ($item->getItemValue() == $content)
                     $item->selected(true);             
             }
         }
@@ -1200,14 +1311,102 @@ trait FormFieldSelectable {
         else
             $result = new FormFieldOptionBuilder($item);
         
-        // Set value to name of item, if not otherwise specified
-        if (!$result->getValue())
-            $result->value($name);
+        // Set item value to name of item, if not otherwise specified
+        if (!$result->getItemValue())
+            $result->item_value($name);
     
         return $result;
     }
     
 }
 
+trait FormFieldSelectableItem {
+    protected $_item_value;              // The value of this item (required).  Not to be confused with the actual *selected* value.
+    protected $_label;              // The label to display for this item (set to value by default)
+    protected $_title = "";
+    protected $_selected = false;   // Whether or not this option is selected
 
+    public function item_value($content){
+        $this->_item_value = $content;
+    }
+    
+    public function label($content){
+        $this->_label = $content;
+    }
+
+    public function title($content){
+        $this->_title = $content;
+    }
+    
+    public function selected($content){
+        if (is_bool($content)) {
+            $this->_selected = $content;
+        }
+        else {
+            switch(strtolower($content)){
+                case "true":
+                case "1": $this->_selected = true;  break;     
+                case "false":
+                case "0": $this->_selected = false; break;            
+                default: throw new Exception("'selected' must be a boolean value.");
+            }
+        }
+    }
+    
+    public function getItemValue(){
+        return $this->_item_value;
+    }
+    
+    public function getSelected(){
+        return $this->_selected;
+    }
+    
+    /* Render field as a select, toggleradio, togglecheckbox, or bootstrapradio option. */
+    public function render($type = null){
+        /* If 'type' is specified, override the base template */
+        if ($type){
+            switch($type){
+                case 'select':          $this->setTemplate("<option class='{{_classes}}' value='{{_item_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
+                                        $this->setContent('_selected', $this->_selected ? "selected" : "");
+                                        break;
+                case 'toggleradio':     $this->setContent("_type", "radio");
+                                        $this->setInputTemplate($this->_selected);
+                                        break;
+                case 'togglecheckbox':  $this->setContent("_type", "checkbox");
+                                        $this->setInputTemplate($this->_selected);
+                                        break;
+                case 'bootstrapradio':  $this->setTemplate("<button type='button' class='bootstrapradio {{_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_display}} data-selected='{{_selected}}' data-size='{{_size}}'>{{_label}}</button> ");
+                                        $this->setContent('_selected', ($this->_selected ? "true" : "false"));
+                                        break;
+                
+                default:   throw new Exception("'type' must be 'select', 'toggle', or 'bootstrapradio.");
+            }
+        }
+        
+        if (!$this->_item_value)
+            throw new Exception("'item_value' not set in " . get_class($this));
+        else
+            $this->setContent('_item_value', $this->_item_value);
+        if (!$this->_label)
+            $this->_label = $this->_item_value;
+        $this->setContent('_label', $this->_label);
+        $this->setContent('_title', $this->_title);
+        $this->setContent('_data', $this->renderDataAttributes());
+        $this->setContent("_classes", $this->renderCssClasses());
+        return parent::render();
+    }
+    
+    private function setInputTemplate($selected){
+        if ($selected)
+            $this->setTemplate("
+                <label class='btn {{_classes}} active {{_display}}'>
+                    <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_item_value}}' {{_data}} {{validator}} {{_display}} checked> {{_label}}
+                </label>");
+        else
+            $this->setTemplate("
+                <label class='btn {{_classes}} {{_display}}'>
+                    <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_item_value}}' {{_data}} {{validator}} {{_display}}> {{_label}}
+                </label>");  
+    }
+}
 ?>

@@ -11,7 +11,8 @@
             "css/tablesorter/jquery.tablesorter.pager.css",
             "css/select2/select2.css",
             "css/select2/select2-bootstrap.css",
-            "css/bootstrapradio.css"
+            "css/bootstrapradio.css",
+            "css/bootstrap-switch.min.css"
         ],
         "js": [
             "js/jquery-1.10.2.min.js",
@@ -22,6 +23,7 @@
             "js/tablesorter/jquery.tablesorter.widgets.min.js",
             "js/select2/select2.min.js",
             "js/bootstrapradio.js",
+            "js/bootstrap-switch.min.js",
             "js/bootsole.js"
             ],
         "min_css": "css/min/default.min.css",

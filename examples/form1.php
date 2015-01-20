@@ -146,7 +146,22 @@ $fb = new FormBuilder([
                     '@label' => "<i class='fa fa-tree'></i>"
                 ]
             ]                  
-        ]        
+        ],
+        'tos' => [
+            '@type' => 'switch',
+            '@label' => "TOS",
+            '@text' => "I agree to the Terms and Conditions",
+            '@text_on' => "Yes",
+            '@text_off' => "No",
+            '@item_value' => "yessir"
+        ],
+        'special_offers' => [
+            '@type' => 'checkbox',
+            '@label' => "Offers",
+            '@display' => "disabled",
+            '@text' => "Send me special offers",
+            '@item_value' => "yessir"
+        ]
     ],
     "@values" => [
         'user_name' => "Bob",
@@ -155,7 +170,8 @@ $fb = new FormBuilder([
         'title' => "adjunct",
         'beard' => 'pointy',
         'password' => "yo",
-        'school' => 'epicurist'
+        'school' => 'epicurist',
+        'tos' => "yessir"
         
     ]
 ]);    

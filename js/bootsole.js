@@ -28,7 +28,7 @@ $(document).ready(function() {
     if (jQuery().bootstrapSwitch){
         $('.bootstrapswitch').bootstrapSwitch();
     } else {
-        console.log("The bootstrap-switch plugin has not been added.");
+        console.error("The bootstrap-switch plugin has not been added.");
     }
     
     // Initialize select2 dropdowns, if enabled
