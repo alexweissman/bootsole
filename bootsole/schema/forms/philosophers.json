@@ -8,6 +8,12 @@
                     "default" : "'Username' must be between 1 and 50 characters long.",
                     "es_US" : "Su nombre de usuario debe estar entre 1 y 50 caracteres de longitud"
                 }
+            },
+            "required" : {
+                "messages" : {
+                    "default" : "'User name' is required.",
+                    "es_US" : "Por favor, ingrese su nombre de usuario"
+                }
             }
         }
     },
@@ -31,6 +37,11 @@
     },          
     "email" : {
         "validators" : {
+            "required" : {
+                "messages" : {
+                    "default" : "You must specify an email address."
+                }
+            },
             "length" : {
                 "min" : 1,
                 "max" : 150,
@@ -49,18 +60,21 @@
     },
     "title" : {
         "validators" : {
-            "length" : {
-                "min" : 1,
-                "max" : 150,
+            "required" : {
                 "messages" : {
-                    "default" : "'Title' must be between 1 and 150 characters long.",
-                    "es_US" : "Los títulos deben estar entre 1 y 150 caracteres de longitud"
+                    "default" : "You must select at least one title."
                 }
             }
         }
     },
     "password" : {
         "validators" : {
+            "required" : {
+                "messages" : {
+                    "default" : "'Password' is required.",
+                    "es_US" : "Por favor, ingrese su contraseña"
+                }
+            },
             "length" : {
                 "min" : 8,
                 "max" : 50,

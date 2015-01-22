@@ -129,7 +129,7 @@ abstract class NavComponentBuilder extends HtmlBuilder {
 
 class NavBuilder extends NavComponentBuilder {
     
-    protected $_items = [];
+    use ItemCollection;
         
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
@@ -148,28 +148,14 @@ class NavBuilder extends NavComponentBuilder {
         } 
     }
     
-    // Get a particular item by name
-    public function getItem($name){
-        if (!isset($this->_items[$name]))
-            throw new Exception("No item with name '$name' exists!");
-        return $this->_items[$name];
-    }
-    
-    // Add a nav item
-    public function addItem($name, $content){
-        $item = $this->parseItem($content);
-        $this->_items[$name] = $item;
-        return $item;
-    }
-    
-    // Parse a nav item, either as an array or as a NavItemBuilder object
+    // Parse a nav item, either as an array or as a MenuItemBuilder object
     private function parseItem($content){
-        if (is_a($content, "NavItemBuilder")){
-            $item = $content;                               // NavItemBuilder passed in
+        if (is_a($content, "MenuItemBuilder")){
+            $item = $content;                               // MenuItemBuilder passed in
         } else if (isset($content['@items'])) {             // If the array specifies an "items" field, create a NavDropdownBuilder object
             $item = new NavDropdownBuilder($content);
         } else
-            $item = new NavItemBuilder($content);       // Array of fields passed in
+            $item = new MenuItemBuilder($content);       // Array of fields passed in
         return $item;
     }
         
@@ -184,69 +170,19 @@ class NavBuilder extends NavComponentBuilder {
     
     // Set items and render
     public function render(){
-        $this->setContent('_items', $this->_items);
+        $this->setContent('_items', $this->renderItems());
         return parent::render();
     }        
     
 }
 
-/* Builds a nav item, using the following magic fields:
-    @active
-    @disabled
-    
-    The default template uses the following fields:
-    url
-    label
-*/
-
-class NavItemBuilder extends HtmlBuilder {
-    protected $_active = "";
-    protected $_disabled = "";
-    
-    public function __construct($content = [], $template_file = null, $options = []){
-        // Load the specified template, or the default navbar template
-        if ($template_file)
-            parent::__construct($content, $template_file, $options);
-        else {
-            parent::__construct($content, null, $options);
-            parent::setTemplate("<li class='{{_active}} {{_disabled}}'><a href='{{url}}'>{{label}}</a></li>");
-        }
-        
-        // Initialize @active if passed in
-        if (isset($content['@active']))
-            $this->_active = $content['@active'];
-
-        // Initialize @disabled if passed in
-        if (isset($content['@disabled']))
-            $this->_disabled = $content['@disabled'];
-
-    }      
-
-    public function active($active){
-        $this->_active = $active;
-    }
-
-    public function disabled($disabled){
-        $this->_disabled = $disabled;
-    }    
-    
-    // Set styles and render
-    public function render(){
-        $this->setContent('_active', $this->_active);
-        $this->setContent('_disabled', $this->_disabled);        
-        return parent::render();
-    }
-    
-}
-
 /* Builds a navbar dropdown group, using the following magic fields:
-    @items
+    @dropdown
 */
 
-class NavDropdownBuilder extends NavItemBuilder {
-    
-    protected $_items = [];
-    
+class NavDropdownBuilder extends MenuItemBuilder {
+    protected $_dropdown;   // The DropdownBuilder representing the list of items
+
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
@@ -256,46 +192,32 @@ class NavDropdownBuilder extends NavItemBuilder {
             parent::setTemplate("
                 <li class='dropdown {{_active}} {{_disabled}}'>
                     <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
-                        {{label}} <span class='caret'></span>
+                        {{_label}} <span class='caret'></span>
                     </a>
-                    <ul class='dropdown-menu {{_align}}' role='menu'>{{_items}}</ul>
+                   {{_dropdown}}
                 </li>");
         }
         
-        // If @items set, add them
-        if (isset($content['@items'])){
-            foreach ($content['@items'] as $name => $item){
-                $this->_items[$name] = $this->parseItem($item);
-            }
-        } 
+        // Set the dropdown directly from the content
+        $this->dropdown($content);
     }
 
-    // Get a particular item by name
-    public function getItem($name){
-        if (!isset($this->_items[$name]))
-            throw new Exception("No item with name '$name' exists!");
-        return $this->_items[$name];
+    public function dropdown($dropdown){
+        $this->_dropdown = $this->parseDropdown($dropdown);
     }
     
-    // Add a dropdown item
-    public function addItem($name, $content){
-        $item = $this->parseItem($content);
-        $this->_items[$name] = $item;
-        return $item;
-    }
-    
-    // Parse a nav item, either as an array or as a NavItemBuilder object
-    private function parseItem($content){
-        if (is_a($content, "NavItemBuilder")){
-            $item = $content;                               // NavItemBuilder passed in
-        } else
-            $item = new NavItemBuilder($content);       // Array of fields passed in
-        return $item;
+    private function parseDropdown($content){
+        if (is_a($content, "DropdownBuilder")){
+            return $content;                               // DropdownBuilder passed in
+        } else {
+            $dropdown = new DropdownBuilder($content);
+            return $dropdown;
+        }
     }
 
     // Set items and render
     public function render(){
-        $this->setContent('_items', $this->_items);
+        $this->setContent('_dropdown', $this->_dropdown);
         return parent::render();
     }       
 }
@@ -345,42 +267,6 @@ class NavLinkBuilder extends NavComponentBuilder {
             parent::__construct($content, null, $options);
             parent::setTemplate("<p class='navbar-text {{_align}}'><a href='{{url}}' class='navbar-link'>{{label}}</a></p>");   // Hardcoded template for now
         }
-    }
-}
-
-class DropdownBuilder extends HtmlBuilder {    
-    public function __construct($content = [], $template_file = null, $options = []){
-        // Load the specified template, or the default navbar template
-        if ($template_file)
-            parent::__construct($content, $template_file, $options = []);
-        else {
-            parent::__construct($content, null, $options = []);
-            parent::setTemplate("<ul class='dropdown-menu {{_position}}' role='menu'>{{_items}}</ul>");
-        }
-        
-        // If a '@position' field is specified, parse it
-        if (isset($content['@position'])){
-            $this->position($content['@position']);
-        }    
-    }
-    
-    
-    public function align($position){
-        if ($position == "inherit"){
-            $this->_content['_position'] = "";
-        } else if ($position == "left"){
-            $this->_content['_position'] = "dropdown-menu-left";
-        } else if ($position == "right"){
-            $this->_content['_position'] = "dropdown-menu-right";
-        } else {
-            throw new Exception("position must be either 'left', 'right', or 'inherit'.");
-        }
-        return $this;
-    }
-    
-    public function addDivider(){
-        $this->_content['items'][] = "<li class='divider'></li>";
-        return $this;
     }
 }
 

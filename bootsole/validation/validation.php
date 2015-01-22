@@ -51,13 +51,13 @@ class ValidationSchema {
             foreach ($validators as $validator_name => $validator){
                 // Required validator
                 if ($validator_name == "required"){
-                    $prefix = "data-bv-notempty";
-                    $field_rules = $this->html5Attributes($validator, $prefix);
+                    $prefix = "data-fv-notempty";
+                    $field_rules .= $this->html5Attributes($validator, $prefix);
                 }
                 // String length validator
                 if ($validator_name == "length"){
-                    $prefix = "data-bv-stringlength";
-                    $field_rules = $this->html5Attributes($validator, $prefix);
+                    $prefix = "data-fv-stringlength";
+                    $field_rules .= $this->html5Attributes($validator, $prefix);
                     if (isset($validator['min']))
                         $field_rules .= "$prefix-min={$validator['min']} ";
                     if (isset($validator['max']))
@@ -65,13 +65,13 @@ class ValidationSchema {
                 }
                 // Integer validator
                 if ($validator_name == "integer"){
-                    $prefix = "data-bv-integer";
-                    $field_rules = $this->html5Attributes($validator, $prefix);   
+                    $prefix = "data-fv-integer";
+                    $field_rules .= $this->html5Attributes($validator, $prefix);   
                 }                  
                 // Choice validator
                 if ($validator_name == "choice"){
-                    $prefix = "data-bv-choice";
-                    $field_rules = $this->html5Attributes($validator, $prefix);
+                    $prefix = "data-fv-choice";
+                    $field_rules .= $this->html5Attributes($validator, $prefix);
                     if (isset($validator['min']))
                         $field_rules .= "$prefix-min={$validator['min']} ";
                     if (isset($validator['max']))
@@ -79,12 +79,12 @@ class ValidationSchema {
                 }
                 // Email validator
                 if ($validator_name == "email"){
-                    $prefix = "data-bv-emailaddress";
-                    $field_rules = $this->html5Attributes($validator, $prefix); 
+                    $prefix = "data-fv-emailaddress";
+                    $field_rules .= $this->html5Attributes($validator, $prefix); 
                 }            
                 // Equals validator
                 if ($validator_name == "equals"){
-                    $prefix = "data-bv-identical";
+                    $prefix = "data-fv-identical";
                     if (isset($validator['field'])){
                         $field_rules .= "$prefix-field={$validator['field']} ";
                     } else {

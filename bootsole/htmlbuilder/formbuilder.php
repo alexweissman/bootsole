@@ -7,6 +7,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
     protected $_values = [];            // An array of strings mapping field names to their values
     protected $_layout= "vertical";     // layout: horizontal, inline, or vertical
     protected $_label_width = "4";      // The width of form group labels, for horizontal forms
+    protected $_validators = [];             // An array mapping field names to FormValidator rules
 
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default form template
@@ -35,6 +36,11 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
         if (isset($content['@label_width'])){
             $this->label_width($content['@label_width']);
         }
+
+        // Set @validators if specified
+        if (isset($content['@validators'])){
+            $this->validators($content['@validators']);
+        }        
         
         if (isset($content['@data'])){
             $this->dataAttributes($content['@data']);
@@ -80,6 +86,10 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
         $this->_label_width = $content;
     }
 
+    public function validators($validators){
+        $this->_validators = $validators;
+    }
+    
     public function getComponent($name){
         if (isset($this->_components[$name])){
             return $this->_components[$name];
@@ -99,7 +109,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
         }          
     
-        // Set layout, label_width, and value of each component
+        // Set layout, label_width, validator, and value of each component
         foreach ($this->_components as $name => $component){
 
             if (is_array($component)) {
@@ -117,9 +127,15 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
     }
     
     private function cascadeProperties($name, $component){
+        // Set a value, if present
         if (isset($this->_values[$name])){
             $component->value($this->_values[$name]);
         }
+        // Set a validator, if present
+        if (isset($this->_validators[$name])){
+            $component->validator($this->_validators[$name]);
+        }        
+        // set layout and label width for FormGroup and FormFieldCollections
         if (is_a($component, "FormGroupBuilder") || is_a($component, "FormFieldCollectionBuilder") ) {
             $component->layout($this->_layout);
             $component->label_width($this->_label_width);
@@ -164,6 +180,11 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
             return $content;                               // FormGroupBuilder passed in
         } else if (is_a($content, "FormFieldBuilder")){
+            // Set name if not set in content
+            if (!$content->getName())
+                $content->name($name);  
+            return $content;
+        } else if (is_a($content, "FormButtonBuilder")){
             // Set name if not set in content
             if (!$content->getName())
                 $content->name($name);  
@@ -264,6 +285,7 @@ abstract class FormComponentBuilder extends HtmlBuilder {
     protected $_name;                // The name of the field.
     protected $_value;          // The value of the field (optional).
     protected $_default = "";        // The default value of the field, if none is specified (optional).
+    protected $_validator = "";     // A string containing FormValidator validation rules, as HTML5 data* attributes
 
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default component template
@@ -286,6 +308,11 @@ abstract class FormComponentBuilder extends HtmlBuilder {
         if (isset($content['@default'])){
             $this->default_value($content['@default']);
         }
+
+        // Set @validator if specified
+        if (isset($content['@validator'])){
+            $this->validator($content['@validator']);
+        }        
         
         if (isset($content['@data'])){
             $this->dataAttributes($content['@data']);
@@ -311,6 +338,10 @@ abstract class FormComponentBuilder extends HtmlBuilder {
     public function default_value($content){
         $this->_default = $content;
     }    
+    
+    public function validator($validator) {
+        $this->_validator = $validator; //htmlspecialchars($validator, ENT_QUOTES, false);
+    }
     
     public function render(){
         $this->setContent("_classes", $this->renderCssClasses());
@@ -415,17 +446,7 @@ class FormGroupBuilder extends FormComponentBuilder {
     public function label($content){
         $this->_label = $content;           
     }
-    
-    // Set the group's field's name, rather than the group itself
-    /*
-    public function name($name){
-        if (is_a($this->_field, "FormFieldBuilder"))
-            
-        else
-            throw new Exception("Field must be initialized before setting its name.");
-    }
-*/    
-
+       
     public function getField(){
         return $this->_field;
     }
@@ -435,7 +456,8 @@ class FormGroupBuilder extends FormComponentBuilder {
         $this->setContent("_label", $this->_label);
         // Pass value on to field
         $this->_field->value($this->_value);
-        
+        // Pass validator on to field
+        $this->_field->validator($this->_validator);
         
         // For 'hidden' fields, disable their inputs so they won't be submitted
         if ($this->_display == "hidden") {
@@ -488,7 +510,6 @@ class FormGroupBuilder extends FormComponentBuilder {
 
 abstract class FormFieldBuilder extends FormComponentBuilder {
     protected $_placeholder = "";    // The placeholder for the field (optional).
-    protected $_validator = "";      // A string containing formvalidator validation rules.
     protected $_display = "show";    // Can be "disabled", "readonly", or "show".
     
     public static function generate($type, $content){
@@ -534,12 +555,7 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
         // Set @placeholder if specified
         if (isset($content['@placeholder'])){
             $this->placeholder($content['@placeholder']);
-        } 
-
-        // Set @validator if specified
-        if (isset($content['@validator'])){
-            $this->validator($content['@validator']);
-        }         
+        }     
     
         // Set @display if specified
         if (isset($content['@display'])){
@@ -570,10 +586,6 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
     public function placeholder($content){
         $this->_placeholder = htmlspecialchars($content, ENT_QUOTES, false);
     }    
-
-    public function validator($content){
-        $this->_validator = htmlspecialchars($content, ENT_QUOTES, false);
-    }
 
     public function display($content){
         $this->_display = $content;
@@ -1207,7 +1219,51 @@ class FormFieldOptionBuilder extends HtmlBuilder {
         }
     }    
 }
+
+// Represents a form button
+class FormButtonBuilder extends FormComponentBuilder {
+    protected $_button;     // A ButtonBuilder object
     
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default FormGroup template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+            <div class='vert-pad'>
+                {{_button}}
+            </div>");
+        }
+    
+        $this->button($content);
+    }
+    
+    
+    public function button($button){
+        $this->_button = $this->parseButton($button);
+    }
+    
+    public function parseButton($button){
+        if (is_a($button, "ButtonBuilder") || is_a($button, "ButtonGroupBuilder"))
+            return $button;
+        else if (is_array($button)){
+            $result = new ButtonBuilder($button);
+            return $result;
+        } else {
+            throw new Exception("'button' must be a ButtonBuilder, ButtonGroupBuilder, or array.");
+        }
+    }
+    
+    public function render(){
+        // Pass name on to button
+        $this->_button->name($this->_name);
+        
+        $this->setContent("_button", $this->_button);
+        return parent::render();
+    }
+}    
+
 // Gives FormFieldBuilder objects the ability to be wrapped in input groups, with pre/append items
 trait FormFieldAddonable {
 

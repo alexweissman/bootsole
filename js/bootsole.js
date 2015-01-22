@@ -3,7 +3,7 @@ $(document).ready(function() {
     // define tablesorter pager options
     var pagerOptions = {
       // target the pager markup - see the HTML block below
-      container: $('#teachers .pager'),
+      container: $('.pager'),
       // output string - default is '{page}/{totalPages}'; possible variables: {page}, {totalPages}, {startRow}, {endRow} and {totalRows}
       output: '{startRow} - {endRow} / {filteredRows} ({totalRows})',
       // if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
@@ -38,13 +38,12 @@ $(document).ready(function() {
         console.error("The select2 plugin has not been added.");
     }
 
-    /*
-    // Initialize bootstrapvalidator and validate the form immediately
-    $('form').bootstrapValidator({
+    // Initialize formValidation and validate the form immediately
+    $('form').formValidation({
         live: 'enabled',
         message: 'This value is not valid',
         submitButtons: 'button[type="submit"]'
-    }).bootstrapValidator('validate');
-    */
+    }).formValidation('validate');
+
         
 });

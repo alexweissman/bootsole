@@ -35,7 +35,9 @@ defined("OPTION_SHOW_MISSING_HOOKS")
     
 require_once(RESOURCES_ROOT . "htmlbuilder/htmlbuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/pagebuilder.php");
+require_once(RESOURCES_ROOT . "htmlbuilder/componentbuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/navbuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/tablebuilder.php");
 require_once(RESOURCES_ROOT . "htmlbuilder/formbuilder.php");
+require_once(RESOURCES_ROOT . "validation/validation.php");
 ?>

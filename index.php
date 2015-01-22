@@ -3,9 +3,9 @@
 require_once("bootsole/bootsole.php");
 
 // Declaring a menu item OOPishly
-$home = new NavItemBuilder([
-        "label" => "Home",
-        "url" => PUBLIC_ROOT
+$home = new MenuItemBuilder([
+        "@label" => "Home",
+        "@url" => PUBLIC_ROOT
     ]);
 
 $nb = new NavbarBuilder([
@@ -43,23 +43,23 @@ $nb = new NavbarBuilder([
             "@items" => [
                 "home" => $home,
                 "about" => [
-                    "@disabled" => "disabled",
-                    "label" => "About",
-                    "url" => PUBLIC_ROOT. "about"
+                    "@display" => "disabled",
+                    "@label" => "About",
+                    "@url" => PUBLIC_ROOT. "about"
                 ],
                 "courses" => [
                     "@active" => "active",
-                    "label" => "Courses",
-                    "url" => PUBLIC_ROOT . "courses",
-                    "@align" => "right",
+                    "@label" => "Courses",
+                    "@url" => PUBLIC_ROOT . "courses",
+                    "@align" => "left",
                     "@items" => [
                         "algebra" => [
-                            "label" => "Algebra",
-                            "url" => PUBLIC_ROOT. "courses/algebra"
+                            "@label" => "Algebra",
+                            "@url" => PUBLIC_ROOT. "courses/algebra"
                         ],
                         "calculus" => [
-                            "label" => "Calculus",
-                            "url" => PUBLIC_ROOT. "courses/calculus"
+                            "@label" => "Calculus",
+                            "@url" => PUBLIC_ROOT. "courses/calculus"
                         ]
                     ]
                 ]
@@ -111,104 +111,6 @@ $content = [
 $pb = new PageBuilder($content, "pages/page-jumbotron.html");
 // ...or set it later!
 //$pb->header($header);
-
-// Build a dropdown:
-$dropdown_content = [
-    "@items" => [
-        "algebra" => [
-            "label" => "Algebra",
-            "url" => PUBLIC_ROOT. "courses/algebra"
-        ],
-        "calculus" => [
-            "label" => "Calculus",
-            "url" => PUBLIC_ROOT. "courses/calculus"
-        ]
-    ]
-];
-
-$dropdown = new DropdownBuilder($dropdown_content);
-
-
-$table_content = [
-    "@columns" => [
-        "info" =>  [
-            "label" => "Teacher",
-            "@sorter" => "metatext",
-            "@sort_field" => "user_name",
-            "@initial_sort_direction" => "asc",
-            "@cell_template" => "
-                    <div class='h4'>
-                        <a href='user_details.php?id={{teacher_id}}'>{{display_name}} ({{user_name}})</a>
-                    </div>
-                    <div>
-                        <i>{{title}}</i>
-                    </div>
-                    <div>
-                        <i class='fa fa-envelope'></i> <a href='mailto:{{email}}'>{{email}}</a>
-                    </div>"
-        ],
-        "num_students" => [
-            "label" => "Students",
-            "@sorter" => "metanum",
-            "@sort_field" => "num_students",
-            "@cell_template" => "<a class='btn btn-success' href='students.php?teacher_id={{teacher_id}}'>{{num_students}}</a>",
-            "@empty_field" => "num_students",
-            "@empty_value" => "0",
-            "@empty_template" => "Zero"
-        ],
-        "students" => [
-            "label" => "Student List",
-            "@sorter" => "metanum",
-            "@sort_field" => "num_students",
-            "@cell_template" => "{{students}}",
-            "@empty_field" => "students",
-            "@empty_value" => [],
-            "@empty_template" => "<i>None</i>"  
-        ]     
-    ],
-    "@rows" => [
-        "1" => [
-            "teacher_id" => "1",
-            "user_name" => "socrizzle",
-            "display_name" => "Socrates",
-            "title" => "Big Cheese",
-            "email" => "socrates@athens.gov",
-            "num_students" => "2",
-            "students" => [
-                "@template" => "<a class='btn btn-success' href='student_details.php?student_id={{student_id}}'>{{display_name}}</a>",
-                "@array" => [
-                    "A" => [
-                        "student_id" => "1",
-                        "display_name" => "Xenophon"
-                    ],
-                    "B" => [
-                        "student_id" => "2",
-                        "display_name" => "Plato"
-                    ]
-                ]
-            ]
-        ],
-        "2" => [
-            "teacher_id" => "2",
-            "user_name" => "seamus",
-            "display_name" => "Seamus",
-            "title" => "Beanmaster",
-            "email" => "seamus@cardboardbox.com",
-            "num_students" => "0",
-            "students" => []
-        ],    
-        "3" => [
-            "teacher_id" => "3",
-            "user_name" => "plato",
-            "display_name" => "Plato",
-            "title" => "Idealist",
-            "email" => "plato@athens.gov",
-            "num_students" => "1"
-        ]
-    ]
-];
-
-$table = new TableBuilder($table_content);
 
 $template = "
 <div class='media'>
@@ -285,8 +187,7 @@ $jumbotron->setTemplate($jumbotron_template);
 //echo $jumbotron->render();
 
 
-
-$pb->setContent("content", $table);
+$pb->setContent("content", $jumbotron);
 
 echo $pb->render();
 

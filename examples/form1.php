@@ -24,7 +24,9 @@ $content = [
     ]
 ];
 
-
+// Load validation schema
+$vs = new ValidationSchema(RESOURCES_ROOT . "schema/forms/philosophers.json", "es_US");
+        
 $fb = new FormBuilder([
     "@layout" => "horizontal",
     "@label_width" => 2,
@@ -83,7 +85,7 @@ $fb = new FormBuilder([
             '@placeholder' => "What's your deal?",
             '@rows' => '10'        
         ],
-        'color' => [
+        'bunnies' => [
             '@template' => "
                 <div class='row'>
                     <div class='col-sm-8'>
@@ -161,24 +163,27 @@ $fb = new FormBuilder([
             '@display' => "disabled",
             '@text' => "Send me special offers",
             '@item_value' => "yessir"
-        ]
+        ],
+        'btn_submit' => new FormButtonBuilder([
+            "@type" => "submit",
+            "@label" => "Submit",
+            "@css_classes" => ["btn-success", "btn-lg"]
+        ])
     ],
     "@values" => [
         'user_name' => "Bob",
         'email' => "bob@bob.com",
-        //'wakeup' => "11:00 am",
+        'wakeup' => "11:00 am",
         'title' => "adjunct",
         'beard' => 'pointy',
         'password' => "yo",
         'school' => 'epicurist',
         'tos' => "yessir"
         
-    ]
+    ],
+    "@validators" => $vs->clientRules()
+
 ]);    
-
-//$field = $fb->getComponent("user_name")->display("readonly");
-
-//$fb->print_r();
 
 $fb2 = clone $fb;
 $fb2->layout("vertical");
