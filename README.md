@@ -602,7 +602,7 @@ Use the function `getItem($name)` to get an item by name.
 
 The items in a `NavBuilder` are represented using the `NavItemBuilder` and `NavDropdownBuilder` classes.
 
-`NavItemBuilder` objects can be declared with two optional directives, `@active` and `@disabled`.  Setting `@active` to `active` will make the specified item be highlighted as active in the nav.  Setting `@disabled` to `disabled` will make the specified item be disabled.
+`NavItemBuilder` objects can be declared with two optional directives, `@active` and `@display`.  Setting `@active` to `active` will make the specified item be highlighted as active in the nav.  Setting `@display` to `disabled` will make the specified item be disabled, while setting it to `hidden` will make it not show up at all.
 
 A `NavDropdownBuilder` builds a dropdown with submenu items.  It is called in the same way as `NavBuilder`, with an `@items` directive specifying the child `NavItemBuilder` objects.
 
