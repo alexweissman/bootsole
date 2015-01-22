@@ -69,7 +69,7 @@ class ButtonBuilder extends HtmlBuilder {
     protected $_name = "";
     protected $_label = "";
     protected $_active = "";
-    protected $_disabled = "";
+    protected $_display = "";
     
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default button template
@@ -78,7 +78,7 @@ class ButtonBuilder extends HtmlBuilder {
         else {
             parent::__construct($content, null, $options = []);
             parent::setTemplate("            
-                <button type='{{_type}}' name='{{_name}}' class='btn {{_classes}} {{_active}}' {{_disabled}} {{_data}}>
+                <button type='{{_type}}' name='{{_name}}' class='btn {{_classes}} {{_active}}' {{_display}} {{_data}}>
                     {{_label}}
                 </button>");
         } 
@@ -95,9 +95,9 @@ class ButtonBuilder extends HtmlBuilder {
             $this->name($content['@name']);
         }        
 
-        // Initialize @disabled if passed in
-        if (isset($content['@disabled']))
-            $this->_disabled = $content['@disabled'];
+        // Initialize @display if passed in
+        if (isset($content['@display']))
+            $this->_display = $content['@display'];
 
         // Initialize @active if passed in
         if (isset($content['@active']))
@@ -125,9 +125,14 @@ class ButtonBuilder extends HtmlBuilder {
         $this->_label = $label;
     }
     
-    public function disabled($disabled){
-        $this->_disabled = $disabled;
-    }    
+    public function display($display){
+        switch($content){
+            case "show":        
+            case "hidden":  
+            case "disabled":    $this->_display = $display; break;
+            default:            throw new Exception("display must be 'show', 'hidden', or 'disabled'.");
+        }
+    }
 
     public function name($name){
         $this->_name = $name;
@@ -135,10 +140,13 @@ class ButtonBuilder extends HtmlBuilder {
     
     // Set contents and render
     public function render(){
+        if ($this->_display == "hidden")
+            return "";
+    
         $this->setContent('_name', $this->_name);
         $this->setContent('_label', $this->_label);    
         $this->setContent('_active', $this->_active);
-        $this->setContent('_disabled', $this->_disabled);
+        $this->setContent('_display', $this->_display);
         
         // Add data attributes for special button types
         if ($this->_type == "submit") {

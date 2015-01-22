@@ -29,12 +29,13 @@ $nb = new NavbarBuilder([
         "search-form" => [
             "@type" => "form",
             "@align" => "right",
-            "form" => '<form role="search">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search">
-                </div>*
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>'
+            "form" => "
+                <form role='search'>
+                    <div class='form-group'>
+                      <input type='search' class='form-control' placeholder='Search'>
+                    </div>*
+                    <button type='submit' name='search' class='btn btn-default'>Submit</button>
+                </form>"
         ],            
         // Declaring a nav group, mixed arrays and objects
         "main-menu" => [

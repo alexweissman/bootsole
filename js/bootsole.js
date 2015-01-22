@@ -38,12 +38,16 @@ $(document).ready(function() {
         console.error("The select2 plugin has not been added.");
     }
 
-    // Initialize formValidation and validate the form immediately
-    $('form').formValidation({
-        live: 'enabled',
-        message: 'This value is not valid',
-        submitButtons: 'button[type="submit"]'
-    }).formValidation('validate');
-
+    // Initialize form validation, if included
+    if (jQuery().formValidation){
+        $('form').formValidation({
+            live: 'enabled',
+            message: 'This value is not valid',
+            button: {
+                // The submit buttons selector
+                selector: '[type="submit"]'
+            }
+        }).formValidation('validate');
+    }
         
 });
