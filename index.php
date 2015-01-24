@@ -1,14 +1,17 @@
 <?php
 
+require 'vendor/autoload.php';
 require_once("bootsole/bootsole.php");
 
+use Bootsole as BS;
+
 // Declaring a menu item OOPishly
-$home = new MenuItemBuilder([
+$home = new BS\MenuItemBuilder([
         "@label" => "Home",
         "@url" => PUBLIC_ROOT
     ]);
 
-$nb = new NavbarBuilder([
+$nb = new BS\NavbarBuilder([
     "brand_label" => "Bootsole is Great!",
     "brand_url" => "http://github.com/alexweissman/bootsole",
     "@components" => [
@@ -109,7 +112,7 @@ $content = [
     ]
 ];
 
-$pb = new PageBuilder($content, "pages/page-jumbotron.html");
+$pb = new BS\PageBuilder($content, "pages/page-jumbotron.html");
 // ...or set it later!
 //$pb->header($header);
 
@@ -131,10 +134,10 @@ $content = [
     "body" => "Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors..."
 ];
 
-$hb1 = new HtmlBuilder($content);
+$hb1 = new BS\HtmlBuilder($content);
 $hb1->setTemplate($template);
 
-$hb2 = new HtmlBuilder([
+$hb2 = new BS\HtmlBuilder([
     "img_src" => "http://ww2.hdnux.com/photos/02/25/67/613833/3/gallery_thumb.jpg",
     "img_alt" => "Rambo",
     "heading" => "Sylvester Stallone",
@@ -142,7 +145,7 @@ $hb2 = new HtmlBuilder([
 ]);
 $hb2->setTemplate($template);
 
-$hb3 = new HtmlBuilder([
+$hb3 = new BS\HtmlBuilder([
     "img_src" => "http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/d0/d0877f614b8bb52813a63915be4da611cfa0ac2e_medium.jpg",
     "img_alt" => "John McClane",
     "heading" => "Bruce Willis",
@@ -183,7 +186,7 @@ $jumbotron_content = [
     ]
 ];
 
-$jumbotron = new HtmlBuilder($jumbotron_content);
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
 $jumbotron->setTemplate($jumbotron_template);
 //echo $jumbotron->render();
 

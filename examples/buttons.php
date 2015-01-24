@@ -2,6 +2,8 @@
 
 require_once("../bootsole/bootsole.php");
 
+use \Bootsole as BS;
+
 $header_content = [
     "author" => "Alex Weissman",
     "site_title" => SITE_TITLE,
@@ -22,7 +24,7 @@ $content = [
             {{combo_button}}
             ",
         "@content" => [
-            "combo_button" => new ButtonGroupBuilder([
+            "combo_button" => new BS\ButtonGroupBuilder([
                 "@items" => [
                     [
                         "@type" => "button",
@@ -74,8 +76,8 @@ $dropdown_content = [
     ]
 ];
 
-$dropdown = new DropdownButtonBuilder($dropdown_content);
-$pb = new PageBuilder($content);
+$dropdown = new BS\DropdownButtonBuilder($dropdown_content);
+$pb = new BS\PageBuilder($content);
 
 $pb->getContent("content")->setContent("dropdown_button", $dropdown);
 

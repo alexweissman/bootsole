@@ -1,0 +1,23 @@
+{
+    "name": "alexweissman/bootsole",
+    "type": "library",
+    "description": "A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.",
+    "keywords": ["php templating", "php forms", "bootstrap forms"],
+    "homepage": "https://github.com/alexweissman/bootsole",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Alexander Weissman",
+            "homepage": "http://alexanderweissman.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "vlucas/valitron": ">=1.2.3"
+    },
+    "autoload": {
+        "psr-4" : {
+            "Bootsole\\" : "bootsole/"
+        }
+    }
+}

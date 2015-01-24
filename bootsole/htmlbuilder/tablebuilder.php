@@ -1,5 +1,7 @@
 <?php
 
+namespace Bootsole;
+
 /*
     Directives:
     @rows
@@ -26,7 +28,7 @@ class TableBuilder extends HtmlBuilder {
                 $this->_columns[] = $this->parseColumn($column);
             }
         }
-            //throw new Exception("The TableBuilder object must specify a '@columns' field.");        
+            //throw new \Exception("The TableBuilder object must specify a '@columns' field.");        
         
         // Check if @rows has been specified
         if (isset($content['@rows'])){
@@ -34,7 +36,7 @@ class TableBuilder extends HtmlBuilder {
                 $this->_rows[] = $this->parseRow($row);
             }
         }
-            //throw new Exception("The TableBuilder object must specify a '@rows' field.");
+            //throw new \Exception("The TableBuilder object must specify a '@rows' field.");
     }    
 
     public function addColumn($content){
@@ -51,7 +53,7 @@ class TableBuilder extends HtmlBuilder {
     
     private function parseColumn($content){
         // If $column is already a 'TableColumnBuilder' object, then just return it.  Otherwise, construct it.
-        if (is_a($content, "TableColumnBuilder")){
+        if (is_a($content, "Bootsole\TableColumnBuilder")){
             return $content;
         } else {
             $column = new TableColumnBuilder($content);
@@ -61,7 +63,7 @@ class TableBuilder extends HtmlBuilder {
 
     private function parseRow($content){
         // If $row is already a 'HtmlBuilder' object, then just return it.  Otherwise, construct it.
-        if (is_a($content, "HtmlBuilder")){
+        if (is_a($content, "Bootsole\HtmlBuilder")){
             return $content;
         } else {
             $row = new HtmlBuilder($content);
@@ -159,7 +161,7 @@ class TableColumnBuilder extends HtmlBuilder {
         if (isset($content['@cell_template']))
             $this->_cell_template = $content['@cell_template'];
         else
-            throw new Exception("Each column in a TableBuilder must specify a '@cell_template' field.");
+            throw new \Exception("Each column in a TableBuilder must specify a '@cell_template' field.");
             
         // Set the column sorter
         if (isset($content['@sorter'])){
@@ -212,7 +214,7 @@ class TableColumnBuilder extends HtmlBuilder {
         // If a sorter is set, construct the appropriate metadata td
         if ($this->_sorter){
             if (!$this->_sort_field)
-                throw new Exception("'sorter' cannot be defined without 'sort_field'.");
+                throw new \Exception("'sorter' cannot be defined without 'sort_field'.");
                 
             $sort_field = $this->_sort_field;
  

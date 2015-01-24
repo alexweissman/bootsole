@@ -1,5 +1,7 @@
 <?php
 
+namespace Bootsole;
+
 /* Builds a navbar from a template, using the following magic fields:
     @components
     
@@ -31,7 +33,7 @@ class NavbarBuilder extends HtmlBuilder {
     // Get a particular component by name
     public function getComponent($name){
         if (!isset($this->_components[$name]))
-            throw new Exception("No component with name '$name' exists!");
+            throw new \Exception("No component with name '$name' exists!");
         return $this->_components[$name];
     }
     
@@ -44,7 +46,7 @@ class NavbarBuilder extends HtmlBuilder {
     
     // Parse a NavbarBuilder component
     private function parseComponent($content){
-        if (is_a($content, "NavComponentBuilder")){
+        if (is_a($content, "Bootsole\NavComponentBuilder")){
             return $content;                               // NavComponentBuilder passed in
         } else {
             // If the content specifies a "@type" field, create the corresponding NavComponentBuilder object
@@ -53,7 +55,7 @@ class NavbarBuilder extends HtmlBuilder {
                 if ($type == "nav"){                // NavBuilder
                     // Attempt to construct a NavBuilder object.  Must have an "@items" field.
                     if (!isset($content['@items']))
-                        throw new Exception("nav components must have a corresponding '@items' field.");
+                        throw new \Exception("nav components must have a corresponding '@items' field.");
                         
                     $item = new NavBuilder($content);
                     return $item;
@@ -70,10 +72,10 @@ class NavbarBuilder extends HtmlBuilder {
                     $item = new NavLinkBuilder($content);
                     return $item;                     
                 } else {
-                    throw new Exception("Unknown navbar component type '$type'.");
+                    throw new \Exception("Unknown navbar component type '$type'.");
                 }
             } else
-                throw new Exception("Navbar components must be of type 'NavComponentBuilder', or specify a '@type' field.");
+                throw new \Exception("Navbar components must be of type 'NavComponentBuilder', or specify a '@type' field.");
         }  
     }
     
@@ -111,7 +113,7 @@ abstract class NavComponentBuilder extends HtmlBuilder {
         } else if ($align == "right"){
             $this->_align = "navbar-right";
         } else {
-            throw new Exception("align must be either 'left', 'right', or 'inherit'.");
+            throw new \Exception("align must be either 'left', 'right', or 'inherit'.");
         }
         return $this;
     }
@@ -150,7 +152,7 @@ class NavBuilder extends NavComponentBuilder {
     
     // Parse a nav item, either as an array or as a MenuItemBuilder object
     private function parseItem($content){
-        if (is_a($content, "MenuItemBuilder")){
+        if (is_a($content, "Bootsole\MenuItemBuilder")){
             $item = $content;                               // MenuItemBuilder passed in
         } else if (isset($content['@items'])) {             // If the array specifies an "items" field, create a NavDropdownBuilder object
             $item = new NavDropdownBuilder($content);
@@ -207,7 +209,7 @@ class NavDropdownBuilder extends MenuItemBuilder {
     }
     
     private function parseDropdown($content){
-        if (is_a($content, "DropdownBuilder")){
+        if (is_a($content, "Bootsole\DropdownBuilder")){
             return $content;                               // DropdownBuilder passed in
         } else {
             $dropdown = new DropdownBuilder($content);

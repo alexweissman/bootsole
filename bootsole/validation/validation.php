@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 **********/
 
+namespace Bootsole;
+
 class ValidationSchema {
 
     protected $_schema = array();

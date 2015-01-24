@@ -1,5 +1,7 @@
 <?php
 
+namespace Bootsole;
+
 /* A button group. */
 
 class ButtonGroupBuilder extends HtmlBuilder {
@@ -36,7 +38,7 @@ class ButtonGroupBuilder extends HtmlBuilder {
     
     // Button groups can contain ButtonBuilder, DropdownButtonBuilder, and ButtonDropdownAddonBuilder objects
     private function parseItem($content){
-        if (is_a($content, "ButtonBuilder") || is_a($content, "DropdownButtonBuilder") || is_a($content, "ButtonDropdownAddonBuilder")){
+        if (is_a($content, "Bootsole\ButtonBuilder") || is_a($content, "Bootsole\DropdownButtonBuilder") || is_a($content, "Bootsole\ButtonDropdownAddonBuilder")){
             $item = $content;                              
         } else if (isset($content['@items'])) {             
             // If no label, create a ButtonDropdownAddonBuilder object
@@ -130,7 +132,7 @@ class ButtonBuilder extends HtmlBuilder {
             case "show":        
             case "hidden":  
             case "disabled":    $this->_display = $display; break;
-            default:            throw new Exception("display must be 'show', 'hidden', or 'disabled'.");
+            default:            throw new \Exception("display must be 'show', 'hidden', or 'disabled'.");
         }
     }
 
@@ -197,7 +199,7 @@ class DropdownButtonBuilder extends ButtonBuilder {
     }
     
     private function parseDropdown($content){
-        if (is_a($content, "DropdownBuilder")){
+        if (is_a($content, "Bootsole\DropdownBuilder")){
             return $content;                               // DropdownBuilder passed in
         } else {
             $dropdown = new DropdownBuilder($content);
@@ -268,7 +270,7 @@ class DropdownBuilder extends HtmlBuilder {
             case "left":
             case "right": $this->_align = $align; break;
             default:
-            throw new Exception("align must be either 'left', 'right', or 'inherit'.");
+            throw new \Exception("align must be either 'left', 'right', or 'inherit'.");
         }
         return $this;
     }
@@ -287,7 +289,7 @@ class DropdownBuilder extends HtmlBuilder {
         } else if ($this->_align == "right"){
             $this->_content['_align'] = "dropdown-menu-right";
         } else {
-            throw new Exception("position must be either 'left', 'right', or 'inherit'.");
+            throw new \Exception("position must be either 'left', 'right', or 'inherit'.");
         }
         
         $this->setContent('_items', $this->renderItems());
@@ -296,7 +298,7 @@ class DropdownBuilder extends HtmlBuilder {
 
     // Parse an item, either as an array or as a MenuItemBuilder object
     private function parseItem($content){
-        if (is_a($content, "MenuItemBuilder")){
+        if (is_a($content, "Bootsole\MenuItemBuilder")){
             $item = $content;                               // MenuItemBuilder passed in
         } else
             $item = new MenuItemBuilder($content);       // Array of fields passed in
@@ -395,7 +397,7 @@ trait ItemCollection {
     // Get a particular item by name
     public function getItem($name){
         if (!isset($this->_items[$name]))
-            throw new Exception("No item with name '$name' exists!");
+            throw new \Exception("No item with name '$name' exists!");
         return $this->_items[$name];
     }
     

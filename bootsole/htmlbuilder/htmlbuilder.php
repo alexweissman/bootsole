@@ -1,5 +1,7 @@
 <?php
 
+namespace Bootsole;
+
 class HtmlBuilder {
 
     protected $_options;       // Auxiliary options, directives, etc.
@@ -57,7 +59,7 @@ class HtmlBuilder {
      */
     public function render(){
         if (!$this->_template)
-            throw new Exception("The template is missing for this object!");
+            throw new \Exception("The template is missing for this object!");
         return $this->renderContent($this->_content, $this->_template);
     }
     
@@ -121,7 +123,7 @@ class HtmlBuilder {
         $result = "";        
      
         // If child is an HtmlBuilder object, just add it
-        if (is_a($content, "HtmlBuilder")) {
+        if (is_a($content, "Bootsole\HtmlBuilder")) {
             $result = $content;
         // If it is an array, then attempt to load a template specified by @source or @template and construct a new HtmlBuilder object 
         } else if (is_array($content)){
@@ -151,8 +153,8 @@ class HtmlBuilder {
             } else {
                 // Check that every element is an HtmlBuilder object.  They will be concatenated upon rendering.
                 foreach ($content as $i => $row){
-                    if (!is_a($row, "HtmlBuilder"))
-                        throw new Exception("The array assigned to placeholder '$placeholder' must contain a '@content' or '@array' field, or be an array of HtmlBuilder objects.");
+                    if (!is_a($row, "Bootsole\HtmlBuilder"))
+                        throw new \Exception("The array assigned to placeholder '$placeholder' must contain a '@content' or '@array' field, or be an array of HtmlBuilder objects.");
                 }
                 $result = $content;
                 return $result;
@@ -162,7 +164,7 @@ class HtmlBuilder {
             $result = $content;
         // Otherwise throw an exception
         } else {
-            throw new Exception("The contents of '$placeholder' must be a scalar value, HtmlBuilder object, or subarray.");
+            throw new \Exception("The contents of '$placeholder' must be a scalar value, HtmlBuilder object, or subarray.");
         }
 
         return $result;
@@ -173,7 +175,7 @@ class HtmlBuilder {
             
         //Check to see if we can access the file / it has some contents
         if(!$template || empty($template)) {
-            throw new Exception("The template '$path' could not be loaded.");
+            throw new \Exception("The template '$path' could not be loaded.");
         }
         
         return $template;
@@ -194,21 +196,21 @@ trait HtmlAttributesBuilder {
         if (is_array($data))
             $this->_data = $data;
         else
-            throw new Exception("'data' must be an array.");
+            throw new \Exception("'data' must be an array.");
     }    
     
     public function getDataAttribute($name){
         if (isset($this->_data[$name]))
             return $this->_data[$name];
         else
-            throw new Exception("The data attribute '$name' is undefined.");
+            throw new \Exception("The data attribute '$name' is undefined.");
     }
 
     public function removeDataAttribute($name){
         if (isset($this->_data[$name]))
             unset($this->_data[$name]);
         else
-            throw new Exception("The data attribute '$name' is undefined.");
+            throw new \Exception("The data attribute '$name' is undefined.");
     }        
     
     public function renderDataAttributes(){
@@ -229,7 +231,7 @@ trait HtmlAttributesBuilder {
         if (is_array($classes))
             $this->_css_classes = $classes;
         else
-            throw new Exception("'classes' must be an array.");
+            throw new \Exception("'classes' must be an array.");
     }    
 
     public function removeCssClass($class){

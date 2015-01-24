@@ -1,5 +1,7 @@
 <?php
 
+namespace Bootsole;
+
 /* Builds a page from a template, using the following magic fields:
     @name
     @header
@@ -74,7 +76,7 @@ class PageBuilder extends HtmlBuilder {
     
     private function parseHeader($content){
         // If $content is already a 'PageHeaderBuilder' object, then just return it.  Otherwise, construct it.
-        if (is_a($content, "PageHeaderBuilder")){
+        if (is_a($content, "Bootsole\PageHeaderBuilder")){
             return $content;
         } else {
             $header = new PageHeaderBuilder($content);
@@ -84,7 +86,7 @@ class PageBuilder extends HtmlBuilder {
 
     private function parseFooter($content){
         // If $content is already a 'PageFooterBuilder' object, then just return it.  Otherwise, construct it.
-        if (is_a($content, "PageFooterBuilder")){
+        if (is_a($content, "Bootsole\PageFooterBuilder")){
             return $content;
         } else {
             $footer = new PageFooterBuilder($content);
@@ -206,7 +208,7 @@ class PageSchema {
         // Load the include manifest
         $schema = json_decode(file_get_contents($schema_path, FILE_USE_INCLUDE_PATH),true);
         if ($schema === null)
-            throw new Exception("Could not load schema file '$schema_path'.");
+            throw new \Exception("Could not load schema file '$schema_path'.");
     
         // Find the page in the JSON include manifest    
         foreach ($schema as $name => $manifest_group){

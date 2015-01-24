@@ -1,5 +1,7 @@
 <?php
 
+namespace Bootsole;
+
 abstract class FormFieldCollectionBuilder extends HtmlBuilder {
     use HtmlAttributesBuilder;
 
@@ -72,13 +74,13 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             case "horizontal":  
             case "inline":      
             case "vertical":    $this->_layout = $content; break;
-            default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
+            default:            throw new \Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
         }
     }
 
     public function value($name, $value){
         if (!isset($this->_fields[$name]))
-            throw new Exception("There is no field with name '$name'!");
+            throw new \Exception("There is no field with name '$name'!");
         $this->_values[$name] = $value;
     }
     
@@ -95,7 +97,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             return $this->_components[$name];
         }
         else
-            throw new Exception("There is no component with name '$name'!");    
+            throw new \Exception("There is no component with name '$name'!");    
     }
     
     public function render(){
@@ -106,7 +108,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             case "horizontal":  $this->setContent("_layout", "form-horizontal"); break;
             case "inline":      $this->setContent("_layout", "form-inline"); break;
             case "vertical":    $this->setContent("_layout", ""); break;
-            default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
+            default:            throw new \Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
         }          
     
         // Set layout, label_width, validator, and value of each component
@@ -136,7 +138,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             $component->validator($this->_validators[$name]);
         }        
         // set layout and label width for FormGroup and FormFieldCollections
-        if (is_a($component, "FormGroupBuilder") || is_a($component, "FormFieldCollectionBuilder") ) {
+        if (is_a($component, "Bootsole\FormGroupBuilder") || is_a($component, "Bootsole\FormFieldCollectionBuilder") ) {
             $component->layout($this->_layout);
             $component->label_width($this->_label_width);
         }
@@ -166,12 +168,12 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
                 }
                 return $result;
             }
-        } else if (is_a($content, "FormFieldsetBuilder")){         
+        } else if (is_a($content, "Bootsole\FormFieldsetBuilder")){         
             // Push down form properties
             $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
             $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
             return $content;                               // FormGroupBuilder passed in            
-        } else if (is_a($content, "FormGroupBuilder")){
+        } else if (is_a($content, "Bootsole\FormGroupBuilder")){
             // Set name if not set in content
             if (!$content->getName())
                 $content->name($name);            
@@ -179,18 +181,18 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
             $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
             return $content;                               // FormGroupBuilder passed in
-        } else if (is_a($content, "FormFieldBuilder")){
+        } else if (is_a($content, "Bootsole\FormFieldBuilder")){
             // Set name if not set in content
             if (!$content->getName())
                 $content->name($name);  
             return $content;
-        } else if (is_a($content, "FormButtonBuilder")){
+        } else if (is_a($content, "Bootsole\FormButtonBuilder")){
             // Set name if not set in content
             if (!$content->getName())
                 $content->name($name);  
             return $content;
         } else
-            throw new Exception("Invalid component type for this form: " . $content);
+            throw new \Exception("Invalid component type for this form: " . $content);
     }
 }
 
@@ -235,7 +237,7 @@ class FormBuilder extends FormFieldCollectionBuilder {
         switch($content){
             case "get":  
             case "post":      $this->_method = $content; break;
-            default:          throw new Exception("method must be 'get' or 'post'.");
+            default:          throw new \Exception("method must be 'get' or 'post'.");
         }            
     }
     
@@ -420,7 +422,7 @@ class FormGroupBuilder extends FormComponentBuilder {
             case "hidden":
             case "readonly":    
             case "disabled":    $this->_display = $content; break;
-            default:            throw new Exception("display must be 'show', 'hidden', 'readonly', or 'disabled'.");
+            default:            throw new \Exception("display must be 'show', 'hidden', 'readonly', or 'disabled'.");
         }
         
         // Pass display mode on to field
@@ -435,7 +437,7 @@ class FormGroupBuilder extends FormComponentBuilder {
             case "horizontal":
             case "vertical":
             case "inline":      $this->_layout = $content; break; 
-            default:            throw new Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
+            default:            throw new \Exception("layout must be 'horizontal', 'vertical', or 'inline'.");
         }
     }    
 
@@ -492,7 +494,7 @@ class FormGroupBuilder extends FormComponentBuilder {
     }
     
     private function parseField($content){
-        if (is_a($content, "FormFieldBuilder")){
+        if (is_a($content, "Bootsole\FormFieldBuilder")){
             return $content;                               // FormFieldBuilder passed in
         } else {
             // If the content specifies a "@type" field, create the corresponding subtype of FormFieldBuilder object
@@ -500,7 +502,7 @@ class FormGroupBuilder extends FormComponentBuilder {
                 $field = FormFieldBuilder::generate($content['@type'], $content);                 
                 return $field;
             } else
-                throw new Exception("FormFieldBuilders must specify a '@type' field.");
+                throw new \Exception("FormFieldBuilders must specify a '@type' field.");
         }  
     }
 }
@@ -536,7 +538,7 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
             case "switch":      $field = new FormSwitchFieldBuilder($content, $source);     break;
             case "toggle":      $field = new FormToggleFieldBuilder($content, $source);     break;
             case "bootstrapradio": $field = new FormBootstrapRadioBuilder($content, $source);   break;
-            default:            throw new Exception("Unknown form field type '$type'.");
+            default:            throw new \Exception("Unknown form field type '$type'.");
         }
         // Set a template, if specified
         if (isset($content['@template'])) {
@@ -568,7 +570,7 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
                 $this->prepend($content['@prepend']);
             else {
                 $class = get_class($this);
-                throw new Exception("Form fields of type $class do not support addons.");
+                throw new \Exception("Form fields of type $class do not support addons.");
             }
         }
         
@@ -578,7 +580,7 @@ abstract class FormFieldBuilder extends FormComponentBuilder {
                 $this->append($content['@append']);
             else {
                 $class = get_class($this);
-                throw new Exception("Form fields of type $class do not support addons.");
+                throw new \Exception("Form fields of type $class do not support addons.");
             }
         }        
     }
@@ -976,7 +978,7 @@ class FormTextAreaFieldBuilder extends FormFieldBuilder {
         if (ctype_digit(strval($content)))
             $this->_rows = $content;
         else
-            throw new Exception("'rows' must be an integer.");
+            throw new \Exception("'rows' must be an integer.");
         
         return $this;
     }
@@ -1245,13 +1247,13 @@ class FormButtonBuilder extends FormComponentBuilder {
     }
     
     public function parseButton($button){
-        if (is_a($button, "ButtonBuilder") || is_a($button, "ButtonGroupBuilder"))
+        if (is_a($button, "Bootsole\ButtonBuilder") || is_a($button, "Bootsole\ButtonGroupBuilder"))
             return $button;
         else if (is_array($button)){
             $result = new ButtonBuilder($button);
             return $result;
         } else {
-            throw new Exception("'button' must be a ButtonBuilder, ButtonGroupBuilder, or array.");
+            throw new \Exception("'button' must be a ButtonBuilder, ButtonGroupBuilder, or array.");
         }
     }
     
@@ -1362,7 +1364,7 @@ trait FormFieldSelectable {
     }
 
     private function parseItem($name, $item){
-        if (is_a($item, "FormFieldOptionBuilder"))
+        if (is_a($item, "Bootsole\FormFieldOptionBuilder"))
             $result = $item;
         else
             $result = new FormFieldOptionBuilder($item);
@@ -1404,7 +1406,7 @@ trait FormFieldSelectableItem {
                 case "1": $this->_selected = true;  break;     
                 case "false":
                 case "0": $this->_selected = false; break;            
-                default: throw new Exception("'selected' must be a boolean value.");
+                default: throw new \Exception("'selected' must be a boolean value.");
             }
         }
     }
@@ -1435,12 +1437,12 @@ trait FormFieldSelectableItem {
                                         $this->setContent('_selected', ($this->_selected ? "true" : "false"));
                                         break;
                 
-                default:   throw new Exception("'type' must be 'select', 'toggle', or 'bootstrapradio.");
+                default:   throw new \Exception("'type' must be 'select', 'toggle', or 'bootstrapradio.");
             }
         }
         
         if (!$this->_item_value)
-            throw new Exception("'item_value' not set in " . get_class($this));
+            throw new \Exception("'item_value' not set in " . get_class($this));
         else
             $this->setContent('_item_value', $this->_item_value);
         if (!$this->_label)

@@ -2,6 +2,8 @@
 
 require_once("../bootsole/bootsole.php");
 
+use \Bootsole as BS;
+
 $header_content = [
     "author" => "Alex Weissman",
     "site_title" => SITE_TITLE,
@@ -25,9 +27,9 @@ $content = [
 ];
 
 // Load validation schema
-$vs = new ValidationSchema(RESOURCES_ROOT . "schema/forms/philosophers.json", "es_US");
+$vs = new BS\ValidationSchema(RESOURCES_ROOT . "schema/forms/philosophers.json", "en_US");
         
-$fb = new FormBuilder([
+$fb = new BS\FormBuilder([
     "@layout" => "horizontal",
     "@label_width" => 2,
     "@components" => [
@@ -164,7 +166,7 @@ $fb = new FormBuilder([
             '@text' => "Send me special offers",
             '@item_value' => "yessir"
         ],
-        'btn_submit' => new FormButtonBuilder([
+        'btn_submit' => new BS\FormButtonBuilder([
             "@type" => "submit",
             "@label" => "Submit",
             "@css_classes" => ["btn-success", "btn-lg"]
@@ -189,7 +191,7 @@ $fb2 = clone $fb;
 $fb2->layout("vertical");
 $fb2->getComponent("user_name")->display("show");
 
-$pb = new PageBuilder($content);
+$pb = new BS\PageBuilder($content);
 
 $pb->getContent("content")->setContent("horizontal", $fb);
 $pb->getContent("content")->setContent("vertical", $fb2);
