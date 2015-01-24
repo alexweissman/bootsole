@@ -6,7 +6,7 @@ namespace Bootsole;
 
 /* The public URI corresponding to the document root of your website. */
 defined("Bootsole\URI_PUBLIC_ROOT")
-    or define("Bootsole\URI_PUBLIC_ROOT", "/bootsole/public/");
+    or define("Bootsole\URI_PUBLIC_ROOT", "http://localhost/bootsole/public/");
 
 /* The public URI corresponding to the Javascript assets of your website. */
 defined("Bootsole\URI_JS_ROOT")

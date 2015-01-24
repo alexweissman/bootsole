@@ -6,7 +6,87 @@ Copyright (c) 2015
 
 A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.
 
+## Installation
+
+It is possible to install Bootsole via Composer, or as a standalone library.
+
+### To install with composer:
+
+1. If you haven't already, get [Composer](http://getcomposer.org/) and [install it](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx) - preferably, globally.
+2. Require Bootsole, either by running `php composer.phar require alexweissman/bootsole`, or by creating a `composer.json` file:
+
+```
+{
+    "require": {
+        "php": ">=5.4.0",
+        "alexweissman/bootsole": "0.2.0"
+    }
+}
+```
+
+and running `composer install`.
+
+3. Include the `vendor/autoload.php` file in your project.  For an example of how this can be done, see `public/site-config.php`.
+
+Note: The core Bootsole library is contained entirely in `vendor/alexweissman/bootsole/bootsole/`.  You don't need the `public` directory - it just contains examples for how Bootsole can be used in a PHP project.
+
+### To install manually:
+
+Copy the `bootsole/` subdirectory to wherever you usually keep your site's non-public resources.  If you don't know what "non-public resources" means, see [Organize Your Next PHP Project the Right Way](http://code.tutsplus.com/tutorials/organize-your-next-php-project-the-right-way--net-5873).
+
+If you want to run the premade examples, you can copy the contents of `public` to your site's public directory.
+
+Without Composer, you will need to manually include Bootsole's source files.  The `public/config-site.php` file will do this automatically for you - feel free to move that code to your project's main config file.
+
+## Configuration
+
+Bootsole relies on a number of predefined constants to properly find and render templates, JS and CSS includes, etc.  You can find these in the `bootsole/config-bootsole.php` file.  Most of the default values should work out of the box, except for the following:
+
+### `PATH_PUBLIC_ROOT`
+
+This is the local (file) path to the public directory of your site.  It is recommended that you declare it relative to the location of your `config-bootsole.php` file.  For example, if your directory structure looks like this:
+
+```
+- public_html/               // This is where we want PATH_PUBLIC_ROOT to point
+  - js/
+  - css/
+  - <public-facing content>
+- resources/
+  - bootsole/
+    - config-bootsole.php    // This is where PATH_PUBLIC_ROOT is defined
+    - ...
+  - <other libraries>
+```
+
+you could set `PATH_PUBLIC_ROOT` as:
+`define ("Bootsole\PATH_PUBLIC_ROOT", realpath(dirname(__FILE__) . "/../../public_html") . "/");`
+
+### `URI_PUBLIC_ROOT`
+
+As you should know, file paths != URL paths (though there is often a strong relationship between them, especially if you aren't using a URL routing system).  So, Bootsole needs to know what the public URL will be for your site.
+
+For a development environment, this might be something like:
+`http://localhost/myproject/`.
+
+For a production environment, this might look like:
+`https://mysite.com/`.
+
 ## Basic usage
+
+If you have autoloaded the library with Composer, all you should need is:
+
+```
+<?php
+
+require_once "path/to/autoload.php";
+use \Bootsole as BS;
+
+...
+```  
+
+Otherwise, you will need include the files manually, in the correct order.  See `public/config-site.php` for an example of how this is done.
+
+Then, you can start defining and deploying templates:
 
 Bootsole uses the `{{double handlebar}}` notation for representing placeholders in a template.
 
