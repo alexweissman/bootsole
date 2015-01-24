@@ -116,7 +116,7 @@ $hb2 = new BS\HtmlBuilder([
 ]);
 $hb2->setTemplate($template);
 
-$hb3 = new HtmlBuilder([
+$hb3 = new BS\HtmlBuilder([
     "img_src" => "http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/d0/d0877f614b8bb52813a63915be4da611cfa0ac2e_medium.jpg",
     "img_alt" => "John McClane",
     "heading" => "Bruce Willis",
@@ -139,7 +139,7 @@ $jumbotron_content = [
     ]
 ];
 
-$jumbotron = new HtmlBuilder($jumbotron_content);
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
 $jumbotron->setTemplate($jumbotron_template);
 echo $jumbotron->render();
 ```
@@ -564,7 +564,7 @@ All `NavComponentBuilder` objects support the `@align` directive, which describe
 `NavBuilder` builds a collection of navigation items, which will be structured as an unordered list.  The items are an array of `NavItemBuilder` objects, specified using the `@items` directive.  Each `NavItemBuilder` object may be declared explicitly, or you can implicitly define them in nested subarrays:
 
 ```
-$navb = new NavBuilder([
+$navb = new BS\NavBuilder([
     "@align" => "right",
     "@items" => [
         "home" =>  [
@@ -614,7 +614,7 @@ A `NavDropdownBuilder` builds a dropdown with submenu items.  It is called in th
 `NavFormBuilder` wraps a form in a simple `div` with the `navbar-form` class.  Bootstrap will automatically render the content as an inline form:
 
 ```
-$navform = new NavFormBuilder([
+$navform = new BS\NavFormBuilder([
     "@align" => "right",
     "form" => '<form role="search">
         <div class="form-group">
@@ -645,7 +645,7 @@ You may also supply a `FormBuilder` object for the `form` field.
 `NavButtonBuilder` renders a button with the `navbar-btn` CSS class.  Bootstrap will automatically align the button in the navbar:
 
 ```
-$navbtn = new NavButtonBuilder([
+$navbtn = new BS\NavButtonBuilder([
     "styles" => "btn-danger",
     "label" => "Self-Destruct!"
 ]);
@@ -662,7 +662,7 @@ $navbtn = new NavButtonBuilder([
 `NavTextBuilder` wraps the specified text in a `<p>` tag with the `navbar-text` CSS class.  This formats it for display in the navbar:
 
 ```
-$navtext = new NavTextBuilder([
+$navtext = new BS\NavTextBuilder([
     "text" => "Whazzup!!!"
 ]);
 ```
@@ -677,7 +677,7 @@ $navtext = new NavTextBuilder([
 
 `NavLinkBuilder` creates a non-nav link in your navbar, using the `navbar-link` CSS class:
 
-$navlink = new NavLinkBuilder([
+$navlink = new BS\NavLinkBuilder([
     "label" => "UserFrosting",
     "url" => "https://www.userfrosting.com"
 ]);
@@ -720,7 +720,7 @@ $column_content = [
 
 $column_template = "<h4>{{label}}</h4>";
 
-$column = new TableColumnBuilder($column_content);
+$column = new BS\TableColumnBuilder($column_content);
 $column->setTemplate($column_template);
 
 ```
@@ -816,7 +816,7 @@ $table_content = [
     ]
 ];
 
-$table = new TableBuilder($table_content);
+$table = new BS\TableBuilder($table_content);
 
 ```
 
