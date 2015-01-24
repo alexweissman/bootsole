@@ -1,6 +1,6 @@
 <?php
 
-require_once("bootsole.php");
+require_once("config-site.php");
 
 use \Bootsole as BS;
 
@@ -9,7 +9,7 @@ $header_content = [
     "site_title" => SITE_TITLE,
     "page_title" => "Button components",
     "description" => "Button components for Bootsole",
-    "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
+    "favicon_path" => BS\URI_PUBLIC_ROOT . "css/favicon.ico"
 ];
 
 $content = [
@@ -41,11 +41,11 @@ $content = [
                         "@items" => [
                             "algebra" => [
                                 "@label" => "Algebra",
-                                "@url" => PUBLIC_ROOT. "courses/algebra"
+                                "@url" => BS\URI_PUBLIC_ROOT. "courses/algebra"
                             ],
                             "calculus" => [
                                 "@label" => "Calculus",
-                                "@url" => PUBLIC_ROOT. "courses/calculus",
+                                "@url" => BS\URI_PUBLIC_ROOT. "courses/calculus",
                                 "@display" => "disabled"
                                 
                             ]
@@ -66,11 +66,11 @@ $dropdown_content = [
     "@items" => [
         "algebra" => [
             "@label" => "Algebra",
-            "@url" => PUBLIC_ROOT. "courses/algebra"
+            "@url" => BS\URI_PUBLIC_ROOT. "courses/algebra"
         ],
         "calculus" => [
             "@label" => "Calculus",
-            "@url" => PUBLIC_ROOT. "courses/calculus"
+            "@url" => BS\URI_PUBLIC_ROOT. "courses/calculus"
             
         ]
     ]

@@ -4,32 +4,32 @@
 
         ],
         "css": [
-            "css/bootstrap-3.3.1.css",
-            "css/bootstrap-custom.css",
-            "css/font-awesome.min.css",
-            "css/formValidation/formValidation.css",            
-            "css/tablesorter/theme.bootstrap.css",
-            "css/tablesorter/jquery.tablesorter.pager.css",
-            "css/select2/select2.css",
-            "css/select2/select2-bootstrap.css",
-            "css/bootstrapradio.css",
-            "css/bootstrap-switch.min.css"
+            "bootstrap-3.3.1.css",
+            "bootstrap-custom.css",
+            "font-awesome.min.css",
+            "formValidation/formValidation.css",            
+            "tablesorter/theme.bootstrap.css",
+            "tablesorter/jquery.tablesorter.pager.css",
+            "select2/select2.css",
+            "select2/select2-bootstrap.css",
+            "bootstrapradio.css",
+            "bootstrap-switch.min.css"
         ],
         "js": [
-            "js/jquery-1.10.2.min.js",
-            "js/bootstrap-3.3.1.js",
-            "js/formValidation/formValidation.js",
-            "js/formValidation/bootstrap.js",
-            "js/tablesorter/jquery.tablesorter.min.js",
-            "js/tablesorter/tables.js",
-            "js/tablesorter/jquery.tablesorter.pager.min.js",
-            "js/tablesorter/jquery.tablesorter.widgets.min.js",
-            "js/select2/select2.min.js",
-            "js/bootstrapradio.js",
-            "js/bootstrap-switch.min.js",
-            "js/bootsole.js"
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js",
+            "formValidation/formValidation.js",
+            "formValidation/bootstrap.js",
+            "tablesorter/jquery.tablesorter.min.js",
+            "tablesorter/tables.js",
+            "tablesorter/jquery.tablesorter.pager.min.js",
+            "tablesorter/jquery.tablesorter.widgets.min.js",
+            "select2/select2.min.js",
+            "bootstrapradio.js",
+            "bootstrap-switch.min.js",
+            "bootsole.js"
             ],
-        "min_css": "css/min/default.min.css",
-        "min_js": "js/min/default.min.js"
+        "min_css": "min/default.min.css",
+        "min_js": "min/default.min.js"
     }
 }

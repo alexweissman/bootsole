@@ -1,14 +1,14 @@
 <?php
 
 
-require_once("bootsole.php");
+require_once("config-site.php");
 
 use Bootsole as BS;
 
 // Declaring a menu item OOPishly
 $home = new BS\MenuItemBuilder([
         "@label" => "Home",
-        "@url" => PUBLIC_ROOT
+        "@url" => BS\URI_PUBLIC_ROOT
     ]);
 
 $nb = new BS\NavbarBuilder([
@@ -49,21 +49,21 @@ $nb = new BS\NavbarBuilder([
                 "about" => [
                     "@display" => "disabled",
                     "@label" => "About",
-                    "@url" => PUBLIC_ROOT. "about"
+                    "@url" => BS\URI_PUBLIC_ROOT. "about"
                 ],
                 "courses" => [
                     "@active" => "active",
                     "@label" => "Courses",
-                    "@url" => PUBLIC_ROOT . "courses",
+                    "@url" => BS\URI_PUBLIC_ROOT . "courses",
                     "@align" => "left",
                     "@items" => [
                         "algebra" => [
                             "@label" => "Algebra",
-                            "@url" => PUBLIC_ROOT. "courses/algebra"
+                            "@url" => BS\URI_PUBLIC_ROOT. "courses/algebra"
                         ],
                         "calculus" => [
                             "@label" => "Calculus",
-                            "@url" => PUBLIC_ROOT. "courses/calculus"
+                            "@url" => BS\URI_PUBLIC_ROOT. "courses/calculus"
                         ]
                     ]
                 ]
@@ -80,7 +80,7 @@ $new_component = [
     "@items" => [ 
         "contact" => [
             "label" => "<i class='fa fa-paper-plane'></i>",
-            "url" => PUBLIC_ROOT.  "contact"
+            "url" => BS\URI_PUBLIC_ROOT.  "contact"
         ]
     ]
 ];
@@ -95,7 +95,7 @@ $header_content = [
     "site_title" => SITE_TITLE,
     "page_title" => "Simple, nested templating for rendering Bootstrap themed pages with PHP",
     "description" => "A sample page for Bootsole",
-    "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
+    "favicon_path" => BS\URI_PUBLIC_ROOT . "css/favicon.ico"
 ];
 
 $content = [

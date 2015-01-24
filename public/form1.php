@@ -1,6 +1,6 @@
 <?php
 
-require_once("bootsole.php");
+require_once("config-site.php");
 
 use \Bootsole as BS;
 
@@ -9,7 +9,7 @@ $header_content = [
     "site_title" => SITE_TITLE,
     "page_title" => "Simple, nested templating for rendering Bootstrap themed pages with PHP",
     "description" => "A sample page for Bootsole",
-    "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
+    "favicon_path" => BS\URI_PUBLIC_ROOT . "css/favicon.ico"
 ];
 
 $content = [
@@ -27,7 +27,7 @@ $content = [
 ];
 
 // Load validation schema
-$vs = new BS\ValidationSchema(RESOURCES_ROOT . "schema/forms/philosophers.json", "en_US");
+$vs = new BS\ValidationSchema("forms/philosophers.json", "en_US");
         
 $fb = new BS\FormBuilder([
     "@layout" => "horizontal",

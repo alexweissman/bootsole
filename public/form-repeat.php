@@ -1,6 +1,6 @@
 <?php
 
-require_once("bootsole.php");
+require_once("config-site.php");
 
 use \Bootsole as BS;
 
@@ -9,7 +9,7 @@ $header_content = [
     "site_title" => SITE_TITLE,
     "page_title" => "Repeated Groups of Fields",
     "description" => "A sample page for Bootsole",
-    "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
+    "favicon_path" => BS\URI_PUBLIC_ROOT . "css/favicon.ico"
 ];
 
 

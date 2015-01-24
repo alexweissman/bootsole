@@ -39,7 +39,10 @@ $content = [
 **Construct a new `HtmlBuilder` object, set the template, and render:**
 
 ```
-$hb = new HtmlBuilder($content);
+
+use \Bootsole as BS;
+
+$hb = new BS\HtmlBuilder($content);
 $hb->setTemplate($template);
 echo $hb->render();
 ```
@@ -75,7 +78,7 @@ $jumbotron_content = [
     "body" => $hb
 ];
 
-$jumbotron = new HtmlBuilder($jumbotron_content);
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
 $jumbotron->setTemplate($jumbotron_template);
 echo $jumbotron->render();
 ```
@@ -105,7 +108,7 @@ echo $jumbotron->render();
 ## Arrays of nested template objects:
 
 ```
-$hb2 = new HtmlBuilder([
+$hb2 = new BS\HtmlBuilder([
     "img_src" => "http://ww2.hdnux.com/photos/02/25/67/613833/3/gallery_thumb.jpg",
     "img_alt" => "Rambo",
     "heading" => "Sylvester Stallone",
@@ -183,10 +186,10 @@ echo $jumbotron->render();
 
 > Ok, but can I load templates from files?
 
-Of course, this is actually the preferred way.  The path to your template (relative to the root directory, `TEMPLATES_PATH`) is the optional second argument when you construct an HtmlBuilder object:
+Of course, this is actually the preferred way.  The path to your template (relative to the root directory, `PATH_TEMPLATES`) is the optional second argument when you construct an HtmlBuilder object:
 
 ```
-$hb = new HtmlBuilder($content, "path/to/template.html");
+$hb = new BS\HtmlBuilder($content, "path/to/template.html");
 ```
 
 > Alright, I can see how this is useful. But I'm not really an object-oriented guy/gal/unicorn.  Do I really have to create a separate object for every single component of my web page?
@@ -215,7 +218,7 @@ $jumbotron_content = [
     ]
 ];
 
-$jumbotron = new HtmlBuilder($jumbotron_content);
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
 $jumbotron->setTemplate($jumbotron_template);
 echo $jumbotron->render();
 ```
@@ -252,7 +255,7 @@ $jumbotron_content = [
     ]
 ];
 
-$jumbotron = new HtmlBuilder($jumbotron_content);
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
 $jumbotron->setTemplate($jumbotron_template);
 echo $jumbotron->render();
 ```
@@ -299,7 +302,7 @@ The `PageBuilder` class builds a fully renderable HTML document.  This will usua
 Every page must have a unique name.  This is used to reference the page, for example, when using the `PageSchema` class to automatically include relevant CSS and JS files.
 
 #### `@schema`
-The `@schema` directive takes a path to a JSON schema file.  The schema file for pages consists of groups of pages, called **manifests**, and a corresponding list of paths to javascript and css files (relative to the `LOCAL_ROOT` directory):
+The `@schema` directive takes a path to a JSON schema file.  The schema file for pages consists of groups of pages, called **manifests**, and a corresponding list of paths to javascript and css files (relative to the `PATH_JS_ROOT` and `PATH_CSS_ROOT` directories):
 
 ```
 {
@@ -310,16 +313,16 @@ The `@schema` directive takes a path to a JSON schema file.  The schema file for
             "ghost"
         ],
         "css": [
-            "css/bootstrap-3.3.1.css",
-            "css/font-awesome.min.css",
-            "css/terran.css"
+            "bootstrap-3.3.1.css",
+            "font-awesome.min.css",
+            "terran.css"
         ],
         "js": [
-            "js/jquery-1.10.2.min.js",
-            "js/bootstrap-3.3.1.js"
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js"
             ],
-        "min_css": "css/min/terran.min.css",
-        "min_js": "js/min/terran.min.js"    
+        "min_css": "min/terran.min.css",
+        "min_js": "min/terran.min.js"    
     },
     "zerg" : {
         "pages": [
@@ -328,16 +331,16 @@ The `@schema` directive takes a path to a JSON schema file.  The schema file for
             "ultralisk"
         ],
         "css": [
-            "css/bootstrap-3.3.1.css",
-            "css/font-awesome.min.css",
-            "css/zerg.css"
+            "bootstrap-3.3.1.css",
+            "font-awesome.min.css",
+            "zerg.css"
         ],
         "js": [
-            "js/jquery-1.10.2.min.js",
-            "js/bootstrap-3.3.1.js"
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js"
             ],
-        "min_css": "css/min/zerg.min.css",
-        "min_js": "js/min/zerg.min.js"    
+        "min_css": "min/zerg.min.css",
+        "min_js": "min/zerg.min.js"    
     },    
     "default" : {
         "pages": [
@@ -345,15 +348,15 @@ The `@schema` directive takes a path to a JSON schema file.  The schema file for
             "contact"
         ],
         "css": [
-            "css/bootstrap-3.3.1.css",
-            "css/font-awesome.min.css"
+            "bootstrap-3.3.1.css",
+            "font-awesome.min.css"
         ],
         "js": [
-            "js/jquery-1.10.2.min.js",
-            "js/bootstrap-3.3.1.js"     
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js"     
             ],
-        "min_css": "css/min/default.min.css",
-        "min_js": "js/min/default.min.js"
+        "min_css": "min/default.min.css",
+        "min_js": "min/default.min.js"
     }
 }
 
@@ -361,7 +364,7 @@ The `@schema` directive takes a path to a JSON schema file.  The schema file for
 
 When a `PageBuilder` object is rendered, the schema file will be searched for a manifest group that matches the page's `name`.  If found, it will automatically include the specified CSS and JS files into the `<head>` and `<footer>` elements, respectively.  If a manifest is not found, the `default` manifest will be used.  The default schema file is in `schema/pages/pages.json`.
 
-Schemas can also be used to quickly toggle minified/merged Javascript and CSS for production environments.  When the global constant `JS_DEV` in `bootsole/bootsole.php` is set to `false`, the single javascript file specified in `min_js` will be used instead of the files specified in `js`.  Likewise, the CSS file specified in `min_css` will be used if `CSS_DEV` is set to false.  To automatically generate the minified CSS and JS for each manifest group, use the script provided in `build/build.php`.  **The build script should only be used on the development server**, immediately before pushing to the production server.  This script requires write access to the directories in which the minified JS and CSS files are to be written; consult your server manual for more information on setting directory permissions for PHP.
+Schemas can also be used to quickly toggle minified/merged Javascript and CSS for production environments.  When the global constant `JS_DEV` in `bootsole/config-bootsole.php` is set to `false`, the single javascript file specified in `min_js` will be used instead of the files specified in `js`.  Likewise, the CSS file specified in `min_css` will be used if `CSS_DEV` is set to false.  To automatically generate the minified CSS and JS for each manifest group, use the script provided in `build/build.php`.  **The build script should only be used on the development server**, immediately before pushing to the production server.  This script requires write access to the directories in which the minified JS and CSS files are to be written; consult your server manual for more information on setting directory permissions for PHP.
 
 For more information about minified Javascript and CSS, see [Minification](https://en.wikipedia.org/wiki/Minification_%28programming%29#Web_development).
 
@@ -396,14 +399,14 @@ They have one directive, `@js_includes`, which represent the manifest group to b
 ...
 
 ```
-require_once("bootsole/bootsole.php");
+require_once("config-site.php");
 
 $header_content = [
     "author" => "Alex Weissman",
     "site_title" => SITE_TITLE,
     "page_title" => "Simple, nested templating for rendering Bootstrap themed pages with PHP",
     "description" => "A sample page for Bootsole",
-    "favicon_path" => PUBLIC_ROOT . "css/favicon.ico"
+    "favicon_path" => BS\URI_PUBLIC_ROOT . "css/favicon.ico"
 ];
 
 $content = [
@@ -413,7 +416,7 @@ $content = [
     "content" => "Hey, I'm the content!"
 ];
 
-$pb = new PageBuilder($content);
+$pb = new BS\PageBuilder($content);
 echo $pb->render();
 ```
 
@@ -471,7 +474,7 @@ echo $pb->render();
 The `NavbarBuilder` class constructs a Bootstrap [navbar](http://getbootstrap.com/components/#navbar) for a page.  A navbar contains a list of components, specified by the `@components` directive:
 
 ```
-$nb = new NavbarBuilder([
+$nb = new BS\NavbarBuilder([
     "brand_label" => "Bootsole is Great!",
     "brand_url" => "http://github.com/alexweissman/bootsole",
     "@components" => [
@@ -488,15 +491,15 @@ $nb = new NavbarBuilder([
                 "home" =>  [
                     "@active" => "active",
                     "label" => "Home",
-                    "url" => PUBLIC_ROOT
+                    "url" => BS\URI_PUBLIC_ROOT
                 ],
                 "about" => [
                     "label" => "About",
-                    "url" => PUBLIC_ROOT. "about"
+                    "url" => BS\URI_PUBLIC_ROOT. "about"
                 ],
                 "contact" => [
                     "label" => "Contact",
-                    "url" => PUBLIC_ROOT. "contact"
+                    "url" => BS\URI_PUBLIC_ROOT. "contact"
                 ]
             ]
         ]
@@ -567,15 +570,15 @@ $navb = new NavBuilder([
         "home" =>  [
             "@active" => "active",
             "label" => "Home",
-            "url" => PUBLIC_ROOT
+            "url" => BS\URI_PUBLIC_ROOT
         ],
         "about" => [
             "label" => "About",
-            "url" => PUBLIC_ROOT. "about"
+            "url" => BS\URI_PUBLIC_ROOT. "about"
         ],
         "contact" => [
             "label" => "Contact",
-            "url" => PUBLIC_ROOT. "contact"
+            "url" => BS\URI_PUBLIC_ROOT. "contact"
         ]
     ]
 ]);

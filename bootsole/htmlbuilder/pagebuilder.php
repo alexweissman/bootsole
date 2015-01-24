@@ -131,8 +131,8 @@ class PageHeaderBuilder extends HtmlBuilder {
     }
            
     public function render(){
-        if (defined('PUBLIC_ROOT'))
-            $site_path = PUBLIC_ROOT;
+        if (defined('Bootsole\URI_CSS_ROOT'))
+            $site_path = URI_CSS_ROOT;
         else
             $site_path = "";
             
@@ -176,8 +176,8 @@ class PageFooterBuilder extends HtmlBuilder {
     }
            
     public function render(){
-        if (defined('PUBLIC_ROOT'))
-            $site_path = PUBLIC_ROOT;
+        if (defined('Bootsole\URI_JS_ROOT'))
+            $site_path = URI_JS_ROOT;
         else
             $site_path = "";
         $this->_content['_js_includes'] = "";
@@ -203,7 +203,7 @@ class PageSchema {
     public static function load($page_name, $schema_path = null){
         // Set default schema file, if not specified.
         if (!$schema_path)
-            $schema_path = PAGE_INCLUDES_SCHEMA_PATH;
+            $schema_path = FILE_SCHEMA_PAGE_DEFAULT;
             
         // Load the include manifest
         $schema = json_decode(file_get_contents($schema_path, FILE_USE_INCLUDE_PATH),true);

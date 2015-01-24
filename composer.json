@@ -12,13 +12,15 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "vlucas/valitron": ">=1.2.3"
+        "php": ">=5.4.0"
     },
     "autoload": {
         "classmap" : [
             "bootsole/htmlbuilder/",
             "bootsole/validation/"
+        ],
+        "files" : [
+            "bootsole/config-bootsole.php"
         ]
     }
 }

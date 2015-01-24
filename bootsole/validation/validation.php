@@ -36,7 +36,7 @@ class ValidationSchema {
 
     // Load schema from a file
     public function __construct($file, $locale = "en_US") {
-        $this->_schema = json_decode(file_get_contents($file),true);
+        $this->_schema = json_decode(file_get_contents(PATH_SCHEMA . $file),true);
         if ($this->_schema === null) {
             error_log(json_last_error());
             // Throw error
