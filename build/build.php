@@ -1,6 +1,6 @@
 <?php
 
-    require_once("../bootsole.php"); 
+    require_once("../examples/bootsole.php"); 
     
     // Builds the minified CSS and JS files for the site.
 

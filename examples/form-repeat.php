@@ -1,6 +1,8 @@
 <?php
 
-require_once("../bootsole/bootsole.php");
+require_once("bootsole.php");
+
+use \Bootsole as BS;
 
 $header_content = [
     "author" => "Alex Weissman",
@@ -22,7 +24,7 @@ $ids = [
 $form_groups = [];
 
 foreach ($ids as $id => $location){
-    $fb = new FormFieldsetBuilder([
+    $fb = new BS\FormFieldsetBuilder([
         "@components" => [
             'location' => [
                 '@type' => 'text',
@@ -55,7 +57,7 @@ print_r($form_content);
 echo "</pre>";
 */
 
-$form = new FormBuilder($form_content, "forms/form-groups.html");
+$form = new BS\FormBuilder($form_content, "forms/form-groups.html");
 
 $page_content = [
     "@header" => $header_content,
@@ -65,7 +67,7 @@ $page_content = [
 ];
 
 
-$pb = new PageBuilder($page_content);
+$pb = new BS\PageBuilder($page_content);
 
 echo $pb->render();
 

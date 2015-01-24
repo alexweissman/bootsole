@@ -16,8 +16,9 @@
         "vlucas/valitron": ">=1.2.3"
     },
     "autoload": {
-        "psr-4" : {
-            "Bootsole\\" : "bootsole/"
-        }
+        "classmap" : [
+            "bootsole/htmlbuilder/",
+            "bootsole/validation/"
+        ]
     }
 }

@@ -1,5 +1,8 @@
 <?php
 
+$loader = require __DIR__.'/../vendor/autoload.php';
+$loader->add('Bootsole', __DIR__);
+
 // Set true for running unminified/merged CSS, false to run minified CSS.  Don't forget to reminify your CSS!
 defined("CSS_DEV")
 	or define("CSS_DEV", true);
@@ -10,15 +13,15 @@ defined("JS_DEV")
 
 /***** Document (URL) paths ******/
 defined("PUBLIC_ROOT")
-    or define("PUBLIC_ROOT", "/bootsole/");
+    or define("PUBLIC_ROOT", "/bootsole/examples/");
 
 /***** File (local) paths ******/
 
 defined("LOCAL_ROOT")
-	or define ("LOCAL_ROOT", realpath(dirname(__FILE__)."/..") . "/");
+	or define ("LOCAL_ROOT", realpath(dirname(__FILE__)) . "/");
 
 defined("RESOURCES_ROOT")
-    or define("RESOURCES_ROOT", realpath(dirname(__FILE__)) . "/");
+    or define("RESOURCES_ROOT", realpath(dirname(__FILE__)."/../bootsole") . "/");
 
 defined("TEMPLATES_PATH")
     or define("TEMPLATES_PATH", RESOURCES_ROOT . "templates/");
@@ -33,12 +36,4 @@ defined("SITE_TITLE")
 defined("OPTION_SHOW_MISSING_HOOKS")
 	or define("OPTION_SHOW_MISSING_HOOKS", false);
     
-require_once(RESOURCES_ROOT . "htmlbuilder/htmlbuilder.php");
-require_once(RESOURCES_ROOT . "htmlbuilder/pagebuilder.php");
-require_once(RESOURCES_ROOT . "htmlbuilder/componentbuilder.php");
-require_once(RESOURCES_ROOT . "htmlbuilder/navbuilder.php");
-require_once(RESOURCES_ROOT . "htmlbuilder/tablebuilder.php");
-require_once(RESOURCES_ROOT . "htmlbuilder/formbuilder.php");
-require_once(RESOURCES_ROOT . "validation/validation.php");
-
 ?>

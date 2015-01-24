@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "847c01a482b32f8bc5ee261e8cbb24bd",
+    "hash": "0ac67d16b6cf1ea332d12f6eb70e5084",
     "packages": [
         {
             "name": "vlucas/valitron",

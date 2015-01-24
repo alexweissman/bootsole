@@ -1,6 +1,8 @@
 <?php
 
-require_once("../bootsole/bootsole.php");
+require_once("bootsole.php");
+
+use \Bootsole as BS;
 
 $header_content = [
     "author" => "Alex Weissman",
@@ -17,7 +19,7 @@ $content = [
     "content" => "Hey, I'm the content!"
 ];
 
-$pb = new PageBuilder($content);
+$pb = new BS\PageBuilder($content);
 echo $pb->render();
 
 ?>

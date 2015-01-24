@@ -1,6 +1,6 @@
 <?php
 
-require_once("../bootsole/bootsole.php");
+require_once("bootsole.php");
 
 use \Bootsole as BS;
 

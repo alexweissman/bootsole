@@ -1,6 +1,8 @@
 <?php
 
-require_once("../bootsole/bootsole.php");
+require_once("bootsole.php");
+
+use \Bootsole as BS;
 
 $header_content = [
     "author" => "Alex Weissman",
@@ -20,7 +22,7 @@ $content = [
     ]
 ];
 
-$pb = new PageBuilder($content);
+$pb = new BS\PageBuilder($content);
 
 // Generate teachers
 $teachers = [
@@ -76,7 +78,7 @@ foreach ($teachers as $teacher_id => $teacher){
     else
         $show_poison = "disabled";        
     
-    $menu = new DropdownButtonBuilder([
+    $menu = new BS\DropdownButtonBuilder([
         "@type" => "button",
         "@label" => "Actions",
         "@css_classes" => ["btn-primary"],
@@ -156,7 +158,7 @@ $table_content = [
  
 ];
 
-$table = new TableBuilder($table_content);
+$table = new BS\TableBuilder($table_content);
 
 $pb->setContent("content", $table);
 
