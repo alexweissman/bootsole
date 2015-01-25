@@ -779,10 +779,12 @@ $navtext = new BS\NavTextBuilder([
 
 `NavLinkBuilder` creates a non-nav link in your navbar, using the `navbar-link` CSS class:
 
+```
 $navlink = new BS\NavLinkBuilder([
     "@label" => "UserFrosting",
     "@url" => "https://www.userfrosting.com"
 ]);
+```
 
 **Output:**
 
@@ -815,7 +817,7 @@ Each member of the `@columns` array is a `TableColumnBuilder` object.  A `TableC
 
 ```
 $column_content = [
-    'label' => 'Students',
+    '@label' => 'Students',
     '@sorter' => 'metanum',
     '@sort_field' => 'num_students',
     '@intial_sort_direction' => 'asc',
@@ -825,7 +827,7 @@ $column_content = [
     '@empty_template' => "Zero"
 ];
 
-$column_template = "<h4>{{label}}</h4>";
+$column_template = "<h4>{{_label}}</h4>";
 
 $column = new BS\TableColumnBuilder($column_content);
 $column->setTemplate($column_template);
