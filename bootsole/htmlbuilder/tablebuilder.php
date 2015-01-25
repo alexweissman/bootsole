@@ -92,7 +92,7 @@ class TableBuilder extends HtmlBuilder {
             $columns_visible[$id] = $column;
         }
         
-        // Then, build the table header
+        // Then, build the table header by rendering the TableColumnBuilder objects in _columns_visible
         $header = [
             "@template" => "<tr>{{_column_headers}}</tr>",
             "@content" => [
@@ -143,7 +143,8 @@ class TableColumnBuilder extends HtmlBuilder {
     protected $_sorter;     // The sorter for this column.  "metatext" or "metanum".
     protected $_sort_field; // The name of the field to be sorted on for this column
     protected $_initial_sort_direction; // "asc" or "desc".
-    protected $_display;     // The display mode for this column.  "hidden" or "show".
+    protected $_display = "show";     // The display mode for this column.  "hidden" or "show".
+    protected $_label = "";
     protected $_empty_template;
     protected $_empty_field;
     protected $_empty_value;
@@ -154,7 +155,7 @@ class TableColumnBuilder extends HtmlBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            $this->setTemplate("<th class='{{_sorter}}'>{{label}} <i class='fa fa-sort'></i></th>");   // Default is hardcoded for now
+            $this->setTemplate("<th class='{{_sorter}}'>{{_label}} <i class='fa fa-sort'></i></th>");   // Default is hardcoded for now
         }
         
         // Set the cell template
@@ -166,7 +167,6 @@ class TableColumnBuilder extends HtmlBuilder {
         // Set the column sorter
         if (isset($content['@sorter'])){
             $this->_sorter = $content['@sorter'];
-            $this->_content['_sorter'] = "sorter-{$this->_sorter}";
         }
         else
             $this->_sorter = null;
@@ -188,7 +188,11 @@ class TableColumnBuilder extends HtmlBuilder {
             $this->_display = $content['@display'];
         else
             $this->_display = null;            
-    
+
+        if (isset($content['@label'])){
+            $this->label($content['@label']);
+        }
+        
         // Set the empty template
         if (isset($content['@empty_template']))
             $this->_empty_template = $content['@empty_template'];
@@ -207,6 +211,10 @@ class TableColumnBuilder extends HtmlBuilder {
         else
             $this->_empty_value = null;
     }
+    
+    public function label($label){
+        $this->_label = $label;
+    }    
     
     // Return the appropriate cell template for this column, optionally based on the data supplied
     public function getCellTemplate($content = null){
@@ -245,6 +253,16 @@ class TableColumnBuilder extends HtmlBuilder {
     public function getDisplay(){
         return $this->_display;
     }
+    
+    public function render(){
+        if ($this->_sorter)
+            $this->setContent('_sorter', "sorter-{$this->_sorter}");
+        else
+            $this->setContent('_sorter', "");
+        $this->setContent('_label', $this->_label);
+        return parent::render();
+    }
+    
 }
 
 ?>

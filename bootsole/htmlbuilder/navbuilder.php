@@ -89,6 +89,8 @@ class NavbarBuilder extends HtmlBuilder {
 // A generic nav component.
 
 abstract class NavComponentBuilder extends HtmlBuilder {
+    use HtmlAttributesBuilder;
+    
     protected $_align = "";
     
     public function __construct($content = [], $template_file = null, $options = []){
@@ -103,6 +105,14 @@ abstract class NavComponentBuilder extends HtmlBuilder {
         if (isset($content['@align'])){
             $this->align($content['@align']);
         }
+        
+        if (isset($content['@data'])){
+            $this->dataAttributes($content['@data']);
+        }
+
+        if (isset($content['@css_classes'])){
+            $this->cssClasses($content['@css_classes']);
+        }        
     }
     
     public function align($align){
@@ -121,6 +131,8 @@ abstract class NavComponentBuilder extends HtmlBuilder {
     // Set align and render
     public function render(){
         $this->setContent('_align', $this->_align);
+        $this->setContent('_css_classes', $this->renderCssClasses());
+        $this->setContent('_data', $this->renderDataAttributes());  
         return parent::render();
     }    
 }
@@ -139,7 +151,7 @@ class NavBuilder extends NavComponentBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<ul class='nav navbar-nav {{_align}}'>{{_items}}</ul>");   // Hardcoded template for now
+            parent::setTemplate("<ul class='nav navbar-nav {{_align}} {{_css_classes}}' {{_data}}>{{_items}}</ul>");   // Hardcoded template for now
         }
         
         // If @items set, add them
@@ -193,7 +205,7 @@ class NavDropdownBuilder extends MenuItemBuilder {
             parent::__construct($content, null, $options);
             parent::setTemplate("
                 <li class='dropdown {{_active}} {{_disabled}}'>
-                    <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>
+                    <a href='#' class='dropdown-toggle {{_css_classes}}' data-toggle='dropdown' {{_data}} role='button' aria-expanded='false'>
                         {{_label}} <span class='caret'></span>
                     </a>
                    {{_dropdown}}
@@ -225,51 +237,125 @@ class NavDropdownBuilder extends MenuItemBuilder {
 }
 
 class NavFormBuilder extends NavComponentBuilder {
+
+    protected $_form;
+    
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<div class='navbar-form {{_align}}'>{{form}}</div>");   // Hardcoded template for now
+            parent::setTemplate("<div class='navbar-form {{_align}} {{_css_classes}}' {{_data}}>{{_form}}</div>");   // Hardcoded template for now
         }
+        
+        if (isset($content['@form'])){
+            $this->form($content['@form']);
+        }        
+    }
+
+    public function form($form){
+        $this->_form = $form;
+    }
+    
+    public function render(){
+        $this->setContent("_form", $this->_form);
+        return parent::render();
     }
 }
 
 class NavTextBuilder extends NavComponentBuilder {
+
+    protected $_text;
+    
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<p class='navbar-text {{_align}}'>{{text}}</p>");   // Hardcoded template for now
+            parent::setTemplate("<p class='navbar-text {{_align}} {{_css_classes}}' {{_data}}>{{_text}}</p>");   // Hardcoded template for now
         }
+        
+        if (isset($content['@text'])){
+            $this->text($content['@text']);
+        }        
     }
+
+    public function text($text){
+        $this->_text = $text;
+    }
+    
+    public function render(){
+        $this->setContent("_text", $this->_text);
+        return parent::render();
+    }    
 }
 
 class NavButtonBuilder extends NavComponentBuilder {
+
+    protected $_label;
+    
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<button type='button' class='btn {{styles}} navbar-btn {{_align}}'>{{label}}</button>");   // Hardcoded template for now
+            parent::setTemplate("<button type='button' class='btn navbar-btn {{_align}} {{_css_classes}}' {{_data}}>{{_label}}</button>");   // Hardcoded template for now
         }
+        
+        if (isset($content['@label'])){
+            $this->label($content['@label']);
+        }        
     }
+    
+    public function label($label){
+        $this->_label = $label;
+    }
+    
+    public function render(){
+        $this->setContent("_label", $this->_label);
+        return parent::render();
+    }    
 }
 
 class NavLinkBuilder extends NavComponentBuilder {
+
+    protected $_label;
+    protected $_url;
+    
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<p class='navbar-text {{_align}}'><a href='{{url}}' class='navbar-link'>{{label}}</a></p>");   // Hardcoded template for now
+            parent::setTemplate("<p class='navbar-text {{_align}}'><a href='{{_url}}' class='navbar-link {{_css_classes}}' {{_data}}>{{_label}}</a></p>");   // Hardcoded template for now
         }
+        
+        if (isset($content['@label'])){
+            $this->label($content['@label']);
+        }
+        
+        if (isset($content['@url'])){
+            $this->url($content['@url']);
+        }        
     }
+    
+    public function label($label){
+        $this->_label = $label;
+    }       
+ 
+    public function url($url){
+        $this->_url = $url;
+    }
+    
+    public function render(){
+        $this->setContent("_label", $this->_label);
+        $this->setContent("_url", $this->_url);
+        return parent::render();
+    }        
 }
 
 ?>

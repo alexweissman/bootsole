@@ -42,7 +42,7 @@ Without Composer, you will need to manually include Bootsole's source files.  Th
 
 Bootsole relies on a number of predefined constants to properly find and render templates, JS and CSS includes, etc.  You can find these in the `bootsole/config-bootsole.php` file.  Most of the default values should work out of the box, except for the following:
 
-### `PATH_PUBLIC_ROOT`
+**`PATH_PUBLIC_ROOT`**
 
 This is the local (file) path to the public directory of your site.  It is recommended that you declare it relative to the location of your `config-bootsole.php` file.  For example, if your directory structure looks like this:
 
@@ -61,7 +61,7 @@ This is the local (file) path to the public directory of your site.  It is recom
 you could set `PATH_PUBLIC_ROOT` as:
 `define ("Bootsole\PATH_PUBLIC_ROOT", realpath(dirname(__FILE__) . "/../../public_html") . "/");`
 
-### `URI_PUBLIC_ROOT`
+**`URI_PUBLIC_ROOT`**
 
 As you should know, file paths != URL paths (though there is often a strong relationship between them, especially if you aren't using a URL routing system).  So, Bootsole needs to know what the public URL will be for your site.
 
@@ -358,6 +358,7 @@ Glad you asked - read on!
 
 Bootsole comes with many classes, called **components**, that extend the basic `HtmlBuilder` class for additional functionality.
 
+- [HtmlAttributesBuilder](#htmlattributesbuilder)
 - [PageBuilder](#pagebuilder)
 - PageHeaderBuilder
 - PageFooterBuilder
@@ -373,6 +374,12 @@ Bootsole comes with many classes, called **components**, that extend the basic `
 - [TableBuilder](#tablebuilder)
 - TableColumnBuilder
 
+### HtmlAttributesBuilder
+
+Many components have a top-level HTML tag, such as `table`, `form`, `button`, etc.  You can add CSS classes and `data-*` attributes to these components using the following directives:
+
+- `@css_classes`: An array of CSS class names to be applied to the component (usually the top-level tag of the component, but may be applied to other components that are more typically styled.  See source code for the component.)
+- `@data`: A hash of `data-*` attributes, mapping `<name> => <value>`.  For example, `[ "id" => "1" ]` will create a data attribute `data-id=1` for the component.
 
 ### PageBuilder
 
@@ -560,8 +567,8 @@ $nb = new BS\NavbarBuilder([
     "@components" => [
         "destroy" => [
             "@type" => "button",
-            "styles" => "btn-danger",
-            "label" => "Self-Destruct!"
+            "@css_classes" => ["btn-danger"],
+            "@label" => "Self-Destruct!"
         ],          
         // Implicitly declaring a NavBuilder object
         "main-menu" => [
@@ -570,16 +577,16 @@ $nb = new BS\NavbarBuilder([
             "@items" => [
                 "home" =>  [
                     "@active" => "active",
-                    "label" => "Home",
-                    "url" => BS\URI_PUBLIC_ROOT
+                    "@label" => "Home",
+                    "@url" => BS\URI_PUBLIC_ROOT
                 ],
                 "about" => [
-                    "label" => "About",
-                    "url" => BS\URI_PUBLIC_ROOT. "about"
+                    "@label" => "About",
+                    "@url" => BS\URI_PUBLIC_ROOT. "about"
                 ],
                 "contact" => [
-                    "label" => "Contact",
-                    "url" => BS\URI_PUBLIC_ROOT. "contact"
+                    "@label" => "Contact",
+                    "@url" => BS\URI_PUBLIC_ROOT. "contact"
                 ]
             ]
         ]
@@ -637,7 +644,9 @@ Each component is built off of the abstract `NavComponentBuilder` class.  To dec
 | text   | NavTextBuilder   |
 | link   | NavLinkBuilder   |
 
-All `NavComponentBuilder` objects support the `@align` directive, which describes how the component will be aligned within the navbar.  Permitted values include `left`, `right`, and `inherit`.  All templates for classes derived from `NavComponentBuilder` should use a `_align` placeholder, where the corresponding component will try to place the CSS classes for alignment. 
+All `NavComponentBuilder` objects support the `@align` directive, which describes how the component will be aligned within the navbar.  Permitted values include `left`, `right`, and `inherit`.  All templates for classes derived from `NavComponentBuilder` should use a `_align` placeholder, where the corresponding component will try to place the CSS classes for alignment.
+
+All `NavComponentBuilder` objects support the `@css_classes` and `@data` directives.
 
 ##### NavBuilder
 
@@ -649,16 +658,16 @@ $navb = new BS\NavBuilder([
     "@items" => [
         "home" =>  [
             "@active" => "active",
-            "label" => "Home",
-            "url" => BS\URI_PUBLIC_ROOT
+            "@label" => "Home",
+            "@url" => BS\URI_PUBLIC_ROOT
         ],
         "about" => [
-            "label" => "About",
-            "url" => BS\URI_PUBLIC_ROOT. "about"
+            "@label" => "About",
+            "@url" => BS\URI_PUBLIC_ROOT. "about"
         ],
         "contact" => [
-            "label" => "Contact",
-            "url" => BS\URI_PUBLIC_ROOT. "contact"
+            "@label" => "Contact",
+            "@url" => BS\URI_PUBLIC_ROOT. "contact"
         ]
     ]
 ]);
@@ -685,7 +694,10 @@ Use the function `getItem($name)` to get an item by name.
 
 The items in a `NavBuilder` are represented using the `NavItemBuilder` and `NavDropdownBuilder` classes.
 
-`NavItemBuilder` objects can be declared with two optional directives, `@active` and `@display`.  Setting `@active` to `active` will make the specified item be highlighted as active in the nav.  Setting `@display` to `disabled` will make the specified item be disabled, while setting it to `hidden` will make it not show up at all.
+###### Directives
+
+- `@active`: Setting `@active` to `active` will make the specified item be highlighted as active in the nav.  Optional.
+- `@display`: Setting `@display` to `disabled` will make the specified item be disabled, while setting it to `hidden` will make it not show up at all.  Optional.
 
 A `NavDropdownBuilder` builds a dropdown with submenu items.  It is called in the same way as `NavBuilder`, with an `@items` directive specifying the child `NavItemBuilder` objects.
 
@@ -696,7 +708,7 @@ A `NavDropdownBuilder` builds a dropdown with submenu items.  It is called in th
 ```
 $navform = new BS\NavFormBuilder([
     "@align" => "right",
-    "form" => '<form role="search">
+    "@form" => '<form role="search">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search">
         </div>*
@@ -718,7 +730,9 @@ $navform = new BS\NavFormBuilder([
 </div>
 ```
 
-You may also supply a `FormBuilder` object for the `form` field.
+###### Directives
+
+- `@form`: The form, as a string or a `FormBuilder` object.
 
 ##### NavButtonBuilder
 
@@ -726,16 +740,20 @@ You may also supply a `FormBuilder` object for the `form` field.
 
 ```
 $navbtn = new BS\NavButtonBuilder([
-    "styles" => "btn-danger",
-    "label" => "Self-Destruct!"
+    "@css_classes" => ["btn-danger"],
+    "@label" => "Self-Destruct!"
 ]);
 ```
 
 **Output:**
 
 ```
-<button type='button' class='btn btn-danger navbar-btn '>Self-Destruct!</button>
+<button type='button' class='btn navbar-btn btn-danger '>Self-Destruct!</button>
 ```
+
+###### Directives
+
+- `@label`: The text for this button.  Required.
 
 ##### NavTextBuilder
 
@@ -743,7 +761,7 @@ $navbtn = new BS\NavButtonBuilder([
 
 ```
 $navtext = new BS\NavTextBuilder([
-    "text" => "Whazzup!!!"
+    "@text" => "Whazzup!!!"
 ]);
 ```
 
@@ -753,13 +771,17 @@ $navtext = new BS\NavTextBuilder([
 <p class='navbar-text '>Whazzup!!!</p>
 ```
 
+###### Directives
+
+- `@text`: The text for this item.  Required.
+
 ##### NavLinkBuilder
 
 `NavLinkBuilder` creates a non-nav link in your navbar, using the `navbar-link` CSS class:
 
 $navlink = new BS\NavLinkBuilder([
-    "label" => "UserFrosting",
-    "url" => "https://www.userfrosting.com"
+    "@label" => "UserFrosting",
+    "@url" => "https://www.userfrosting.com"
 ]);
 
 **Output:**
@@ -767,6 +789,11 @@ $navlink = new BS\NavLinkBuilder([
 ```
 <p class='navbar-text '><a href='https://www.userfrosting.com' class='navbar-link'>UserFrosting</a></p>
 ```
+
+####### Directives
+
+- `@label`: The text for this link.  Required.
+- `@url`  : The url for this link. Required.
 
 ### TableBuilder
 
@@ -805,7 +832,7 @@ $column->setTemplate($column_template);
 
 ```
 
-Thus when `$column->render()` is called, the template `<h4>{{label}}</h4>` will be rendered with the supplied value of `label`.  To set a template for the actual cell content of this column, use the `@cell_template` directive.  When the parent `TableBuilder` object is rendered, it will attempt to replace the placeholders in `@cell_template` with the corresponding values in each row as specified by the `@rows` directive.  In this way, `TableBuilder` can construct the entire table.
+Thus when `$column->render()` is called, the template `<h4>{{_label}}</h4>` will be rendered with the supplied value of the `@label` directive.  To set a template for the actual cell content of this column, use the `@cell_template` directive.  When the parent `TableBuilder` object is rendered, it will attempt to replace the placeholders in `@cell_template` with the corresponding values in each row as specified by the `@rows` directive.  In this way, `TableBuilder` can construct the entire table.
 
 You can also specify an alternative template to use when a certain field in a row matches a certain value.  This is useful when you want a cell to render differently when a value is 0 or empty.  This is done using the `@empty_template`, `@empty_field`, and `@empty_value` directives.  When a row has a field, as specified by `@empty_field`, whose value is equal to `@empty_value`, the `@empty_template` will be used instead of the usual `@cell_template` template.
 
@@ -820,7 +847,7 @@ You can of course define `@columns` and `@rows` directly in the table content ar
 $table_content = [
     "@columns" => [
         "info" =>  [
-            "label" => "Teacher",
+            "@label" => "Teacher",
             "@sorter" => "metatext",
             "@sort_field" => "user_name",
             "@initial_sort_direction" => "asc",
@@ -836,7 +863,7 @@ $table_content = [
                     </div>"
         ],
         "num_students" => [
-            "label" => "Students",
+            "@label" => "Students",
             "@sorter" => "metanum",
             "@sort_field" => "num_students",
             "@cell_template" => "<a class='btn btn-success' href='students.php?teacher_id={{teacher_id}}'>{{num_students}}</a>",
@@ -845,7 +872,7 @@ $table_content = [
             "@empty_template" => "Zero"
         ],
         "students" => [
-            "label" => "Student List",
+            "@label" => "Student List",
             "@sorter" => "metanum",
             "@sort_field" => "num_students",
             "@cell_template" => "{{students}}",

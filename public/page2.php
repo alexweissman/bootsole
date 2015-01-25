@@ -17,22 +17,22 @@ $nb = new BS\NavbarBuilder([
     "@components" => [
         "btn1" => [
             "@type" => "button",
-            "styles" => "btn-danger",
-            "label" => "Self-Destruct!"
+            "@css_classes" => ["btn-danger"],
+            "@label" => "Self-Destruct!"
         ],
         "message" => [
             "@type" => "text",
-            "text" => "Whazzup!!!"
+            "@text" => "Whazzup!!!"
         ],
         "link" => [
             "@type" => "link",
-            "label" => "UserFrosting",
-            "url" => "https://www.userfrosting.com"
+            "@label" => "UserFrosting",
+            "@url" => "https://www.userfrosting.com"
         ],
         "search-form" => [
             "@type" => "form",
             "@align" => "right",
-            "form" => "
+            "@form" => "
                 <form role='search'>
                     <div class='form-group'>
                       <input type='search' class='form-control' placeholder='Search'>
@@ -79,8 +79,8 @@ $new_component = [
     "@align" => "right",
     "@items" => [ 
         "contact" => [
-            "label" => "<i class='fa fa-paper-plane'></i>",
-            "url" => BS\URI_PUBLIC_ROOT.  "contact"
+            "@label" => "<i class='fa fa-paper-plane'></i>",
+            "@url" => BS\URI_PUBLIC_ROOT.  "contact"
         ]
     ]
 ];

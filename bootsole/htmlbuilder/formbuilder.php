@@ -101,7 +101,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
     }
     
     public function render(){
-        $this->setContent("_classes", $this->renderCssClasses());
+        $this->setContent("_css_classes", $this->renderCssClasses());
         $this->setContent("_data", $this->renderDataAttributes());        
         
         switch($this->_layout){
@@ -346,7 +346,7 @@ abstract class FormComponentBuilder extends HtmlBuilder {
     }
     
     public function render(){
-        $this->setContent("_classes", $this->renderCssClasses());
+        $this->setContent("_css_classes", $this->renderCssClasses());
         $this->setContent("_data", $this->renderDataAttributes());
         return parent::render();
     }
@@ -375,7 +375,7 @@ class FormGroupBuilder extends FormComponentBuilder {
         else {
             parent::__construct($content, null, $options);
             $this->setTemplate("
-            <div class='form-group {{_hidden}} {{_classes}} {{_data}}'>
+            <div class='form-group {{_hidden}} {{_css_classes}} {{_data}}'>
                 <label class='control-label {{_sr_only}} {{_col_label}}'>{{_label}}</label>
                 {{_field}}
             </div>");
@@ -636,7 +636,7 @@ class FormTextFieldBuilder extends FormFieldBuilder {
         else {
             parent::__construct($content, null, $options);
             $this->setTemplate("
-            <input type='{{_text_type}}' class='form-control {{_classes}}' name='{{_name}}' autocomplete='off' value='{{_value}}' placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}}>");
+            <input type='{{_text_type}}' class='form-control {{_css_classes}}' name='{{_name}}' autocomplete='off' value='{{_value}}' placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}}>");
             $this->setContent("_text_type", "text");
         }
 
@@ -755,7 +755,7 @@ class FormSelectFieldBuilder extends FormFieldBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            $this->setTemplate("<select class='form-control {{_classes}}' name='{{_name}}' autocomplete='off' {{_multiple}} placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}}>{{_items}}</select>");
+            $this->setTemplate("<select class='form-control {{_css_classes}}' name='{{_name}}' autocomplete='off' {{_multiple}} placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}}>{{_items}}</select>");
         }
         
         if (isset($content['@items']))
@@ -948,7 +948,7 @@ class FormHiddenFieldBuilder extends FormFieldBuilder {
         else {
             parent::__construct($content, null, $options);
             $this->setTemplate("
-            <input type='hidden' class='form-control {{_classes}}' name='{{_name}}' value='{{_value}}' {{_data}} {{_display}}>");
+            <input type='hidden' class='form-control {{_css_classes}}' name='{{_name}}' value='{{_value}}' {{_data}} {{_display}}>");
         }
 
     }            
@@ -967,7 +967,7 @@ class FormTextAreaFieldBuilder extends FormFieldBuilder {
         else {
             parent::__construct($content, null, $options);
             $this->setTemplate("
-            <textarea class='form-control {{_classes}}' name='{{_name}}' autocomplete='off' {{_multiple}} placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}} rows={{_rows}}>{{_value}}</textarea>");
+            <textarea class='form-control {{_css_classes}}' name='{{_name}}' autocomplete='off' {{_multiple}} placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}} rows={{_rows}}>{{_value}}</textarea>");
         }
 
         if (isset($content['@rows']))
@@ -1008,7 +1008,7 @@ class FormCheckboxFieldBuilder extends FormFieldBuilder {
             $this->setTemplate("
             <div class='checkbox {{_display}}'>
                 <label>
-                    <input type='checkbox' class='{{_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}}> {{_text}}
+                    <input type='checkbox' class='{{_css_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}}> {{_text}}
                 </label>
             </div>");
         }
@@ -1064,7 +1064,7 @@ class FormRadioFieldBuilder extends FormCheckboxFieldBuilder {
             $this->setTemplate("
             <div class='radio {{_display}}'>
                 <label>
-                    <input type='radio' class='{{_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}}> {{_text}}
+                    <input type='radio' class='{{_css_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}}> {{_text}}
                 </label>
             </div>");
         }
@@ -1083,7 +1083,7 @@ class FormSwitchFieldBuilder  extends FormCheckboxFieldBuilder {
             parent::__construct($content, null, $options);
             $this->setTemplate("
             <div>
-                <input type='checkbox' class='form-control bootstrapswitch {{_classes}}' name='{{name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}} data-on-text='{{_text_on}}' data-off-text='{{_text_off}}'> {{_text}}
+                <input type='checkbox' class='form-control bootstrapswitch {{_css_classes}}' name='{{name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}} data-on-text='{{_text_on}}' data-off-text='{{_text_off}}'> {{_text}}
             </div>
             ");
         }
@@ -1193,7 +1193,7 @@ class FormFieldOptionBuilder extends HtmlBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            $this->setTemplate("<option class='{{_classes}}' value='{{_item_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
+            $this->setTemplate("<option class='{{_css_classes}}' value='{{_item_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
         }
         
         if (isset($content['@item_value'])){
@@ -1424,7 +1424,7 @@ trait FormFieldSelectableItem {
         /* If 'type' is specified, override the base template */
         if ($type){
             switch($type){
-                case 'select':          $this->setTemplate("<option class='{{_classes}}' value='{{_item_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
+                case 'select':          $this->setTemplate("<option class='{{_css_classes}}' value='{{_item_value}}' {{_data}} {{_selected}}>{{_label}}</option>");
                                         $this->setContent('_selected', $this->_selected ? "selected" : "");
                                         break;
                 case 'toggleradio':     $this->setContent("_type", "radio");
@@ -1433,7 +1433,7 @@ trait FormFieldSelectableItem {
                 case 'togglecheckbox':  $this->setContent("_type", "checkbox");
                                         $this->setInputTemplate($this->_selected);
                                         break;
-                case 'bootstrapradio':  $this->setTemplate("<button type='button' class='bootstrapradio {{_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_display}} data-selected='{{_selected}}' data-size='{{_size}}'>{{_label}}</button> ");
+                case 'bootstrapradio':  $this->setTemplate("<button type='button' class='bootstrapradio {{_css_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_display}} data-selected='{{_selected}}' data-size='{{_size}}'>{{_label}}</button> ");
                                         $this->setContent('_selected', ($this->_selected ? "true" : "false"));
                                         break;
                 
@@ -1450,19 +1450,19 @@ trait FormFieldSelectableItem {
         $this->setContent('_label', $this->_label);
         $this->setContent('_title', $this->_title);
         $this->setContent('_data', $this->renderDataAttributes());
-        $this->setContent("_classes", $this->renderCssClasses());
+        $this->setContent("_css_classes", $this->renderCssClasses());
         return parent::render();
     }
     
     private function setInputTemplate($selected){
         if ($selected)
             $this->setTemplate("
-                <label class='btn {{_classes}} active {{_display}}'>
+                <label class='btn {{_css_classes}} active {{_display}}'>
                     <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_item_value}}' {{_data}} {{validator}} {{_display}} checked> {{_label}}
                 </label>");
         else
             $this->setTemplate("
-                <label class='btn {{_classes}} {{_display}}'>
+                <label class='btn {{_css_classes}} {{_display}}'>
                     <input class='form-control' type='{{_type}}' name='{{_name}}' value='{{_item_value}}' {{_data}} {{validator}} {{_display}}> {{_label}}
                 </label>");  
     }

@@ -116,7 +116,7 @@ foreach ($teachers as $teacher_id => $teacher){
 $table_content = [
     "@columns" => [
         "info" =>  [
-            "label" => "Teacher",
+            "@label" => "Teacher",
             "@sorter" => "metatext",
             "@sort_field" => "user_name",
             "@initial_sort_direction" => "asc",
@@ -132,7 +132,7 @@ $table_content = [
                     </div>"
         ],
         "num_students" => [
-            "label" => "Students",
+            "@label" => "Students",
             "@sorter" => "metanum",
             "@sort_field" => "num_students",
             "@cell_template" => "<a class='btn btn-success' href='students.php?teacher_id={{teacher_id}}'>{{num_students}}</a>",
@@ -141,7 +141,7 @@ $table_content = [
             "@empty_template" => "Zero"
         ],
         "students" => [
-            "label" => "Student List",
+            "@label" => "Student List",
             "@sorter" => "metanum",
             "@sort_field" => "num_students",
             "@cell_template" => "{{students}}",
@@ -150,7 +150,7 @@ $table_content = [
             "@empty_template" => "<i>None</i>"  
         ],
         "actions" => [
-            "label" => "Actions",
+            "@label" => "Actions",
             "@cell_template" => "{{menu}}"
         ]
     ],

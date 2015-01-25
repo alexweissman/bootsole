@@ -15,7 +15,7 @@ class ButtonGroupBuilder extends HtmlBuilder {
         else {
             parent::__construct($content, null, $options);
             parent::setTemplate("
-            <div class='btn-group {{_classes}}' {{_data}}>
+            <div class='btn-group {{_css_classes}}' {{_data}}>
                 {{_items}}
             </div>");   // Hardcoded template for now
         }
@@ -54,7 +54,7 @@ class ButtonGroupBuilder extends HtmlBuilder {
     // Set items and render
     public function render(){
         $this->setContent('_items', $this->renderItems());
-        $this->setContent('_classes', $this->renderCssClasses());
+        $this->setContent('_css_classes', $this->renderCssClasses());
         $this->setContent('_data', $this->renderDataAttributes());
         
         return parent::render();
@@ -80,7 +80,7 @@ class ButtonBuilder extends HtmlBuilder {
         else {
             parent::__construct($content, null, $options = []);
             parent::setTemplate("            
-                <button type='{{_type}}' name='{{_name}}' class='btn {{_classes}} {{_active}}' {{_display}} {{_data}}>
+                <button type='{{_type}}' name='{{_name}}' class='btn {{_css_classes}} {{_active}}' {{_display}} {{_data}}>
                     {{_label}}
                 </button>");
         } 
@@ -163,7 +163,7 @@ class ButtonBuilder extends HtmlBuilder {
         } else
             $this->setContent('_type', "button");
             
-        $this->setContent('_classes', $this->renderCssClasses());
+        $this->setContent('_css_classes', $this->renderCssClasses());
         $this->setContent('_data', $this->renderDataAttributes());
         
         return parent::render();
@@ -183,7 +183,7 @@ class DropdownButtonBuilder extends ButtonBuilder {
             parent::__construct($content, null, $options = []);
             parent::setTemplate("            
                 <div class='btn-group'>
-                    <button type='{{_type}}' name='{{_name}}' class='btn {{_classes}} {{_active}} dropdown-toggle' {{_disabled}} {{_data}} data-toggle='dropdown' aria-expanded='false'>
+                    <button type='{{_type}}' name='{{_name}}' class='btn {{_css_classes}} {{_active}} dropdown-toggle' {{_disabled}} {{_data}} data-toggle='dropdown' aria-expanded='false'>
                         {{_label}} <span class='caret'></span>
                     </button>
                     {{_dropdown}}
@@ -222,7 +222,7 @@ class ButtonDropdownAddonBuilder extends DropdownButtonBuilder {
         else {
             parent::__construct($content, null, $options = []);
             parent::setTemplate("
-                    <button type='{{_type}}' name='{{_name}}' class='btn {{_classes}} {{_active}} dropdown-toggle' {{_disabled}} {{_data}} data-toggle='dropdown' aria-expanded='false'>
+                    <button type='{{_type}}' name='{{_name}}' class='btn {{_css_classes}} {{_active}} dropdown-toggle' {{_disabled}} {{_data}} data-toggle='dropdown' aria-expanded='false'>
                         <span class='caret'></span>
                     </button>
                     {{_dropdown}}
@@ -327,7 +327,7 @@ class MenuItemBuilder extends HtmlBuilder {
             parent::__construct($content, $template_file, $options);
         else {
             parent::__construct($content, null, $options);
-            parent::setTemplate("<li class='{{_active}} {{_display}}'><a role='menuitem' class='{{_classes}}' {{_data}} href='{{_url}}'>{{_label}}</a></li>");
+            parent::setTemplate("<li class='{{_active}} {{_display}}'><a role='menuitem' class='{{_css_classes}}' {{_data}} href='{{_url}}'>{{_label}}</a></li>");
         }
         
         if (isset($content['@label'])){
@@ -381,8 +381,8 @@ class MenuItemBuilder extends HtmlBuilder {
         $this->setContent('_url', $this->_url);       
         $this->setContent('_active', $this->_active);
         $this->setContent('_display', ($this->_display == "disabled") ? "disabled" : "");
-        $this->setContent('_classes', $this->renderCssClasses());
-        $this->setContent('_data', $this->renderDataAttributes());        
+        $this->setContent('_css_classes', $this->renderCssClasses());
+        $this->setContent('_data', $this->renderDataAttributes());
         return parent::render();
     }
     
