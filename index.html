@@ -4,19 +4,54 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+   <link rel="stylesheet" href="css/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="css/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="css/print.css" media="print">   
+   <link rel="stylesheet" href="css/jumbotron.css">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
 
-    <title>Bootsole by alexweissman</title>
+    <title>Bootsole | A templating and rendering engine for Bootstrap components in PHP</title>
   </head>
 
   <body>
+  
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Home</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+    
+    
+    <!--
+   <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>Bootsole<br>
+                <small><a id="by-alex-weissman" class="anchor" href="#by-alex-weissman" aria-hidden="true"><span class="octicon octicon-link"></span></a>By Alex Weissman</small></h1>
+                
+            </div>
+            <div class="col-md-4">
+                <a href="https://github.com/alexweissman/bootsole" class="button"><small>View project on</small> GitHub</a>
+            </div>
+        </div>
+        <h2>A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.</h2>
+      </div>
+    </div>
+-->
+
     <header>
       <div class="inner">
         <h1>Bootsole</h1>
@@ -26,17 +61,11 @@
     </header>
 
     <div id="content-wrapper">
+
+    
+
       <div class="inner clearfix">
         <section id="main-content">
-          <h1>
-<a id="bootsole-020" class="anchor" href="#bootsole-020" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bootsole 0.2.0</h1>
-
-<h3>
-<a id="by-alex-weissman" class="anchor" href="#by-alex-weissman" aria-hidden="true"><span class="octicon octicon-link"></span></a>By Alex Weissman</h3>
-
-<p>Copyright (c) 2015</p>
-
-<p>A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.</p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
@@ -164,7 +193,7 @@ echo $hb-&gt;render();
 
 <p><strong>Output:</strong></p>
 
-<p><img src="/screenshots/bootsole-example-1.png" alt="Basic Usage" title="Basic usage"></p>
+<p><img src="screenshots/bootsole-example-1.png" alt="Basic Usage" title="Basic usage"></p>
 
 <pre><code>&lt;div class='media'&gt;
   &lt;a class='media-left' href='#'&gt;
@@ -200,7 +229,7 @@ echo $jumbotron-&gt;render();
 
 <p><strong>Output:</strong></p>
 
-<p><img src="/screenshots/bootsole-example-2.png" alt="Nested Templates" title="Nested templates"></p>
+<p><img src="screenshots/bootsole-example-2.png" alt="Nested Templates" title="Nested templates"></p>
 
 <pre><code>&lt;div class='jumbotron'&gt;
     &lt;h1&gt;Developers&lt;/h1&gt;        
@@ -263,7 +292,7 @@ echo $jumbotron-&gt;render();
 
 <p><strong>Output:</strong></p>
 
-<p><img src="/screenshots/bootsole-example-3.png" alt="Array Templates" title="Array templates"></p>
+<p><img src="screenshots/bootsole-example-3.png" alt="Array Templates" title="Array templates"></p>
 
 <pre><code>&lt;div class='jumbotron'&gt;
     &lt;h1&gt;Developers&lt;/h1&gt;
@@ -572,7 +601,7 @@ echo $pb-&gt;render();
 
 <p><strong>Output:</strong></p>
 
-<p><img src="/screenshots/bootsole-page-1.png" alt="PageBuilder" title="PageBuilder"></p>
+<p><img src="screenshots/bootsole-page-1.png" alt="PageBuilder" title="PageBuilder"></p>
 
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -658,7 +687,7 @@ echo $pb-&gt;render();
 
 <p><strong>Outputs:</strong></p>
 
-<p><img src="/screenshots/bootsole-navbar-1.png" alt="NavbarBuilder" title="NavbarBuilder"></p>
+<p><img src="screenshots/bootsole-navbar-1.png" alt="NavbarBuilder" title="NavbarBuilder"></p>
 
 <pre><code>&lt;!-- Fixed navbar --&gt;
 &lt;nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"&gt;
@@ -1041,7 +1070,7 @@ $table = new BS\TableBuilder($table_content);
 
 <p><strong>Output:</strong></p>
 
-<p><img src="/screenshots/bootsole-example-4.png" alt="TableBuilder" title="TableBuilder"></p>
+<p><img src="screenshots/bootsole-example-4.png" alt="TableBuilder" title="TableBuilder"></p>
 
 <h3>
 <a id="formbuilder" class="anchor" href="#formbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>FormBuilder</h3>
@@ -1126,4 +1155,11 @@ $table = new BS\TableBuilder($table_content);
 
   
   </body>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> 
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->  
 </html>
