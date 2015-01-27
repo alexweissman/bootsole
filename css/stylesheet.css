@@ -127,15 +127,6 @@ dfn {
   font-style: italic;
 }
 
-/**
- * Address variable `h1` font-size and margin within `section` and `article`
- * contexts in Firefox 4+, Safari, and Chrome.
- */
-
-h1 {
-  margin: 0.67em 0;
-  font-size: 2em;
-}
 
 /**
  * Address styling not present in IE 8/9.
