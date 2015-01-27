@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Bootsole by alexweissman</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Bootsole</h1>
+        <h2>A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.</h2>
+        <a href="https://github.com/alexweissman/bootsole" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="bootsole-020" class="anchor" href="#bootsole-020" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bootsole 0.2.0</h1>
+
+<h3>
+<a id="by-alex-weissman" class="anchor" href="#by-alex-weissman" aria-hidden="true"><span class="octicon octicon-link"></span></a>By Alex Weissman</h3>
+
+<p>Copyright (c) 2015</p>
+
+<p>A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>It is possible to install Bootsole via Composer, or as a standalone library.</p>
+
+<h3>
+<a id="to-install-with-composer" class="anchor" href="#to-install-with-composer" aria-hidden="true"><span class="octicon octicon-link"></span></a>To install with composer:</h3>
+
+<ol>
+<li>If you haven't already, get <a href="http://getcomposer.org/">Composer</a> and <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx">install it</a> - preferably, globally.</li>
+<li>Require Bootsole, either by running <code>php composer.phar require alexweissman/bootsole</code>, or by creating a <code>composer.json</code> file:</li>
+</ol>
+
+<pre><code>{
+    "require": {
+        "php": "&gt;=5.4.0",
+        "alexweissman/bootsole": "0.2.0"
+    }
+}
+</code></pre>
+
+<p>and running <code>composer install</code>.</p>
+
+<ol>
+<li>Include the <code>vendor/autoload.php</code> file in your project.  For an example of how this can be done, see <code>public/site-config.php</code>.</li>
+</ol>
+
+<p>Note: The core Bootsole library is contained entirely in <code>vendor/alexweissman/bootsole/bootsole/</code>.  You don't need the <code>public</code> directory - it just contains examples for how Bootsole can be used in a PHP project.</p>
+
+<h3>
+<a id="to-install-manually" class="anchor" href="#to-install-manually" aria-hidden="true"><span class="octicon octicon-link"></span></a>To install manually:</h3>
+
+<p>Copy the <code>bootsole/</code> subdirectory to wherever you usually keep your site's non-public resources.  If you don't know what "non-public resources" means, see <a href="http://code.tutsplus.com/tutorials/organize-your-next-php-project-the-right-way--net-5873">Organize Your Next PHP Project the Right Way</a>.</p>
+
+<p>If you want to run the premade examples, you can copy the contents of <code>public</code> to your site's public directory.</p>
+
+<p>Without Composer, you will need to manually include Bootsole's source files.  The <code>public/config-site.php</code> file will do this automatically for you - feel free to move that code to your project's main config file.</p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>Bootsole relies on a number of predefined constants to properly find and render templates, JS and CSS includes, etc.  You can find these in the <code>bootsole/config-bootsole.php</code> file.  Most of the default values should work out of the box, except for the following:</p>
+
+<p><strong><code>PATH_PUBLIC_ROOT</code></strong></p>
+
+<p>This is the local (file) path to the public directory of your site.  It is recommended that you declare it relative to the location of your <code>config-bootsole.php</code> file.  For example, if your directory structure looks like this:</p>
+
+<pre><code>- public_html/               // This is where we want PATH_PUBLIC_ROOT to point
+  - js/
+  - css/
+  - &lt;public-facing content&gt;
+- resources/
+  - bootsole/
+    - config-bootsole.php    // This is where PATH_PUBLIC_ROOT is defined
+    - ...
+  - &lt;other libraries&gt;
+</code></pre>
+
+<p>you could set <code>PATH_PUBLIC_ROOT</code> as:
+<code>define ("Bootsole\PATH_PUBLIC_ROOT", realpath(dirname(__FILE__) . "/../../public_html") . "/");</code></p>
+
+<p><strong><code>URI_PUBLIC_ROOT</code></strong></p>
+
+<p>As you should know, file paths != URL paths (though there is often a strong relationship between them, especially if you aren't using a URL routing system).  So, Bootsole needs to know what the public URL will be for your site.</p>
+
+<p>For a development environment, this might be something like:
+<code>http://localhost/myproject/</code>.</p>
+
+<p>For a production environment, this might look like:
+<code>https://mysite.com/</code>.</p>
+
+<h2>
+<a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic usage</h2>
+
+<p>If you have autoloaded the library with Composer, all you should need is:</p>
+
+<pre><code>&lt;?php
+
+require_once "path/to/autoload.php";
+use \Bootsole as BS;
+
+...
+</code></pre>
+
+<p>Otherwise, you will need include the files manually, in the correct order.  See <code>public/config-site.php</code> for an example of how this is done.</p>
+
+<p>Then, you can start defining and deploying templates:</p>
+
+<p>Bootsole uses the <code>{{double handlebar}}</code> notation for representing placeholders in a template.</p>
+
+<p><strong>Create a template:</strong></p>
+
+<pre><code>$template = "
+&lt;div class='media'&gt;
+  &lt;a class='media-left' href='#'&gt;
+    &lt;img src='{{img_src}}' alt='{{img_alt}}' width='64' height='64'&gt;
+  &lt;/a&gt;
+  &lt;div class='media-body'&gt;
+    &lt;h4 class='media-heading'&gt;{{heading}}&lt;/h4&gt;
+    {{body}}
+  &lt;/div&gt;
+&lt;/div&gt;";
+</code></pre>
+
+<p><strong>Then, assign content to the placeholders:</strong></p>
+
+<pre><code>$content = [
+    "img_src" =&gt; "http://avatars1.githubusercontent.com/u/5004534?v=3&amp;s=400",
+    "img_alt" =&gt; "Lord of the Fries",
+    "heading" =&gt; "Alex Weissman",
+    "body" =&gt; "Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors, as well as a backend site..."
+];
+</code></pre>
+
+<p><strong>Construct a new <code>HtmlBuilder</code> object, set the template, and render:</strong></p>
+
+<pre><code>
+use \Bootsole as BS;
+
+$hb = new BS\HtmlBuilder($content);
+$hb-&gt;setTemplate($template);
+echo $hb-&gt;render();
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<p><img src="/screenshots/bootsole-example-1.png" alt="Basic Usage" title="Basic usage"></p>
+
+<pre><code>&lt;div class='media'&gt;
+  &lt;a class='media-left' href='#'&gt;
+    &lt;img src='http://avatars1.githubusercontent.com/u/5004534?v=3&amp;s=400 alt='Lord of the Fries' width='64' height='64'&gt;
+  &lt;/a&gt;
+  &lt;div class='media-body'&gt;
+    &lt;h4 class='media-heading'&gt;Alex Weissman&lt;/h4&gt;
+    Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors, as well as a backend site for managing tutor and client data and activity.
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Wow, amazing!  So far, this is just simple find-and-replace.  But we can also nest <code>HtmlBuilder</code> objects in the content of other <code>HtmlBuilder</code> objects:</p>
+
+<h2>
+<a id="nested-template-objects" class="anchor" href="#nested-template-objects" aria-hidden="true"><span class="octicon octicon-link"></span></a>Nested template objects:</h2>
+
+<pre><code>$jumbotron_template = "
+    &lt;div class='jumbotron'&gt;
+        &lt;h1&gt;{{heading}}&lt;/h1&gt;
+        {{body}}
+    &lt;/div&gt;";
+
+$jumbotron_content = [
+    "heading" =&gt; "Developers",
+    "body" =&gt; $hb
+];
+
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
+$jumbotron-&gt;setTemplate($jumbotron_template);
+echo $jumbotron-&gt;render();
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<p><img src="/screenshots/bootsole-example-2.png" alt="Nested Templates" title="Nested templates"></p>
+
+<pre><code>&lt;div class='jumbotron'&gt;
+    &lt;h1&gt;Developers&lt;/h1&gt;        
+    &lt;div class='media'&gt;
+      &lt;a class='media-left' href='#'&gt;
+        &lt;img src='http://avatars1.githubusercontent.com/u/5004534?v=3&amp;s=400 alt='Lord of the Fries' width='64' height='64'&gt;
+      &lt;/a&gt;
+      &lt;div class='media-body'&gt;
+        &lt;h4 class='media-heading'&gt;Alex Weissman&lt;/h4&gt;
+        Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors, as well as a backend site...
+      &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<blockquote>
+<p>Alright, that's kind of cool.  But what if I need a whole list of developers?  Do I need a placeholder for each one?</p>
+</blockquote>
+
+<p><strong>Of course not!</strong>  You can also assign an array of <code>HtmlBuilder</code> objects to a placeholder.  They will automatically be concatenated on rendering:</p>
+
+<h2>
+<a id="arrays-of-nested-template-objects" class="anchor" href="#arrays-of-nested-template-objects" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arrays of nested template objects:</h2>
+
+<pre><code>$hb2 = new BS\HtmlBuilder([
+    "img_src" =&gt; "http://ww2.hdnux.com/photos/02/25/67/613833/3/gallery_thumb.jpg",
+    "img_alt" =&gt; "Rambo",
+    "heading" =&gt; "Sylvester Stallone",
+    "body" =&gt; "Sylvester Gardenzio Stallone, nicknamed Sly Stallone, is an American actor, screenwriter and film director.  Stallone is well known for his Hollywood action roles..."
+]);
+$hb2-&gt;setTemplate($template);
+
+$hb3 = new BS\HtmlBuilder([
+    "img_src" =&gt; "http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/d0/d0877f614b8bb52813a63915be4da611cfa0ac2e_medium.jpg",
+    "img_alt" =&gt; "John McClane",
+    "heading" =&gt; "Bruce Willis",
+    "body" =&gt; "Walter Bruce Willis, better known as Bruce Willis, is an American actor, producer, and singer. His career began on the Off-Broadway stage and then in television in the 1980s, most notably as David Addison in Moonlighting..."
+]);
+$hb3-&gt;setTemplate($template);
+
+$jumbotron_template = "
+    &lt;div class='jumbotron'&gt;
+        &lt;h1&gt;{{heading}}&lt;/h1&gt;
+        {{body}}
+    &lt;/div&gt;";
+
+$jumbotron_content = [
+    "heading" =&gt; "Developers",
+    "body" =&gt; [
+        $hb1,
+        $hb2,
+        $hb3
+    ]
+];
+
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
+$jumbotron-&gt;setTemplate($jumbotron_template);
+echo $jumbotron-&gt;render();
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<p><img src="/screenshots/bootsole-example-3.png" alt="Array Templates" title="Array templates"></p>
+
+<pre><code>&lt;div class='jumbotron'&gt;
+    &lt;h1&gt;Developers&lt;/h1&gt;
+
+    &lt;div class='media'&gt;
+      &lt;a class='media-left' href='#'&gt;
+        &lt;img src='http://avatars1.githubusercontent.com/u/5004534?v=3&amp;s=400' alt='Lord of the Fries' width='64' height='64'&gt;
+      &lt;/a&gt;
+      &lt;div class='media-body'&gt;
+        &lt;h4 class='media-heading'&gt;Alex Weissman&lt;/h4&gt;
+        Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors...
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class='media'&gt;
+      &lt;a class='media-left' href='#'&gt;
+        &lt;img src='http://ww2.hdnux.com/photos/02/25/67/613833/3/gallery_thumb.jpg' alt='Rambo' width='64' height='64'&gt;
+      &lt;/a&gt;
+      &lt;div class='media-body'&gt;
+        &lt;h4 class='media-heading'&gt;Sylvester Stallone&lt;/h4&gt;
+        Sylvester Gardenzio Stallone, nicknamed Sly Stallone, is an American actor, screenwriter and film director.  Stallone is well known for his Hollywood action roles...
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class='media'&gt;
+      &lt;a class='media-left' href='#'&gt;
+        &lt;img src='http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/d0/d0877f614b8bb52813a63915be4da611cfa0ac2e_medium.jpg' alt='John McClane' width='64' height='64'&gt;
+      &lt;/a&gt;
+      &lt;div class='media-body'&gt;
+        &lt;h4 class='media-heading'&gt;Bruce Willis&lt;/h4&gt;
+        Walter Bruce Willis, better known as Bruce Willis, is an American actor, producer, and singer. His career began on the Off-Broadway stage and then in television in the 1980s, most notably as David Addison in Moonlighting...
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+&lt;/div&gt;
+</code></pre>
+
+<blockquote>
+<p>Ok, but can I load templates from files?</p>
+</blockquote>
+
+<p>Of course, this is actually the preferred way.  The path to your template (relative to the root directory, <code>PATH_TEMPLATES</code>) is the optional second argument when you construct an HtmlBuilder object:</p>
+
+<pre><code>$hb = new BS\HtmlBuilder($content, "path/to/template.html");
+</code></pre>
+
+<blockquote>
+<p>Alright, I can see how this is useful. But I'm not really an object-oriented guy/gal/unicorn.  Do I really have to create a separate object for every single component of my web page?</p>
+</blockquote>
+
+<p>Well, it's not a bad idea, and it'll help you stay organized.  But if you really want, you can define child components directly in your content:</p>
+
+<h2>
+<a id="implicitly-defined-child-components" class="anchor" href="#implicitly-defined-child-components" aria-hidden="true"><span class="octicon octicon-link"></span></a>Implicitly defined child components:</h2>
+
+<pre><code>$jumbotron_template = "
+    &lt;div class='jumbotron'&gt;
+        &lt;h1&gt;{{heading}}&lt;/h1&gt;
+        {{body}}
+    &lt;/div&gt;";
+
+$jumbotron_content = [
+    "heading" =&gt; "Developers",
+    "body" =&gt; [
+        "@template" =&gt; $template,
+        "@content" =&gt; [
+            "img_src" =&gt; "http://avatars1.githubusercontent.com/u/5004534?v=3&amp;s=400",
+            "img_alt" =&gt; "Lord of the Fries",
+            "heading" =&gt; "Alex Weissman",
+            "body" =&gt; "Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors..."            
+        ]
+    ]
+];
+
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
+$jumbotron-&gt;setTemplate($jumbotron_template);
+echo $jumbotron-&gt;render();
+</code></pre>
+
+<p>You'll notice that we've used two special <strong>directives</strong>, <code>@template</code> and <code>@content</code>, to directly define a child component in the main "jumbotron" component.  When the parent <code>HtmlBuilder</code> is constructed, it will use the template supplied in <code>@template</code> and the content supplied in <code>@content</code> to automatically construct a child <code>HtmlBuilder</code> object.  You can also use the <code>@source</code> directive to pass in a path to a template file, instead of the template itself.</p>
+
+<p>You can create arrays of content for a given template using the <code>@array</code> directive:</p>
+
+<pre><code>$jumbotron_content = [
+    "heading" =&gt; "Developers",
+    "body" =&gt; [
+        "@template" =&gt; $template,
+        "@array" =&gt; [
+            [
+                "img_src" =&gt; "http://avatars1.githubusercontent.com/u/5004534?v=3&amp;s=400",
+                "img_alt" =&gt; "Lord of the Fries",
+                "heading" =&gt; "Alex Weissman",
+                "body" =&gt; "Alex has many years of experience in software development, including web development using MySQL, PHP, and Javascript frameworks including jQuery and Twitter Bootstrap. Alex maintains the frontend website for Bloomington Tutors..."            
+            ],
+            [
+                "img_src" =&gt; "http://ww2.hdnux.com/photos/02/25/67/613833/3/gallery_thumb.jpg",
+                "img_alt" =&gt; "Rambo",
+                "heading" =&gt; "Sylvester Stallone",
+                "body" =&gt; "Sylvester Gardenzio Stallone, nicknamed Sly Stallone, is an American actor, screenwriter and film director.  Stallone is well known for his Hollywood action roles..."
+            ],
+            [
+                "img_src" =&gt; "http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/d0/d0877f614b8bb52813a63915be4da611cfa0ac2e_medium.jpg",
+                "img_alt" =&gt; "John McClane",
+                "heading" =&gt; "Bruce Willis",
+                "body" =&gt; "Walter Bruce Willis, better known as Bruce Willis, is an American actor, producer, and singer. His career began on the Off-Broadway stage and then in television in the 1980s, most notably as David Addison in Moonlighting..."
+            ]
+        ]
+    ]
+];
+
+$jumbotron = new BS\HtmlBuilder($jumbotron_content);
+$jumbotron-&gt;setTemplate($jumbotron_template);
+echo $jumbotron-&gt;render();
+</code></pre>
+
+<p>By using <code>@array</code> instead of <code>@content</code>, you're telling <code>HtmlBuilder</code> that the template should be applied to each subarray in the array assigned to <code>@array</code>.  The rendered content is then concatenated at render time.</p>
+
+<blockquote>
+<p>Speaking of <strong>directives</strong>, what are they?</p>
+</blockquote>
+
+<h2>
+<a id="directives" class="anchor" href="#directives" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h2>
+
+<p>Well, we've already seen the <code>@template</code>, <code>@content</code>, <code>@source</code>, and <code>@array</code> directives.  So, you probably already figured it out.  But just in case, <strong>directives</strong> are members of a content array that are not rendered as literal placeholders in the template.  Instead, you use them to convey something special to <code>HtmlBuilder</code>.  For example, <code>@template</code> tells <code>HtmlBuilder</code> that we are passing in a template that should be applied to the contents of a corresponding <code>@content</code> or <code>@array</code> directive.</p>
+
+<p>There are other directives for the special-purpose templating classes that come with Bootsole.  They allow you to access specific types of content such as the items in a <code>NavbarBuilder</code> or <code>NavDropdownBuilder</code>, or they signal special behavior such as the <code>@display</code> directive for <code>TableColumnBuilder</code> objects.</p>
+
+<blockquote>
+<p>What are these special-purpose classes, anyway?</p>
+</blockquote>
+
+<p>Glad you asked - read on!</p>
+
+<h2>
+<a id="components" class="anchor" href="#components" aria-hidden="true"><span class="octicon octicon-link"></span></a>Components</h2>
+
+<p>Bootsole comes with many classes, called <strong>components</strong>, that extend the basic <code>HtmlBuilder</code> class for additional functionality.</p>
+
+<ul>
+<li><a href="#htmlattributesbuilder">HtmlAttributesBuilder</a></li>
+<li><a href="#pagebuilder">PageBuilder</a></li>
+<li>PageHeaderBuilder</li>
+<li>PageFooterBuilder</li>
+<li><a href="#navbarbuilder">NavbarBuilder</a></li>
+<li>NavComponentBuilder</li>
+<li><a href="#navbuilder">NavBuilder</a></li>
+<li><a href="#navitembuilder-and-navdropdownbuilder">NavItemBuilder</a></li>
+<li><a href="#navitembuilder-and-navdropdownbuilder">NavDropdownBuilder</a></li>
+<li>NavFormBuilder</li>
+<li>NavTextBuilder</li>
+<li>NavButtonBuilder</li>
+<li>NavLinkBuilder</li>
+<li><a href="#tablebuilder">TableBuilder</a></li>
+<li>TableColumnBuilder</li>
+</ul>
+
+<h3>
+<a id="htmlattributesbuilder" class="anchor" href="#htmlattributesbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>HtmlAttributesBuilder</h3>
+
+<p>Many components have a top-level HTML tag, such as <code>table</code>, <code>form</code>, <code>button</code>, etc.  You can add CSS classes and <code>data-*</code> attributes to these components using the following directives:</p>
+
+<ul>
+<li>
+<code>@css_classes</code>: An array of CSS class names to be applied to the component (usually the top-level tag of the component, but may be applied to other components that are more typically styled.  See source code for the component.)</li>
+<li>
+<code>@data</code>: A hash of <code>data-*</code> attributes, mapping <code>&lt;name&gt; =&gt; &lt;value&gt;</code>.  For example, <code>[ "id" =&gt; "1" ]</code> will create a data attribute <code>data-id=1</code> for the component.</li>
+</ul>
+
+<h3>
+<a id="pagebuilder" class="anchor" href="#pagebuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>PageBuilder</h3>
+
+<p>The <code>PageBuilder</code> class builds a fully renderable HTML document.  This will usually be your "top-level" templating object when developing websites and web applications.  A <code>PageBuilder</code> object, in addition to the user-defined placeholders, accepts four directives: <code>@name</code>, <code>@schema</code>, <code>@header</code>, and <code>@footer</code>.</p>
+
+<h4>
+<a id="name" class="anchor" href="#name" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@name</code>
+</h4>
+
+<p>Every page must have a unique name.  This is used to reference the page, for example, when using the <code>PageSchema</code> class to automatically include relevant CSS and JS files.</p>
+
+<h4>
+<a id="schema" class="anchor" href="#schema" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@schema</code>
+</h4>
+
+<p>The <code>@schema</code> directive takes a path to a JSON schema file.  The schema file for pages consists of groups of pages, called <strong>manifests</strong>, and a corresponding list of paths to javascript and css files (relative to the <code>PATH_JS_ROOT</code> and <code>PATH_CSS_ROOT</code> directories):</p>
+
+<pre><code>{
+    "terran" : {
+        "pages": [
+            "marine",
+            "firebat",
+            "ghost"
+        ],
+        "css": [
+            "bootstrap-3.3.1.css",
+            "font-awesome.min.css",
+            "terran.css"
+        ],
+        "js": [
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js"
+            ],
+        "min_css": "min/terran.min.css",
+        "min_js": "min/terran.min.js"    
+    },
+    "zerg" : {
+        "pages": [
+            "zergling",
+            "hydralisk",
+            "ultralisk"
+        ],
+        "css": [
+            "bootstrap-3.3.1.css",
+            "font-awesome.min.css",
+            "zerg.css"
+        ],
+        "js": [
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js"
+            ],
+        "min_css": "min/zerg.min.css",
+        "min_js": "min/zerg.min.js"    
+    },    
+    "default" : {
+        "pages": [
+            "about",
+            "contact"
+        ],
+        "css": [
+            "bootstrap-3.3.1.css",
+            "font-awesome.min.css"
+        ],
+        "js": [
+            "jquery-1.10.2.min.js",
+            "bootstrap-3.3.1.js"     
+            ],
+        "min_css": "min/default.min.css",
+        "min_js": "min/default.min.js"
+    }
+}
+
+</code></pre>
+
+<p>When a <code>PageBuilder</code> object is rendered, the schema file will be searched for a manifest group that matches the page's <code>name</code>.  If found, it will automatically include the specified CSS and JS files into the <code>&lt;head&gt;</code> and <code>&lt;footer&gt;</code> elements, respectively.  If a manifest is not found, the <code>default</code> manifest will be used.  The default schema file is in <code>schema/pages/pages.json</code>.</p>
+
+<p>Schemas can also be used to quickly toggle minified/merged Javascript and CSS for production environments.  When the global constant <code>JS_DEV</code> in <code>bootsole/config-bootsole.php</code> is set to <code>false</code>, the single javascript file specified in <code>min_js</code> will be used instead of the files specified in <code>js</code>.  Likewise, the CSS file specified in <code>min_css</code> will be used if <code>CSS_DEV</code> is set to false.  To automatically generate the minified CSS and JS for each manifest group, use the script provided in <code>build/build.php</code>.  <strong>The build script should only be used on the development server</strong>, immediately before pushing to the production server.  This script requires write access to the directories in which the minified JS and CSS files are to be written; consult your server manual for more information on setting directory permissions for PHP.</p>
+
+<p>For more information about minified Javascript and CSS, see <a href="https://en.wikipedia.org/wiki/Minification_%28programming%29#Web_development">Minification</a>.</p>
+
+<h4>
+<a id="header" class="anchor" href="#header" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@header</code>
+</h4>
+
+<p>Objects of type <code>PageHeaderBuilder</code> are used to represent the <code>&lt;head&gt;</code> block of a page.  <code>PageBuilder</code> will look for a special placeholder in the page template, <code>_header</code>, to insert the rendered header.  <strong>Therefore, any custom templates you write for <code>PageBuilder</code> should have a <code>_header</code> placeholder!</strong></p>
+
+<p><code>PageHeaderBuilder</code> objects themselves have one directive, <code>@css_includes</code>, which represent the manifest group to be used in rendering the CSS.  Typically there is no need to specify this directive explicitly - <code>PageBuilder</code> will do it automatically for you when it constructs the page! </p>
+
+<h4>
+<a id="footer" class="anchor" href="#footer" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@footer</code>
+</h4>
+
+<p>Objects of type <code>PageFooterBuilder</code> are used to represent the <code>&lt;footer&gt;</code> block of a page.  <code>PageBuilder</code> will look for a special placeholder in the page template, <code>_footer</code>, to insert the rendered footer.</p>
+
+<p>They have one directive, <code>@js_includes</code>, which represent the manifest group to be used in rendering the JS.  Typically there is no need to specify this directive explicitly - <code>PageBuilder</code> will do it automatically for you when it constructs the page! </p>
+
+<h4>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h4>
+
+<p><strong>pages/page-default.html</strong></p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    {{_header}}
+    &lt;body&gt;
+        &lt;div class="container" role="main"&gt;
+            &lt;h1&gt;{{heading_main}}&lt;/h1&gt;
+            &lt;p&gt;{{content}}&lt;/p&gt;
+        &lt;/div&gt;
+        {{_footer}}
+    &lt;/body&gt;    
+&lt;/html&gt;
+</code></pre>
+
+<p>...</p>
+
+<pre><code>require_once("config-site.php");
+
+$header_content = [
+    "author" =&gt; "Alex Weissman",
+    "site_title" =&gt; SITE_TITLE,
+    "page_title" =&gt; "Simple, nested templating for rendering Bootstrap themed pages with PHP",
+    "description" =&gt; "A sample page for Bootsole",
+    "favicon_path" =&gt; BS\URI_PUBLIC_ROOT . "css/favicon.ico"
+];
+
+$content = [
+    "@header" =&gt; $header_content,
+    "@name" =&gt; "test",
+    "heading_main" =&gt; "Welcome to Bootsole",
+    "content" =&gt; "Hey, I'm the content!"
+];
+
+$pb = new BS\PageBuilder($content);
+echo $pb-&gt;render();
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<p><img src="/screenshots/bootsole-page-1.png" alt="PageBuilder" title="PageBuilder"></p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    &lt;!-- Common header includes for all account pages --&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;meta name="description" content="A sample page for Bootsole"&gt;
+        &lt;meta name="author" content="Alex Weissman"&gt;
+
+        &lt;title&gt;Bootsole | Simple, nested templating for rendering Bootstrap themed pages with PHP&lt;/title&gt;
+
+        &lt;!-- Favicon --&gt;
+        &lt;link rel="icon" type="image/x-icon" href="/bootsole/css/favicon.ico" /&gt;
+
+        &lt;link href='/bootsole/css/bootstrap-3.3.1.css' rel='stylesheet'&gt;
+        &lt;link href='/bootsole/css/bootstrap-custom.css' rel='stylesheet'&gt;
+        &lt;link href='/bootsole/css/font-awesome.min.css' rel='stylesheet'&gt;
+        &lt;link href='/bootsole/css/tablesorter/theme.bootstrap.css' rel='stylesheet'&gt;
+        &lt;link href='/bootsole/css/tablesorter/jquery.tablesorter.pager.css' rel='stylesheet'&gt;
+        &lt;!-- Conditional formatting --&gt;
+    &lt;/head&gt;
+    &lt;body&gt; 
+        &lt;div class="container" role="main"&gt;
+            &lt;h1&gt;Welcome to Bootsole&lt;/h1&gt;
+            &lt;p&gt;Hey, I'm the content!&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;footer&gt;
+            &lt;div class="container"&gt;
+              &lt;p&gt;
+                  &lt;a href="https://github.com/alexweissman/bootsole"&gt;Bootsole&lt;/a&gt;, 2015
+              &lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/footer&gt;
+        &lt;script src='/bootsole/js/jquery-1.10.2.min.js'&gt;&lt;/script&gt;
+        &lt;script src='/bootsole/js/bootstrap-3.3.1.js'&gt;&lt;/script&gt;
+        &lt;script src='/bootsole/js/bootsole.js'&gt;&lt;/script&gt;
+        &lt;script src='/bootsole/js/tablesorter/jquery.tablesorter.min.js'&gt;&lt;/script&gt;
+        &lt;script src='/bootsole/js/tablesorter/tables.js'&gt;&lt;/script&gt;
+        &lt;script src='/bootsole/js/tablesorter/jquery.tablesorter.pager.min.js'&gt;&lt;/script&gt;
+        &lt;script src='/bootsole/js/tablesorter/jquery.tablesorter.widgets.min.js'&gt;&lt;/script&gt;
+    &lt;/body&gt;    
+&lt;/html&gt;
+</code></pre>
+
+<h3>
+<a id="navbarbuilder" class="anchor" href="#navbarbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavbarBuilder</h3>
+
+<p>The <code>NavbarBuilder</code> class constructs a Bootstrap <a href="http://getbootstrap.com/components/#navbar">navbar</a> for a page.  A navbar contains a list of components, specified by the <code>@components</code> directive:</p>
+
+<pre><code>$nb = new BS\NavbarBuilder([
+    "brand_label" =&gt; "Bootsole is Great!",
+    "brand_url" =&gt; "http://github.com/alexweissman/bootsole",
+    "@components" =&gt; [
+        "destroy" =&gt; [
+            "@type" =&gt; "button",
+            "@css_classes" =&gt; ["btn-danger"],
+            "@label" =&gt; "Self-Destruct!"
+        ],          
+        // Implicitly declaring a NavBuilder object
+        "main-menu" =&gt; [
+            "@type" =&gt; "nav",
+            "@align" =&gt; "right",
+            "@items" =&gt; [
+                "home" =&gt;  [
+                    "@active" =&gt; "active",
+                    "@label" =&gt; "Home",
+                    "@url" =&gt; BS\URI_PUBLIC_ROOT
+                ],
+                "about" =&gt; [
+                    "@label" =&gt; "About",
+                    "@url" =&gt; BS\URI_PUBLIC_ROOT. "about"
+                ],
+                "contact" =&gt; [
+                    "@label" =&gt; "Contact",
+                    "@url" =&gt; BS\URI_PUBLIC_ROOT. "contact"
+                ]
+            ]
+        ]
+    ]
+]);
+</code></pre>
+
+<p><strong>Outputs:</strong></p>
+
+<p><img src="/screenshots/bootsole-navbar-1.png" alt="NavbarBuilder" title="NavbarBuilder"></p>
+
+<pre><code>&lt;!-- Fixed navbar --&gt;
+&lt;nav class="navbar navbar-inverse navbar-fixed-top" role="navigation"&gt;
+    &lt;div class="container"&gt;
+        &lt;div class="navbar-header"&gt;
+          &lt;button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav-default" aria-expanded="false" aria-controls="main-nav-default"&gt;
+            &lt;span class="sr-only"&gt;Toggle navigation&lt;/span&gt;
+            &lt;span class="icon-bar"&gt;&lt;/span&gt;
+            &lt;span class="icon-bar"&gt;&lt;/span&gt;
+            &lt;span class="icon-bar"&gt;&lt;/span&gt;
+          &lt;/button&gt;
+         &lt;a class='navbar-brand' href='http://github.com/alexweissman/bootsole'&gt;Bootsole is Great!&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div id="main-nav-default" class="navbar-collapse collapse"&gt;
+            &lt;button type='button' class='btn btn-danger navbar-btn '&gt;Self-Destruct!&lt;/button&gt;
+            &lt;ul class='nav navbar-nav navbar-right'&gt;
+                &lt;li class='active'&gt;&lt;a href='/bootsole/'&gt;Home&lt;/a&gt;&lt;/li&gt;
+                &lt;li class=''&gt;&lt;a href='/bootsole/about'&gt;About&lt;/a&gt;&lt;/li&gt;
+                &lt;li class=''&gt;&lt;a href='/bootsole/contact'&gt;Contact&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;&lt;!--/.nav-collapse --&gt;
+    &lt;/div&gt;
+&lt;/nav&gt;
+</code></pre>
+
+<p>The default navbar is a <a href="http://getbootstrap.com/components/#navbar-fixed-top">fixed top navbar</a> specified in <code>templates/navs/main-nav-default</code>, but you may adapt this template to your own design needs.</p>
+
+<h4>
+<a id="components-1" class="anchor" href="#components-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@components</code>
+</h4>
+
+<p><code>NavbarBuilder</code> currently supports the following types of Bootstrap components:</p>
+
+<ul>
+<li>
+<a href="http://getbootstrap.com/components/#nav">Navs</a> via the <code>NavBuilder</code> class.</li>
+<li>
+<a href="http://getbootstrap.com/components/#navbar-forms">Forms</a> via the <code>NavFormBuilder</code> class.</li>
+<li>
+<a href="http://getbootstrap.com/components/#navbar-buttons">Buttons</a> via the <code>NavButtonBuilder</code> class</li>
+<li>
+<a href="http://getbootstrap.com/components/#navbar-text">Text</a> via the <code>NavTextBuilder</code> class</li>
+<li>
+<a href="http://getbootstrap.com/components/#navbar-links">Links</a> via the <code>NavLinkBuilder</code> class</li>
+</ul>
+
+<p>Each component is built off of the abstract <code>NavComponentBuilder</code> class.  To declare a component implicitly, rather than explicitly defining <code>NavBuilder</code>, <code>NavFormBuilder</code>, etc objects, use an array containing the <code>@type</code> directive:</p>
+
+<table>
+<thead>
+<tr>
+<th><a href="https://github.com/type" class="user-mention">@type</a></th>
+<th>object created</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nav</td>
+<td>NavBuilder</td>
+</tr>
+<tr>
+<td>form</td>
+<td>NavFormBuilder</td>
+</tr>
+<tr>
+<td>button</td>
+<td>NavButtonBuilder</td>
+</tr>
+<tr>
+<td>text</td>
+<td>NavTextBuilder</td>
+</tr>
+<tr>
+<td>link</td>
+<td>NavLinkBuilder</td>
+</tr>
+</tbody>
+</table>
+
+<p>All <code>NavComponentBuilder</code> objects support the <code>@align</code> directive, which describes how the component will be aligned within the navbar.  Permitted values include <code>left</code>, <code>right</code>, and <code>inherit</code>.  All templates for classes derived from <code>NavComponentBuilder</code> should use a <code>_align</code> placeholder, where the corresponding component will try to place the CSS classes for alignment.</p>
+
+<p>All <code>NavComponentBuilder</code> objects support the <code>@css_classes</code> and <code>@data</code> directives.</p>
+
+<h5>
+<a id="navbuilder" class="anchor" href="#navbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavBuilder</h5>
+
+<p><code>NavBuilder</code> builds a collection of navigation items, which will be structured as an unordered list.  The items are an array of <code>NavItemBuilder</code> objects, specified using the <code>@items</code> directive.  Each <code>NavItemBuilder</code> object may be declared explicitly, or you can implicitly define them in nested subarrays:</p>
+
+<pre><code>$navb = new BS\NavBuilder([
+    "@align" =&gt; "right",
+    "@items" =&gt; [
+        "home" =&gt;  [
+            "@active" =&gt; "active",
+            "@label" =&gt; "Home",
+            "@url" =&gt; BS\URI_PUBLIC_ROOT
+        ],
+        "about" =&gt; [
+            "@label" =&gt; "About",
+            "@url" =&gt; BS\URI_PUBLIC_ROOT. "about"
+        ],
+        "contact" =&gt; [
+            "@label" =&gt; "Contact",
+            "@url" =&gt; BS\URI_PUBLIC_ROOT. "contact"
+        ]
+    ]
+]);
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<pre><code>&lt;ul class='nav navbar-nav navbar-right'&gt;
+    &lt;li class='active'&gt;&lt;a href='/bootsole/'&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li class=''&gt;&lt;a href='/bootsole/about'&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;li class=''&gt;&lt;a href='/bootsole/contact'&gt;Contact&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</code></pre>
+
+<p>Every item in a <code>NavBuilder</code> has a name.  This is automatically drawn from the keys in the <code>@items</code> array, or specified when you add the item via the <code>addItem($name, $content)</code> function.</p>
+
+<p>Call the function <code>setActiveItem($name)</code> on a NavBuilder object to set the a nav item as active.  All other items in the nav will automatically become inactive, so that only one menu item will be active at any time.</p>
+
+<p>Use the function <code>getItem($name)</code> to get an item by name. </p>
+
+<h6>
+<a id="navitembuilder-and-navdropdownbuilder" class="anchor" href="#navitembuilder-and-navdropdownbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavItemBuilder and NavDropdownBuilder</h6>
+
+<p>The items in a <code>NavBuilder</code> are represented using the <code>NavItemBuilder</code> and <code>NavDropdownBuilder</code> classes.</p>
+
+<h6>
+<a id="directives-1" class="anchor" href="#directives-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+
+<ul>
+<li>
+<code>@active</code>: Setting <code>@active</code> to <code>active</code> will make the specified item be highlighted as active in the nav.  Optional.</li>
+<li>
+<code>@display</code>: Setting <code>@display</code> to <code>disabled</code> will make the specified item be disabled, while setting it to <code>hidden</code> will make it not show up at all.  Optional.</li>
+</ul>
+
+<p>A <code>NavDropdownBuilder</code> builds a dropdown with submenu items.  It is called in the same way as <code>NavBuilder</code>, with an <code>@items</code> directive specifying the child <code>NavItemBuilder</code> objects.</p>
+
+<h5>
+<a id="navformbuilder" class="anchor" href="#navformbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavFormBuilder</h5>
+
+<p><code>NavFormBuilder</code> wraps a form in a simple <code>div</code> with the <code>navbar-form</code> class.  Bootstrap will automatically render the content as an inline form:</p>
+
+<pre><code>$navform = new BS\NavFormBuilder([
+    "@align" =&gt; "right",
+    "@form" =&gt; '&lt;form role="search"&gt;
+        &lt;div class="form-group"&gt;
+          &lt;input type="text" class="form-control" placeholder="Search"&gt;
+        &lt;/div&gt;*
+        &lt;button type="submit" class="btn btn-default"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;'    
+]);
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<pre><code>&lt;div class='navbar-form navbar-right'&gt;
+    &lt;form role="search"&gt;
+        &lt;div class="form-group"&gt;
+          &lt;input type="text" class="form-control" placeholder="Search"&gt;
+        &lt;/div&gt;*
+        &lt;button type="submit" class="btn btn-default"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h6>
+<a id="directives-2" class="anchor" href="#directives-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+
+<ul>
+<li>
+<code>@form</code>: The form, as a string or a <code>FormBuilder</code> object.</li>
+</ul>
+
+<h5>
+<a id="navbuttonbuilder" class="anchor" href="#navbuttonbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavButtonBuilder</h5>
+
+<p><code>NavButtonBuilder</code> renders a button with the <code>navbar-btn</code> CSS class.  Bootstrap will automatically align the button in the navbar:</p>
+
+<pre><code>$navbtn = new BS\NavButtonBuilder([
+    "@css_classes" =&gt; ["btn-danger"],
+    "@label" =&gt; "Self-Destruct!"
+]);
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<pre><code>&lt;button type='button' class='btn navbar-btn btn-danger '&gt;Self-Destruct!&lt;/button&gt;
+</code></pre>
+
+<h6>
+<a id="directives-3" class="anchor" href="#directives-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+
+<ul>
+<li>
+<code>@label</code>: The text for this button.  Required.</li>
+</ul>
+
+<h5>
+<a id="navtextbuilder" class="anchor" href="#navtextbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavTextBuilder</h5>
+
+<p><code>NavTextBuilder</code> wraps the specified text in a <code>&lt;p&gt;</code> tag with the <code>navbar-text</code> CSS class.  This formats it for display in the navbar:</p>
+
+<pre><code>$navtext = new BS\NavTextBuilder([
+    "@text" =&gt; "Whazzup!!!"
+]);
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<pre><code>&lt;p class='navbar-text '&gt;Whazzup!!!&lt;/p&gt;
+</code></pre>
+
+<h6>
+<a id="directives-4" class="anchor" href="#directives-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+
+<ul>
+<li>
+<code>@text</code>: The text for this item.  Required.</li>
+</ul>
+
+<h5>
+<a id="navlinkbuilder" class="anchor" href="#navlinkbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavLinkBuilder</h5>
+
+<p><code>NavLinkBuilder</code> creates a non-nav link in your navbar, using the <code>navbar-link</code> CSS class:</p>
+
+<pre><code>$navlink = new BS\NavLinkBuilder([
+    "@label" =&gt; "UserFrosting",
+    "@url" =&gt; "https://www.userfrosting.com"
+]);
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<pre><code>&lt;p class='navbar-text '&gt;&lt;a href='https://www.userfrosting.com' class='navbar-link'&gt;UserFrosting&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+
+<h6>
+<a id="-directives" class="anchor" href="#-directives" aria-hidden="true"><span class="octicon octicon-link"></span></a># Directives</h6>
+
+<ul>
+<li>
+<code>@label</code>: The text for this link.  Required.</li>
+<li>
+<code>@url</code>  : The url for this link. Required.</li>
+</ul>
+
+<h3>
+<a id="tablebuilder" class="anchor" href="#tablebuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>TableBuilder</h3>
+
+<p>The <code>TableBuilder</code> class allows you to set templates for each column of a table, via the <code>@columns</code> directive.  The content of the table is then supplied with an array of <code>HtmlBuilder</code> objects via the <code>@rows</code> directive.  The column templates will then be used to render each data row.</p>
+
+<p>The default table template, <code>templates/tables/table-tablesorter-default</code>, uses the <a href="https://mottie.github.io/tablesorter/docs/">tablesorter</a> jQuery library to render dynamic, sortable, filterable, paginated tables.</p>
+
+<p>A <code>TableBuilder</code> object is constructed as follows:</p>
+
+<pre><code>$content = [
+    "@columns" =&gt; [...]
+    "@rows" =&gt; [...]
+];
+
+</code></pre>
+
+<p>Each member of the <code>@columns</code> array is a <code>TableColumnBuilder</code> object.  A <code>TableColumnBuilder</code> object is a special templating class that renders the column header, but also maintains information about their corresponding cells in each row.  It can be declared in the same way as any other <code>HtmlBuilder</code> object:</p>
+
+<pre><code>$column_content = [
+    '@label' =&gt; 'Students',
+    '@sorter' =&gt; 'metanum',
+    '@sort_field' =&gt; 'num_students',
+    '@intial_sort_direction' =&gt; 'asc',
+    '@cell_template' =&gt; "&lt;a class='btn btn-success' href='students.php?teacher_id={{teacher_id}}'&gt;{{num_students}}&lt;/a&gt;",
+    '@empty_field' =&gt; 'num_students',
+    '@empty_value' =&gt; '0',
+    '@empty_template' =&gt; "Zero"
+];
+
+$column_template = "&lt;h4&gt;{{_label}}&lt;/h4&gt;";
+
+$column = new BS\TableColumnBuilder($column_content);
+$column-&gt;setTemplate($column_template);
+
+</code></pre>
+
+<p>Thus when <code>$column-&gt;render()</code> is called, the template <code>&lt;h4&gt;{{_label}}&lt;/h4&gt;</code> will be rendered with the supplied value of the <code>@label</code> directive.  To set a template for the actual cell content of this column, use the <code>@cell_template</code> directive.  When the parent <code>TableBuilder</code> object is rendered, it will attempt to replace the placeholders in <code>@cell_template</code> with the corresponding values in each row as specified by the <code>@rows</code> directive.  In this way, <code>TableBuilder</code> can construct the entire table.</p>
+
+<p>You can also specify an alternative template to use when a certain field in a row matches a certain value.  This is useful when you want a cell to render differently when a value is 0 or empty.  This is done using the <code>@empty_template</code>, <code>@empty_field</code>, and <code>@empty_value</code> directives.  When a row has a field, as specified by <code>@empty_field</code>, whose value is equal to <code>@empty_value</code>, the <code>@empty_template</code> will be used instead of the usual <code>@cell_template</code> template.</p>
+
+<p>For tablesorter tables, you can also specify sorting rules, using the <code>@sorter</code> and <code>@sort_field</code> directives.  The field specified in <code>@sort_field</code> specifies which row field to sort on, and the <code>@sorter</code> specifies the sorting rule to be used.  Use <code>metatext</code> for sorting alphabetically, and <code>metanum</code> to sort numerically.  One easy way to sort by time is to use the <code>metanum</code> sorter in conjunction with a UTC timestamp as the <code>@sort_field</code>.  Note that the field specified in <code>@sort_field</code> does not actually need to be rendered by the templates.</p>
+
+<p>To set an initial sort direction, set the <code>@initial_sort_direction</code> directive to <code>asc</code> or <code>desc</code>.  This will cause the table to be automatically sorted on the column in the specified direction upon page load.</p>
+
+<p>You can of course define <code>@columns</code> and <code>@rows</code> directly in the table content array, without explicitly creating <code>TableColumnBuilder</code> and <code>HtmlBuilder</code> objects:</p>
+
+<pre><code>
+$table_content = [
+    "@columns" =&gt; [
+        "info" =&gt;  [
+            "@label" =&gt; "Teacher",
+            "@sorter" =&gt; "metatext",
+            "@sort_field" =&gt; "user_name",
+            "@initial_sort_direction" =&gt; "asc",
+            "@cell_template" =&gt; "
+                    &lt;div class='h4'&gt;
+                        &lt;a href='user_details.php?id={{teacher_id}}'&gt;{{display_name}} ({{user_name}})&lt;/a&gt;
+                    &lt;/div&gt;
+                    &lt;div&gt;
+                        &lt;i&gt;{{title}}&lt;/i&gt;
+                    &lt;/div&gt;
+                    &lt;div&gt;
+                        &lt;i class='fa fa-envelope'&gt;&lt;/i&gt; &lt;a href='mailto:{{email}}'&gt;{{email}}&lt;/a&gt;
+                    &lt;/div&gt;"
+        ],
+        "num_students" =&gt; [
+            "@label" =&gt; "Students",
+            "@sorter" =&gt; "metanum",
+            "@sort_field" =&gt; "num_students",
+            "@cell_template" =&gt; "&lt;a class='btn btn-success' href='students.php?teacher_id={{teacher_id}}'&gt;{{num_students}}&lt;/a&gt;",
+            "@empty_field" =&gt; "num_students",
+            "@empty_value" =&gt; "0",
+            "@empty_template" =&gt; "Zero"
+        ],
+        "students" =&gt; [
+            "@label" =&gt; "Student List",
+            "@sorter" =&gt; "metanum",
+            "@sort_field" =&gt; "num_students",
+            "@cell_template" =&gt; "{{students}}",
+            "@empty_field" =&gt; "students",
+            "@empty_value" =&gt; [],
+            "@empty_template" =&gt; "&lt;i&gt;None&lt;/i&gt;"  
+        ]      
+    ],
+    "@rows" =&gt; [
+        "1" =&gt; [
+            "teacher_id" =&gt; "1",
+            "user_name" =&gt; "socrizzle",
+            "display_name" =&gt; "Socrates",
+            "title" =&gt; "Big Cheese",
+            "email" =&gt; "socrates@athens.gov",
+            "num_students" =&gt; "2",
+            "students" =&gt; [
+                "@template" =&gt; "&lt;a class='btn btn-success' href='student_details.php?student_id={{student_id}}'&gt;{{display_name}}&lt;/a&gt;",
+                "@array" =&gt; [
+                    "A" =&gt; [
+                        "student_id" =&gt; "1",
+                        "display_name" =&gt; "Xenophon"
+                    ],
+                    "B" =&gt; [
+                        "student_id" =&gt; "2",
+                        "display_name" =&gt; "Plato"
+                    ]
+                ]
+            ]
+        ],
+        "2" =&gt; [
+            "teacher_id" =&gt; "2",
+            "user_name" =&gt; "seamus",
+            "display_name" =&gt; "Seamus",
+            "title" =&gt; "Beanmaster",
+            "email" =&gt; "seamus@cardboardbox.com",
+            "num_students" =&gt; "0",
+            "students" =&gt; []
+        ],    
+        "3" =&gt; [
+            "teacher_id" =&gt; "3",
+            "user_name" =&gt; "plato",
+            "display_name" =&gt; "Plato",
+            "title" =&gt; "Idealist",
+            "email" =&gt; "plato@athens.gov",
+            "num_students" =&gt; "1"
+        ]
+    ]
+];
+
+$table = new BS\TableBuilder($table_content);
+
+</code></pre>
+
+<p><strong>Output:</strong></p>
+
+<p><img src="/screenshots/bootsole-example-4.png" alt="TableBuilder" title="TableBuilder"></p>
+
+<h3>
+<a id="formbuilder" class="anchor" href="#formbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>FormBuilder</h3>
+
+<p>Coming soon!</p>
+
+<h2>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
+
+<h3>
+<a id="020" class="anchor" href="#020" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.2.0</h3>
+
+<ul>
+<li>Brand spanking new system based on base <code>HtmlBuilder</code> class.  New <code>PageBuilder</code>, <code>NavbarBuilder</code>, and a whole mess of other special-purpose templating classes!</li>
+</ul>
+
+<h3>
+<a id="014" class="anchor" href="#014" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.4</h3>
+
+<ul>
+<li>Switched over to BootstrapValidator and began implementing validation schema</li>
+</ul>
+
+<h3>
+<a id="013" class="anchor" href="#013" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.3</h3>
+
+<ul>
+<li>Added the 'selectTime' and 'hidden' input types.</li>
+<li>Added placeholders, data-* fields for options in select2 fields.</li>
+</ul>
+
+<h3>
+<a id="012" class="anchor" href="#012" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.2</h3>
+
+<ul>
+<li>Added the 'select2' input type.</li>
+<li>Added table menu item options 'type', 'show_field', and 'show_field_values'.</li>
+<li>Added 'addon_end' for input and password fields.</li>
+</ul>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<h3>
+<a id="php" class="anchor" href="#php" aria-hidden="true"><span class="octicon octicon-link"></span></a>PHP</h3>
+
+<ul>
+<li>5.4+</li>
+</ul>
+
+<h3>
+<a id="javascriptcss-included-in-this-repository" class="anchor" href="#javascriptcss-included-in-this-repository" aria-hidden="true"><span class="octicon octicon-link"></span></a>Javascript/CSS (included in this repository)</h3>
+
+<ul>
+<li>jQuery 1.10.2</li>
+<li>Bootstrap 3.3.1</li>
+<li>Tablesorter 2.17.7 with the pager and filter widgets</li>
+<li>FormValidation v0.6.1</li>
+<li>FontAwesome 4.1</li>
+<li>Bootstrap Switch 3</li>
+<li>Select2 3.5.1</li>
+<li>Bootstrapradio 0.1</li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/alexweissman/bootsole/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/alexweissman/bootsole/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/alexweissman/bootsole"></a> is maintained by <a href="https://github.com/alexweissman">alexweissman</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
