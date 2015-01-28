@@ -94,7 +94,7 @@ a {
  * Offset anchors to deal with fixed navbar.
  */
  
-a.anchor {
+h2 a.anchor {
   display: block;
   position: relative;
   top: -60px;
