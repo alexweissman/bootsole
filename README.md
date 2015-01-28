@@ -6,6 +6,8 @@ Copyright (c) 2015
 
 A nestable, object-oriented templating engine for generating beautiful Bootstrap-themed pages, forms, tables, and other components in PHP.
 
+### https://alexweissman.github.io/bootsole/components
+
 ## Dependencies
 
 ### PHP
