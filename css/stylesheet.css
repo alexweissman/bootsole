@@ -91,6 +91,17 @@ a {
 }
 
 /**
+ * Offset anchors to deal with fixed navbar.
+ */
+ 
+a.anchor {
+  display: block;
+  position: relative;
+  top: -60px;
+  visibility: hidden;
+}
+
+/**
  * Improve readability when focused and also mouse hovered in all browsers.
  */
 
