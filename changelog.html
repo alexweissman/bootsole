@@ -4,6 +4,7 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" type="text/css" href="css/pygment_trac.css" media="screen">
@@ -29,7 +30,16 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/bootsole/components">Components</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Components <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/bootsole/components#basic-components"><i class='fa fa-fw fa-cubes'></i> Basic Components</a></li>
+                  <li><a href="/bootsole/components#pagebuilder"><i class='fa fa-fw fa-file-text-o'></i> PageBuilder</a></li>
+                  <li><a href="/bootsole/components#navbarbuilder"><i class='fa fa-fw fa-map-marker'></i> NavbarBuilder</a></li>
+                  <li><a href="/bootsole/components#tablebuilder"><i class='fa fa-fw fa-table'></i> TableBuilder</a></li>
+                  <li><a href="/bootsole/components#formbuilder"><i class='fa fa-fw fa-list-alt'></i> FormBuilder</a></li>
+                </ul>
+            </li>
             <li class="active"><a href="/bootsole/changelog">Changelog</a></li>
           </ul>
         </div><!--/.navbar-collapse -->
@@ -39,30 +49,30 @@
 
 <h1>Changelog</h1>
 
-<h3>
-<a id="020" class="anchor" href="#020" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.2.0</h3>
+<h2>
+<a id="020" class="anchor" href="#020" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.2.0</h2>
 
 <ul>
 <li>Brand spanking new system based on base <code>HtmlBuilder</code> class.  New <code>PageBuilder</code>, <code>NavbarBuilder</code>, and a whole mess of other special-purpose templating classes!</li>
 </ul>
 
-<h3>
-<a id="014" class="anchor" href="#014" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.4</h3>
+<h2>
+<a id="014" class="anchor" href="#014" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.4</h2>
 
 <ul>
 <li>Switched over to BootstrapValidator and began implementing validation schema</li>
 </ul>
 
-<h3>
-<a id="013" class="anchor" href="#013" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.3</h3>
+<h2>
+<a id="013" class="anchor" href="#013" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.3</h2>
 
 <ul>
 <li>Added the 'selectTime' and 'hidden' input types.</li>
 <li>Added placeholders, data-* fields for options in select2 fields.</li>
 </ul>
 
-<h3>
-<a id="012" class="anchor" href="#012" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.2</h3>
+<h2>
+<a id="012" class="anchor" href="#012" aria-hidden="true"><span class="octicon octicon-link"></span></a>0.1.2</h2>
 
 <ul>
 <li>Added the 'select2' input type.</li>

@@ -4,7 +4,9 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" type="text/css" href="css/pygment_trac.css" media="screen">
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print">   
@@ -29,7 +31,16 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="active"><a href="/bootsole/components">Components</a></li>
+            <li class="dropdown active">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Components <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/bootsole/components#basic-components"><i class='fa fa-fw fa-cubes'></i> Basic Components</a></li>
+                  <li><a href="/bootsole/components#pagebuilder"><i class='fa fa-fw fa-file-text-o'></i> PageBuilder</a></li>
+                  <li><a href="/bootsole/components#navbarbuilder"><i class='fa fa-fw fa-map-marker'></i> NavbarBuilder</a></li>
+                  <li><a href="/bootsole/components#tablebuilder"><i class='fa fa-fw fa-table'></i> TableBuilder</a></li>
+                  <li><a href="/bootsole/components#formbuilder"><i class='fa fa-fw fa-list-alt'></i> FormBuilder</a></li>
+                </ul>
+            </li>
             <li><a href="/bootsole/changelog">Changelog</a></li>
           </ul>
         </div><!--/.navbar-collapse -->
@@ -42,22 +53,39 @@
 <p>Bootsole comes with many classes, called <strong>components</strong>, that extend the basic <code>HtmlBuilder</code> class for additional functionality.</p>
 
 <ul>
+<li><a href="#basic-components">Basic Components</a></li>
+<ul>
 <li><a href="#htmlattributesbuilder">HtmlAttributesBuilder</a></li>
+</ul>
 <li><a href="#pagebuilder">PageBuilder</a></li>
-<li>PageHeaderBuilder</li>
-<li>PageFooterBuilder</li>
+<ul>
+    <li>PageHeaderBuilder</li>
+    <li>PageFooterBuilder</li>
+</ul>
 <li><a href="#navbarbuilder">NavbarBuilder</a></li>
-<li>NavComponentBuilder</li>
-<li><a href="#navbuilder">NavBuilder</a></li>
-<li><a href="#navitembuilder-and-navdropdownbuilder">NavItemBuilder</a></li>
-<li><a href="#navitembuilder-and-navdropdownbuilder">NavDropdownBuilder</a></li>
-<li>NavFormBuilder</li>
-<li>NavTextBuilder</li>
-<li>NavButtonBuilder</li>
-<li>NavLinkBuilder</li>
+<ul>
+    <li>NavComponentBuilder</li>
+    <li><a href="#navbuilder">NavBuilder</a></li>
+    <li><a href="#navitembuilder-and-navdropdownbuilder">NavItemBuilder</a></li>
+    <li><a href="#navitembuilder-and-navdropdownbuilder">NavDropdownBuilder</a></li>
+    <li>NavFormBuilder</li>
+    <li>NavTextBuilder</li>
+    <li>NavButtonBuilder</li>
+    <li>NavLinkBuilder</li>
+</ul>
 <li><a href="#tablebuilder">TableBuilder</a></li>
+<ul>
 <li>TableColumnBuilder</li>
 </ul>
+<li><a href="#formbuilder">FormBuilder</a></li>
+<ul>
+<li>FormCollectionBuilder</li>
+<li>FormComponentBuilder</li>
+</ul>
+</ul>
+
+<h2>
+<a id="basic-components" class="anchor" href="#basic-components" aria-hidden="true"></a><i class='side-icon fa fa-cubes'></i> Basic Components</h2>
 
 <h3>
 <a id="htmlattributesbuilder" class="anchor" href="#htmlattributesbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>HtmlAttributesBuilder</h3>
@@ -71,10 +99,12 @@
 <code>@data</code>: A hash of <code>data-*</code> attributes, mapping <code>&lt;name&gt; =&gt; &lt;value&gt;</code>.  For example, <code>[ "id" =&gt; "1" ]</code> will create a data attribute <code>data-id=1</code> for the component.</li>
 </ul>
 
-<h3>
-<a id="pagebuilder" class="anchor" href="#pagebuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>PageBuilder</h3>
+<h2>
+<a id="pagebuilder" class="anchor" href="#pagebuilder" aria-hidden="true"></a><i class='side-icon fa fa-file-text-o'></i> PageBuilder</h2>
 
 <p>The <code>PageBuilder</code> class builds a fully renderable HTML document.  This will usually be your "top-level" templating object when developing websites and web applications.  A <code>PageBuilder</code> object, in addition to the user-defined placeholders, accepts four directives: <code>@name</code>, <code>@schema</code>, <code>@header</code>, and <code>@footer</code>.</p>
+
+<h3>Directives</h3>
 
 <h4>
 <a id="name" class="anchor" href="#name" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@name</code>
@@ -256,8 +286,8 @@ echo $pb-&gt;render();
 &lt;/html&gt;
 </code></pre>
 
-<h3>
-<a id="navbarbuilder" class="anchor" href="#navbarbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavbarBuilder</h3>
+<h2>
+<a id="navbarbuilder" class="anchor" href="#navbarbuilder" aria-hidden="true"></a><i class='side-icon fa fa-map-marker'></i> NavbarBuilder</h2>
 
 <p>The <code>NavbarBuilder</code> class constructs a Bootstrap <a href="http://getbootstrap.com/components/#navbar">navbar</a> for a page.  A navbar contains a list of components, specified by the <code>@components</code> directive:</p>
 
@@ -324,6 +354,8 @@ echo $pb-&gt;render();
 
 <p>The default navbar is a <a href="http://getbootstrap.com/components/#navbar-fixed-top">fixed top navbar</a> specified in <code>templates/navs/main-nav-default</code>, but you may adapt this template to your own design needs.</p>
 
+<h3>Directives</h3>
+
 <h4>
 <a id="components-1" class="anchor" href="#components-1" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>@components</code>
 </h4>
@@ -345,43 +377,47 @@ echo $pb-&gt;render();
 
 <p>Each component is built off of the abstract <code>NavComponentBuilder</code> class.  To declare a component implicitly, rather than explicitly defining <code>NavBuilder</code>, <code>NavFormBuilder</code>, etc objects, use an array containing the <code>@type</code> directive:</p>
 
-<table>
-<thead>
-<tr>
-<th><a href="https://github.com/type" class="user-mention">@type</a></th>
-<th>object created</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>nav</td>
-<td>NavBuilder</td>
-</tr>
-<tr>
-<td>form</td>
-<td>NavFormBuilder</td>
-</tr>
-<tr>
-<td>button</td>
-<td>NavButtonBuilder</td>
-</tr>
-<tr>
-<td>text</td>
-<td>NavTextBuilder</td>
-</tr>
-<tr>
-<td>link</td>
-<td>NavLinkBuilder</td>
-</tr>
-</tbody>
+<div class="row">
+<div class="col-md-6 col-md-offset-3">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+        <th>@type</th>
+        <th>object created</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td>nav</td>
+        <td>NavBuilder</td>
+        </tr>
+        <tr>
+        <td>form</td>
+        <td>NavFormBuilder</td>
+        </tr>
+        <tr>
+        <td>button</td>
+        <td>NavButtonBuilder</td>
+        </tr>
+        <tr>
+        <td>text</td>
+        <td>NavTextBuilder</td>
+        </tr>
+        <tr>
+        <td>link</td>
+        <td>NavLinkBuilder</td>
+        </tr>
+    </tbody>
 </table>
+</div>
+</div>
 
 <p>All <code>NavComponentBuilder</code> objects support the <code>@align</code> directive, which describes how the component will be aligned within the navbar.  Permitted values include <code>left</code>, <code>right</code>, and <code>inherit</code>.  All templates for classes derived from <code>NavComponentBuilder</code> should use a <code>_align</code> placeholder, where the corresponding component will try to place the CSS classes for alignment.</p>
 
 <p>All <code>NavComponentBuilder</code> objects support the <code>@css_classes</code> and <code>@data</code> directives.</p>
 
-<h5>
-<a id="navbuilder" class="anchor" href="#navbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavBuilder</h5>
+<h3>
+<a id="navbuilder" class="anchor" href="#navbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavBuilder</h3>
 
 <p><code>NavBuilder</code> builds a collection of navigation items, which will be structured as an unordered list.  The items are an array of <code>NavItemBuilder</code> objects, specified using the <code>@items</code> directive.  Each <code>NavItemBuilder</code> object may be declared explicitly, or you can implicitly define them in nested subarrays:</p>
 
@@ -421,13 +457,13 @@ echo $pb-&gt;render();
 
 <p>Use the function <code>getItem($name)</code> to get an item by name. </p>
 
-<h6>
-<a id="navitembuilder-and-navdropdownbuilder" class="anchor" href="#navitembuilder-and-navdropdownbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavItemBuilder and NavDropdownBuilder</h6>
+<h3>
+<a id="navitembuilder-and-navdropdownbuilder" class="anchor" href="#navitembuilder-and-navdropdownbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavItemBuilder and NavDropdownBuilder</h3>
 
 <p>The items in a <code>NavBuilder</code> are represented using the <code>NavItemBuilder</code> and <code>NavDropdownBuilder</code> classes.</p>
 
-<h6>
-<a id="directives-1" class="anchor" href="#directives-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+<h4>
+<a id="directives-1" class="anchor" href="#directives-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h4>
 
 <ul>
 <li>
@@ -438,8 +474,8 @@ echo $pb-&gt;render();
 
 <p>A <code>NavDropdownBuilder</code> builds a dropdown with submenu items.  It is called in the same way as <code>NavBuilder</code>, with an <code>@items</code> directive specifying the child <code>NavItemBuilder</code> objects.</p>
 
-<h5>
-<a id="navformbuilder" class="anchor" href="#navformbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavFormBuilder</h5>
+<h3>
+<a id="navformbuilder" class="anchor" href="#navformbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavFormBuilder</h3>
 
 <p><code>NavFormBuilder</code> wraps a form in a simple <code>div</code> with the <code>navbar-form</code> class.  Bootstrap will automatically render the content as an inline form:</p>
 
@@ -466,16 +502,16 @@ echo $pb-&gt;render();
 &lt;/div&gt;
 </code></pre>
 
-<h6>
-<a id="directives-2" class="anchor" href="#directives-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+<h4>
+<a id="directives-2" class="anchor" href="#directives-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h4>
 
 <ul>
 <li>
 <code>@form</code>: The form, as a string or a <code>FormBuilder</code> object.</li>
 </ul>
 
-<h5>
-<a id="navbuttonbuilder" class="anchor" href="#navbuttonbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavButtonBuilder</h5>
+<h3>
+<a id="navbuttonbuilder" class="anchor" href="#navbuttonbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavButtonBuilder</h3>
 
 <p><code>NavButtonBuilder</code> renders a button with the <code>navbar-btn</code> CSS class.  Bootstrap will automatically align the button in the navbar:</p>
 
@@ -490,16 +526,16 @@ echo $pb-&gt;render();
 <pre><code>&lt;button type='button' class='btn navbar-btn btn-danger '&gt;Self-Destruct!&lt;/button&gt;
 </code></pre>
 
-<h6>
-<a id="directives-3" class="anchor" href="#directives-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+<h4>
+<a id="directives-3" class="anchor" href="#directives-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h4>
 
 <ul>
 <li>
 <code>@label</code>: The text for this button.  Required.</li>
 </ul>
 
-<h5>
-<a id="navtextbuilder" class="anchor" href="#navtextbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavTextBuilder</h5>
+<h3>
+<a id="navtextbuilder" class="anchor" href="#navtextbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavTextBuilder</h3>
 
 <p><code>NavTextBuilder</code> wraps the specified text in a <code>&lt;p&gt;</code> tag with the <code>navbar-text</code> CSS class.  This formats it for display in the navbar:</p>
 
@@ -513,16 +549,16 @@ echo $pb-&gt;render();
 <pre><code>&lt;p class='navbar-text '&gt;Whazzup!!!&lt;/p&gt;
 </code></pre>
 
-<h6>
-<a id="directives-4" class="anchor" href="#directives-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h6>
+<h4>
+<a id="directives-4" class="anchor" href="#directives-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directives</h4>
 
 <ul>
 <li>
 <code>@text</code>: The text for this item.  Required.</li>
 </ul>
 
-<h5>
-<a id="navlinkbuilder" class="anchor" href="#navlinkbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavLinkBuilder</h5>
+<h3>
+<a id="navlinkbuilder" class="anchor" href="#navlinkbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>NavLinkBuilder</h3>
 
 <p><code>NavLinkBuilder</code> creates a non-nav link in your navbar, using the <code>navbar-link</code> CSS class:</p>
 
@@ -537,8 +573,8 @@ echo $pb-&gt;render();
 <pre><code>&lt;p class='navbar-text '&gt;&lt;a href='https://www.userfrosting.com' class='navbar-link'&gt;UserFrosting&lt;/a&gt;&lt;/p&gt;
 </code></pre>
 
-<h6>
-<a id="-directives" class="anchor" href="#-directives" aria-hidden="true"><span class="octicon octicon-link"></span></a># Directives</h6>
+<h4>
+<a id="-directives" class="anchor" href="#-directives" aria-hidden="true"><span class="octicon octicon-link"></span></a># Directives</h4>
 
 <ul>
 <li>
@@ -547,8 +583,8 @@ echo $pb-&gt;render();
 <code>@url</code>  : The url for this link. Required.</li>
 </ul>
 
-<h3>
-<a id="tablebuilder" class="anchor" href="#tablebuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>TableBuilder</h3>
+<h2>
+<a id="tablebuilder" class="anchor" href="#tablebuilder" aria-hidden="true"></a><i class='side-icon fa fa-table'></i> TableBuilder</h2>
 
 <p>The <code>TableBuilder</code> class allows you to set templates for each column of a table, via the <code>@columns</code> directive.  The content of the table is then supplied with an array of <code>HtmlBuilder</code> objects via the <code>@rows</code> directive.  The column templates will then be used to render each data row.</p>
 
@@ -681,8 +717,8 @@ $table = new BS\TableBuilder($table_content);
 
 <p><img src="screenshots/bootsole-example-4.png" alt="TableBuilder" title="TableBuilder"></p>
 
-<h3>
-<a id="formbuilder" class="anchor" href="#formbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>FormBuilder</h3>
+<h2>
+<a id="formbuilder" class="anchor" href="#formbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a><i class='side-icon fa fa-list-alt'></i> FormBuilder</h2>
 
 <p>Coming soon!</p>
 

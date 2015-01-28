@@ -579,21 +579,6 @@ hr {
   border-top: solid 1px #ddd;
 }
 
-table {
-  width: 100%;
-  border: 1px solid #ebebeb;
-}
-
-th {
-  font-weight: 500;
-}
-
-td {
-  font-weight: 300;
-  text-align: center;
-  border: 1px solid #ebebeb;
-}
-
 form {
   padding: 20px;
   background: #f2f2f2;
@@ -603,9 +588,7 @@ form {
 
 /* GENERAL ELEMENT TYPE STYLES */
 
-#main-content h1 {
-  margin-top: 0;
-  margin-bottom: 0;
+h1 {
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
   font-size: 2.8em;
   font-weight: normal;
@@ -614,14 +597,14 @@ form {
   letter-spacing: -1px;
 }
 
-#main-content h1:before {
+h1:before {
   padding-right: 0.3em;
   margin-left: -0.9em;
   color: #9ddcff;
   content: "/";
 }
 
-#main-content h2 {
+h2 {
   margin-bottom: 8px;
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
   font-size: 22px;
@@ -629,14 +612,13 @@ form {
   color: #474747;
   text-indent: 4px;
 }
-#main-content h2:before {
+h2 .side-icon {
   padding-right: 0.3em;
   margin-left: -1.5em;
-  content: "//";
   color: #9ddcff;
 }
 
-#main-content h3 {
+h3 {
   margin-top: 24px;
   margin-bottom: 8px;
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
@@ -646,9 +628,9 @@ form {
   text-indent: 3px;
 }
 
-#main-content h3:before {
+h3:before {
   padding-right: 0.3em;
-  margin-left: -2em;
+  margin-left: -1.3em;
   content: "///";
   color: #9ddcff;
 }
@@ -664,7 +646,7 @@ form {
 
 h4:before {
   padding-right: 0.3em;
-  margin-left: -2.8em;
+  margin-left: -1.5em;
   content: "////";
   color: #9ddcff;
 }
@@ -678,7 +660,7 @@ h4:before {
 }
 h5:before {
   padding-right: 0.3em;
-  margin-left: -3.2em;
+  margin-left: -1.7em;
   content: "/////";
   color: #9ddcff;
 }
@@ -692,7 +674,7 @@ h5:before {
 }
 h6:before {
   padding-right: 0.3em;
-  margin-left: -3.7em;
+  margin-left: -1.9em;
   content: "//////";
   color: #9ddcff;
 }
