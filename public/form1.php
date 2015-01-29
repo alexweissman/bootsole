@@ -28,7 +28,7 @@ $content = [
 
 // Load validation schema
 $vs = new BS\ValidationSchema("forms/philosophers.json", "en_US");
-        
+
 $fb = new BS\FormBuilder([
     "@layout" => "horizontal",
     "@label_width" => 2,
@@ -185,7 +185,7 @@ $fb = new BS\FormBuilder([
     ],
     "@validators" => $vs->clientRules()
 
-]);    
+], "forms/form-philosophers.html");    
 
 $fb2 = clone $fb;
 $fb2->layout("vertical");

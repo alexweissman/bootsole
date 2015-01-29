@@ -24,7 +24,7 @@ $ids = [
 $form_groups = [];
 
 foreach ($ids as $id => $location){
-    $fb = new BS\FormFieldsetBuilder([
+    $fb = new BS\FormComponentCollectionBuilder([
         "@components" => [
             'location' => [
                 '@type' => 'text',
@@ -46,6 +46,7 @@ foreach ($ids as $id => $location){
 $form_content = [
     "@layout" => "horizontal",
     "@label_width" => 2,
+    "@name" => "locations",
     "@components" => [
         "groups" => $form_groups
     ]

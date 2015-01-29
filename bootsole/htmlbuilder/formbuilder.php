@@ -2,21 +2,35 @@
 
 namespace Bootsole;
 
-abstract class FormFieldCollectionBuilder extends HtmlBuilder {
-    use HtmlAttributesBuilder;
+/**
+ * Builds a collection of form components.
+ */
 
-    protected $_components = [];        // An array of FormComponentBuilder or FormFieldsetBuilder objects
-    protected $_values = [];            // An array of strings mapping field names to their values
-    protected $_layout= "vertical";     // layout: horizontal, inline, or vertical
-    protected $_label_width = "4";      // The width of form group labels, for horizontal forms
-    protected $_validators = [];             // An array mapping field names to FormValidator rules
+class FormComponentCollectionBuilder extends HtmlBuilder {
+    use HtmlAttributesBuilder;
+    
+    /**
+     * @var mixed[] $_components      An array of FormComponentBuilder or FormComponentCollectionBuilder objects
+     * @var string $_label_width      The width of form group labels, in columns (1-12), for horizontal forms
+     * @var string $_layout           horizontal, inline, or vertical
+     * @var string $_name             The name of the collection.  Will be used to populate the 'name' attribute for FormBuilder objects.
+     * @var string[] $_validators     An array mapping field names to strings containing data-* FormValidation rules
+     * @var string[] $_values         An array mapping field names to their initial values.
+     */    
+    
+    protected $_components = [];    
+    protected $_label_width = "4";  
+    protected $_layout= "vertical";    
+    protected $_name = "";     
+    protected $_validators = [];     
+    protected $_values = [];    
 
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default form template
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else
-            parent::__construct($content, null, $options);
+            parent::__construct($content, null, $options);              // No default template for this class.
                     
         // Check if @components has been specified
         if (isset($content['@components'])){
@@ -24,6 +38,12 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
                 $this->_components[$name] = $this->parseComponent($name, $component);
             }
         }
+        
+        // Set @name if specified
+        if (isset($content['@name'])){
+            $this->name($content['@name']);
+        }
+        
         // Check if @values has been specified
         if (isset($content['@values'])){
             $this->_values = $content['@values'];
@@ -78,6 +98,10 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
         }
     }
 
+    public function name($content){
+        $this->_name = $content;
+    }
+    
     public function value($name, $value){
         if (!isset($this->_fields[$name]))
             throw new \Exception("There is no field with name '$name'!");
@@ -99,10 +123,15 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
         else
             throw new \Exception("There is no component with name '$name'!");    
     }
+
+    public function getName(){
+        return $this->_name;
+    }
     
     public function render(){
         $this->setContent("_css_classes", $this->renderCssClasses());
-        $this->setContent("_data", $this->renderDataAttributes());        
+        $this->setContent("_data", $this->renderDataAttributes());
+        $this->setContent("_name", $this->_name);
         
         switch($this->_layout){
             case "horizontal":  $this->setContent("_layout", "form-horizontal"); break;
@@ -138,7 +167,7 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
             $component->validator($this->_validators[$name]);
         }        
         // set layout and label width for FormGroup and FormFieldCollections
-        if (is_a($component, "Bootsole\FormGroupBuilder") || is_a($component, "Bootsole\FormFieldCollectionBuilder") ) {
+        if (is_a($component, "Bootsole\FormGroupBuilder") || is_a($component, "Bootsole\FormComponentCollectionBuilder") ) {
             $component->layout($this->_layout);
             $component->label_width($this->_label_width);
         }
@@ -168,7 +197,10 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
                 }
                 return $result;
             }
-        } else if (is_a($content, "Bootsole\FormFieldsetBuilder")){         
+        } else if (is_a($content, "Bootsole\FormComponentCollectionBuilder")){         
+            // Set name if not set in content
+            if (!$content->getName())
+                $content->name($name);
             // Push down form properties
             $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
             $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
@@ -198,16 +230,11 @@ abstract class FormFieldCollectionBuilder extends HtmlBuilder {
 
 
 /* Builds a form from a template, using the following magic fields:
-    @layout
     @action
     @method
-    @label_width
-    @components
-    @values
-
 */
 
-class FormBuilder extends FormFieldCollectionBuilder {
+class FormBuilder extends FormComponentCollectionBuilder {
     protected $_action = "";            // The url that this form should post/get
     protected $_method = "post";        // "post" or "get"
     
@@ -216,7 +243,7 @@ class FormBuilder extends FormFieldCollectionBuilder {
         if ($template_file)
             parent::__construct($content, $template_file, $options);
         else
-            parent::__construct($content, "forms/form-philosophers.html", $options);
+            parent::__construct($content, null, $options);          // No default form template
         
         // Set @action if specified
         if (isset($content['@action'])){
@@ -246,33 +273,6 @@ class FormBuilder extends FormFieldCollectionBuilder {
         $this->setContent("_method", $this->_method);
         return parent::render();
     }
-}
-
-class FormFieldsetBuilder extends FormFieldCollectionBuilder {   
-    protected $_name;                // The name of the fieldset.
-    
-    public function __construct($content = [], $template_file = null, $options = []){
-        // Load the specified template, or the default form template
-        if ($template_file)
-            parent::__construct($content, $template_file, $options);
-        else {
-            parent::__construct($content, null, $options);
-        }
-        
-        // Set @name if specified
-        if (isset($content['@name'])){
-            $this->name($content['@name']);
-        }        
-    }
-    
-    public function name($content){
-        $this->_name = $content;
-    }
-    
-    public function getName(){
-        return $this->_name;
-    }
-    
 }
 
 /* An abstract class representing a form component.  Uses the following magic fields:
