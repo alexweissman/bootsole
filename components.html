@@ -77,11 +77,34 @@
 <ul>
 <li>TableColumnBuilder</li>
 </ul>
-<li><a href="#formbuilder">FormBuilder</a></li>
-<ul>
-<li>FormCollectionBuilder</li>
-<li>FormComponentBuilder</li>
-</ul>
+<li><a href="#formbuilder">FormComponentCollectionBuilder</a></li>
+    <ul>
+        <li>FormBuilder</li>
+    </ul>
+    <li>FormComponentBuilder</li>
+    <ul>
+        <li>FormGroupBuilder</li>
+        <li>FormFieldBuilder</li>
+        <ul>
+            <li>FormTextFieldBuilde</li>
+            <li>FormPasswordFieldBuilder</li>
+            <li>FormNumberFieldBuilder</li>
+            <li>FormEmailFieldBuilder</li>
+            <li>FormUrlFieldBuilder</li>
+            <li>FormColorFieldBuilder</li>
+            <li>FormSearchFieldBuilder</li>
+            <li>FormSelectFieldBuilder</li>
+            <li>FormSelect2FieldBuilder</li>
+            <li>FormSelectTimeFieldBuilder</li>
+            <li>FormHiddenFieldBuilder</li>
+            <li>FormTextAreaFieldBuilder</li>
+            <li>FormCheckboxFieldBuilder</li>
+            <li>FormRadioFieldBuilder</li>
+            <li>FormSwitchFieldBuilder</li>
+            <li>FormToggleFieldBuilder</li>
+            <li>FormBootstrapRadioBuilder</li>
+        </ul>
+    </ul>        
 </ul>
 
 <h2>
@@ -720,19 +743,155 @@ $table = new BS\TableBuilder($table_content);
 <h2>
 <a id="formbuilder" class="anchor" href="#formbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a><i class='side-icon fa fa-list-alt'></i> FormBuilder</h2>
 
-<p>Coming soon!</p>
+<p>The core <code>FormComponentCollectionBuilder</code> class allows building forms of arbitrary complexity.  A <code>FormComponentCollectionBuilder</code> is basically a collection of form components (derived classes of the abstract <code>FormComponentBuilder</code> class), and/or other <code>FormComponentCollectionBuilder</code> objects.  In this way components can be grouped, reused, and repeated in the same form without the need for separate placeholders for each group.  The <code>FormBuilder</code> class is simply the highest-level (and often, only) collection of form components.  For example, a form might be structured as such:</p>
+<ul>
+<li>FormBuilder<ul>
+<li>FormCollectionBuilder<ul>
+<li>FormTextFieldBuilder</li>
+<li>FormButtonBuilder</li>
+</ul>
+</li>
+<li>FormTextAreaBuilder</li>
+<li>FormButtonBuilder</li>
+</ul>
+</li>
+</ul>
+<h3 id="components">Components</h3>
+<p>Components can be added to a <code>FormComponentCollectionBuilder</code> object via the <code>@components</code> directive (array), or via the <code>addComponent</code> method.  Each component can be a derived type of FormComponentBuilder object, or another FormComponentCollectionBuilder object.  Many component objects can be declared implicitly via a subarray.</p>
+<p><code>FormComponentCollectionBuilder</code> also provides for some collection-wide properties, which can be set via the class methods or through array directives:</p>
+<h4 id="directives">Directives</h4>
 
-        </section>
-      </div>
-    </div>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label_width</code></td>
+<td>@label_width</td>
+<td><strong>Optional.</strong> The width of form group labels, in columns (1-12), for horizontal forms</td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td>@layout</td>
+<td><strong>Optional.</strong> The <a href="http://getbootstrap.com/css/#forms-inline">layout</a> for the form.  &#39;vertical&#39; (default), &#39;horizontal&#39;, or &#39;inline&#39;.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>@name</td>
+<td><strong>Optional.</strong> The name of the collection.  Used to populate the <code>name</code> attribute in the top-level HTML tag.</td>
+</tr>
+<tr>
+<td><code>validators</code></td>
+<td>@validators</td>
+<td><strong>Optional.</strong> An array mapping field names to strings containing data-* FormValidation rules.</td>
+</tr>
+<tr>
+<td><code>values</code></td>
+<td>@values</td>
+<td><strong>Optional.</strong> An array mapping field names to their initial values.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
-  
-  </body>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> 
+<h3 id="formbuilder">FormBuilder</h3>
+<p>The <code>FormBuilder</code> class extends the <code>FormComponentCollectionBuilder</code> class (see below), and inherits all the functionality of that class.  It also includes two additional directives, <code>@method</code> and <code>@action</code>, which correspond to the attributes of the top-level <code>&lt;form&gt;</code> tag.</p>
+<p><strong>Example</strong></p>
+<pre><code>$fb = new BS\FormBuilder([
+    &quot;@action&quot; =&gt; &quot;https://mysite.com/login/auth&quot;,
+    &quot;@layout&quot; =&gt; &quot;horizontal&quot;,
+    &quot;@label_width&quot; =&gt; 2,
+    &quot;@components&quot; =&gt; [
+        &#39;user_name&#39; =&gt; [
+            &#39;@type&#39; =&gt; &#39;text&#39;,
+            &#39;@label&#39; =&gt; &#39;Username&#39;,
+            &#39;@placeholder&#39; =&gt; &#39;Please enter the user name&#39;
+        ],
+        &#39;password&#39; =&gt; [
+            &#39;@type&#39; =&gt; &#39;password&#39;,
+            &#39;@label&#39; =&gt; &#39;Password&#39;,
+            &#39;@placeholder&#39; =&gt; &#39;Please enter your password&#39;
+        ],
+        &#39;submit&#39; =&gt; new BS\FormButtonBuilder([
+            &quot;@type&quot; =&gt; &quot;submit&quot;,
+            &quot;@label&quot; =&gt; &quot;Log In&quot;,
+            &quot;@css_classes&quot; =&gt; [&quot;btn-primary&quot;, &quot;btn-lg&quot;]
+        ])
+    ],
+    &quot;@validators&quot; =&gt; $vs-&gt;clientRules()
+], &quot;forms/form-login.html&quot;) ;
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->  
+$fb-&gt;render();
+</code></pre>
+<strong> Outputs: </strong>
+<p>
+<img src="screenshots/bootsole-form-login.png" alt="Login Form" title="Login Form"></p>
+<pre><code>&lt;form name=&#39;&#39; method=&#39;post&#39; action=&#39;https://mysite.com/login/auth&#39; class=&#39;form-horizontal&#39;&gt;
+    &lt;div class=&#39;row&#39;&gt;
+        &lt;div class=&#39;col-md-6 col-md-offset-3&#39;&gt;
+            &lt;div class=&#39;form-group   &#39;&gt;
+                &lt;label class=&#39;control-label  col-sm-2&#39;&gt;Username&lt;/label&gt;
+                &lt;div class=&#39;col-sm-10&#39;&gt;
+                    &lt;input type=&#39;text&#39; class=&#39;form-control &#39; name=&#39;user_name&#39; autocomplete=&#39;off&#39; value=&#39;&#39; placeholder=&#39;Please enter the user name&#39; data-fv-notempty=true data-fv-notempty-message=&quot;&#39;User name&#39; is required.&quot;   &gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&#39;form-group   &#39;&gt;
+                &lt;label class=&#39;control-label  col-sm-2&#39;&gt;Password&lt;/label&gt;
+                &lt;div class=&#39;col-sm-10&#39;&gt;
+                    &lt;input type=&#39;password&#39; class=&#39;form-control &#39; name=&#39;password&#39; autocomplete=&#39;off&#39; value=&#39;&#39; placeholder=&#39;Please enter your password&#39; data-fv-notempty=true data-fv-notempty-message=&quot;&#39;Password&#39; is required.&quot;   &gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&#39;vert-pad&#39;&gt;
+                &lt;button type=&#39;submit&#39; name=&#39;submit&#39; class=&#39;btn btn-primary btn-lg  &#39;  data-loading-text=&#39;Please wait...&#39; &gt;
+                    Log In
+                &lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/form&gt;
+</code></pre><h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>action</code></td>
+<td>@action</td>
+<td>The URI to which this form should submit.</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>@method</td>
+<td><strong>Optional.</strong> Specifies the HTTP method to use when sending form data (<code>get</code> (default) or <code>post</code>).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</body>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> 
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->  
 </html>
