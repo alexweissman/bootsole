@@ -3,7 +3,7 @@
 namespace Bootsole;
 
 /**
- * Builds a collection of form components.
+ * Builds a collection of form components (FormComponentBuilder or FormComponentCollectionBuilder objects)
  */
 
 class FormComponentCollectionBuilder extends HtmlBuilder {
@@ -114,6 +114,13 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
 
     public function validators($validators){
         $this->_validators = $validators;
+    }
+ 
+    // Add a new component
+    public function addComponent($name, $content){    
+        $component = $this->parseComponent($content);
+        $this->_components[$name] = $component;
+        return $component;        
     }
     
     public function getComponent($name){

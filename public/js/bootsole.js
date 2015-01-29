@@ -47,7 +47,7 @@ $(document).ready(function() {
                 // The submit buttons selector
                 selector: '[type="submit"]'
             }
-        }).formValidation('validate');
+        });
     }
         
 });
