@@ -597,6 +597,10 @@ form {
 }
 
 
+.toc {
+    list-style-type:none;
+}
+
 /* GENERAL ELEMENT TYPE STYLES */
 
 h1 {

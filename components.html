@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">    
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" type="text/css" href="css/pygment_trac.css" media="screen">
@@ -34,6 +34,7 @@
             <li class="dropdown active">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Components <b class="caret"></b></a>
                 <ul class="dropdown-menu">
+                  <li><a href="/bootsole/components"><i class='fa fa-fw fa-bars'></i> Overview</a></li>
                   <li><a href="/bootsole/components#basic-components"><i class='fa fa-fw fa-cubes'></i> Basic Components</a></li>
                   <li><a href="/bootsole/components#pagebuilder"><i class='fa fa-fw fa-file-text-o'></i> PageBuilder</a></li>
                   <li><a href="/bootsole/components#navbarbuilder"><i class='fa fa-fw fa-map-marker'></i> NavbarBuilder</a></li>
@@ -50,65 +51,89 @@
     
     <h1>Components</h1>
 
-<p>Bootsole comes with many classes, called <strong>components</strong>, that extend the basic <code>HtmlBuilder</code> class for additional functionality.</p>
+<p>Bootsole comes with many classes, called <strong>components</strong>, that extend the basic <code>HtmlBuilder</code> class for additional functionality.  For simplicity, we denote inheritance with the &larr; symbol, composition with the &diams; symbol, and traits with the + symbol.  Of course the relationships are not a strictly linear hierarchy; see the documentation for each class for more details.</p>
 
-<ul>
-<li><a href="#basic-components">Basic Components</a></li>
-<ul>
-<li><a href="#htmlattributesbuilder">HtmlAttributesBuilder</a></li>
-</ul>
-<li><a href="#pagebuilder">PageBuilder</a></li>
-<ul>
-    <li>PageHeaderBuilder</li>
-    <li>PageFooterBuilder</li>
-</ul>
-<li><a href="#navbarbuilder">NavbarBuilder</a></li>
-<ul>
-    <li>NavComponentBuilder</li>
-    <li><a href="#navbuilder">NavBuilder</a></li>
-    <li><a href="#navitembuilder-and-navdropdownbuilder">NavItemBuilder</a></li>
-    <li><a href="#navitembuilder-and-navdropdownbuilder">NavDropdownBuilder</a></li>
-    <li>NavFormBuilder</li>
-    <li>NavTextBuilder</li>
-    <li>NavButtonBuilder</li>
-    <li>NavLinkBuilder</li>
-</ul>
-<li><a href="#tablebuilder">TableBuilder</a></li>
-<ul>
-<li>TableColumnBuilder</li>
-</ul>
-<li><a href="#formbuilder">FormComponentCollectionBuilder</a></li>
-    <ul>
-        <li>FormBuilder</li>
-    </ul>
-    <li>FormComponentBuilder</li>
-    <ul>
-        <li>FormGroupBuilder</li>
-        <li>FormFieldBuilder</li>
-        <ul>
-            <li>FormTextFieldBuilde</li>
-            <li>FormPasswordFieldBuilder</li>
-            <li>FormNumberFieldBuilder</li>
-            <li>FormEmailFieldBuilder</li>
-            <li>FormUrlFieldBuilder</li>
-            <li>FormColorFieldBuilder</li>
-            <li>FormSearchFieldBuilder</li>
-            <li>FormSelectFieldBuilder</li>
-            <li>FormSelect2FieldBuilder</li>
-            <li>FormSelectTimeFieldBuilder</li>
-            <li>FormHiddenFieldBuilder</li>
-            <li>FormTextAreaFieldBuilder</li>
-            <li>FormCheckboxFieldBuilder</li>
-            <li>FormRadioFieldBuilder</li>
-            <li>FormSwitchFieldBuilder</li>
-            <li>FormToggleFieldBuilder</li>
-            <li>FormBootstrapRadioBuilder</li>
+<ul class="toc">
+<li>&larr; <a href="#basic-components">Basic Components (Built from HtmlBuilder)</a></li>
+<ul class="toc">
+    <li>&larr; <a href="#buttongroupbuilder">ButtonGroupBuilder</a></li>
+    <li>&larr; <a href="#buttonbuilder">ButtonBuilder</a></li>
+    <ul class="toc">
+        <li>&larr; <a href="#dropdownbuttonbuilder">DropdownButtonBuilder</a></li>
+        <ul class="toc">
+            <li>&larr; <a href="#buttondropdownaddonbuilder">ButtonDropdownAddonBuilder</a></li>
         </ul>
-    </ul>        
+    </ul>
+    <li>&larr; <a href="#dropdownbuilder">DropdownBuilder</a></li>
+    <ul class="toc">
+        &diams; <a href="#menuitembuilder">MenuItemBuilder</a></li>
+    </ul>
+    <li>+ <a href="#htmlattributesbuilder">HtmlAttributesBuilder</a></li>    
+</ul>
+<li>&larr; <a href="#pagebuilder">PageBuilder</a></li>
+<ul class="toc">
+    <li>&diams; PageHeaderBuilder</li>
+    <li>&diams; PageFooterBuilder</li>
+</ul>
+<li>&larr; <a href="#navbarbuilder">NavbarBuilder</a></li>
+<ul class="toc">
+    <li>&diams; NavComponentBuilder</li>
+    <ul class="toc">
+        <li>&larr; <a href="#navbuilder">NavBuilder</a></li>
+        <ul class="toc">
+            <li>&diams; <a href="#navitembuilder-and-navdropdownbuilder">NavDropdownBuilder</a></li>
+        </ul>
+        <li>&larr; NavFormBuilder</li>
+        <li>&larr; NavTextBuilder</li>
+        <li>&larr; NavButtonBuilder</li>
+        <li>&larr; NavLinkBuilder</li>
+    </ul>
+</ul>
+<li>&larr; <a href="#tablebuilder">TableBuilder</a></li>
+<ul class="toc">
+    <li>&diams; TableColumnBuilder</li>
+</ul>
+<li>&larr; <a href="#formbuilder">FormComponentCollectionBuilder</a></li>
+    <ul class="toc">
+        <li>&larr; FormBuilder</li>
+        <li>&diams; FormComponentBuilder</li>
+        <ul class="toc">
+            <li>&larr; FormGroupBuilder</li>
+            <li>&larr; FormFieldBuilder</li>
+            <ul class="toc">
+                <li>&larr; FormTextFieldBuilder</li>
+                <li>&larr; FormPasswordFieldBuilder</li>
+                <li>&larr; FormNumberFieldBuilder</li>
+                <li>&larr; FormEmailFieldBuilder</li>
+                <li>&larr; FormUrlFieldBuilder</li>
+                <li>&larr; FormColorFieldBuilder</li>
+                <li>&larr; FormSearchFieldBuilder</li>
+                <li>&larr; FormSelectFieldBuilder</li>
+                <li>&larr; FormSelect2FieldBuilder</li>
+                <li>&larr; FormSelectTimeFieldBuilder</li>
+                <li>&larr; FormHiddenFieldBuilder</li>
+                <li>&larr; FormTextAreaFieldBuilder</li>
+                <li>&larr; FormCheckboxFieldBuilder</li>
+                <li>&larr; FormRadioFieldBuilder</li>
+                <li>&larr; FormSwitchFieldBuilder</li>
+                <li>&larr; FormToggleFieldBuilder</li>
+                <li>&larr; FormBootstrapRadioBuilder</li>
+            </ul>
+            <li>&larr; FormButtonBuilder</li>
+        </ul>
+    </ul>
 </ul>
 
 <h2>
 <a id="basic-components" class="anchor" href="#basic-components" aria-hidden="true"></a><i class='side-icon fa fa-cubes'></i> Basic Components</h2>
+
+<h3>
+<a id="buttongroupbuilder" class="anchor" href="#buttongroupbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>ButtonGroupBuilder</h3>
+<h3 id="buttonbuilder">ButtonBuilder</h3>
+<h3 id="dropdownbuttonbuilder">DropdownButtonBuilder</h3>
+<h3 id="buttondropdownaddonbuilder">ButtonDropdownAddonBuilder</h3>
+<h3 id="dropdownbuilder">DropdownBuilder</h3>
+<h3 id="menuitembuilder">MenuItemBuilder</h3>
 
 <h3>
 <a id="htmlattributesbuilder" class="anchor" href="#htmlattributesbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>HtmlAttributesBuilder</h3>
@@ -742,7 +767,7 @@ $table = new BS\TableBuilder($table_content);
 
 <h2>
 <a id="formbuilder" class="anchor" href="#formbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a><i class='side-icon fa fa-list-alt'></i> FormBuilder</h2>
-
+<h3>FormComponentCollectionBuilder</h3>
 <p>The core <code>FormComponentCollectionBuilder</code> class allows building forms of arbitrary complexity.  A <code>FormComponentCollectionBuilder</code> is basically a collection of form components (derived classes of the abstract <code>FormComponentBuilder</code> class), and/or other <code>FormComponentCollectionBuilder</code> objects.  In this way components can be grouped, reused, and repeated in the same form without the need for separate placeholders for each group.  The <code>FormBuilder</code> class is simply the highest-level (and often, only) collection of form components.  For example, a form might be structured as such:</p>
 <ul>
 <li>FormBuilder<ul>
@@ -756,7 +781,7 @@ $table = new BS\TableBuilder($table_content);
 </ul>
 </li>
 </ul>
-<h3 id="components">Components</h3>
+<h4 id="components">Components</h4>
 <p>Components can be added to a <code>FormComponentCollectionBuilder</code> object via the <code>@components</code> directive (array), or via the <code>addComponent</code> method.  Each component can be a derived type of FormComponentBuilder object, or another FormComponentCollectionBuilder object.  Many component objects can be declared implicitly via a subarray.</p>
 <p><code>FormComponentCollectionBuilder</code> also provides for some collection-wide properties, which can be set via the class methods or through array directives:</p>
 <h4 id="directives">Directives</h4>
@@ -801,9 +826,10 @@ $table = new BS\TableBuilder($table_content);
 </table>
 </div>
 </div>
-
+<p>When a <code>FormComponentCollectionBuilder</code> is rendered, the <b>layout</b> and <b>label_width</b> will be passed along to its components.  To mix and match layouts, you can use separate <code>FormComponentCollectionBuilder</code> components in a parent <code>FormComponentCollectionBuilder</code> or <code>FormBuilder</code> object.</p>
+<p>Also on rendering, the appropriate <b>validator</b> and <b>value</b> will be passed along to the component with the corresponding name.  This allows you to set the values and validators for all the components in one convenient array.  This is especially useful when you want to load a set of data into a pre-existing form (for example, to update a database record), and for loading validation information from a validation schema.</p>
 <h3 id="formbuilder">FormBuilder</h3>
-<p>The <code>FormBuilder</code> class extends the <code>FormComponentCollectionBuilder</code> class (see below), and inherits all the functionality of that class.  It also includes two additional directives, <code>@method</code> and <code>@action</code>, which correspond to the attributes of the top-level <code>&lt;form&gt;</code> tag.</p>
+<p>The <code>FormBuilder</code> class extends the <code>FormComponentCollectionBuilder</code> class, and inherits all the functionality of that class.  It also includes two additional directives, <code>@method</code> and <code>@action</code>, which correspond to the attributes of the top-level <code>&lt;form&gt;</code> tag.</p>
 <p><strong>Example</strong></p>
 <pre><code>$fb = new BS\FormBuilder([
     &quot;@action&quot; =&gt; &quot;https://mysite.com/login/auth&quot;,
@@ -883,6 +909,95 @@ $fb-&gt;render();
 </table>
 </div>
 </div>
+
+<h3 id="formcomponentbuilder">FormComponentBuilder</h3>
+<p><code>FormComponentBuilder</code> is an abstract class that represents a form component.  Form components include input fields, checkboxes, buttons, and more.  As it is an abstract class, you cannot instantiate a FormComponentBuilder object directly.  Instead you must instantiate one of its derived classes, which include <code>FormGroupBuilder</code>, <code>FormFieldBuilder</code>, and <code>FormButtonBuilder</code>.</p>
+<h4 id="directives">Directives</h4>
+<p>A generic <code>FormComponentBuilder</code> object has four directives:</p>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>@name</td>
+<td><strong>Required.</strong> The name of the component.  Used to populate the <code>name</code> attribute in the appropriate HTML tag (<code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, etc.)</td>
+</tr>
+<tr>
+<td>value</td>
+<td>@value</td>
+<td><strong>Optional.</strong> The current value of the field.</td>
+</tr>
+<tr>
+<td>default</td>
+<td>@default</td>
+<td><strong>Optional.</strong> The default value of the field.  Used as the value if <strong>value</strong> has not been set before rendering.</td>
+</tr>
+<tr>
+<td>validator</td>
+<td>@validator</td>
+<td><strong>Optional.</strong> The FormValidation validator for the field, as a string of <code>data-*</code> attributes.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The <code>@name</code> directive can be set explicitly when instantiating an object, or implicitly from an array key if it is defined implicitly.  In the previous example, notice that the components did not have their <code>@name</code> directives set.  Thus, they automatically took their names from the keys of the <code>@components</code> array (<em>user_name</em>, <em>password</em>, and <em>submit</em>).</p>
+<h3 id="formgroupbuilder">FormGroupBuilder</h3>
+<p>The <code>FormGroupBuilder</code> class inherits from <code>FormComponentBuilder</code>.  It serves as a wrapper for <code>FormFieldBuilder</code> objects, and implements Bootstrap&#39;s <a href="http://getbootstrap.com/css/#forms-example">form groups</a>.  It also allows for associating a label with the field.  </p>
+<p>In most cases, you should create fields using the <code>FormGroupBuilder</code> class for optimal spacing and alignment.  However if you really need to, you can still use naked <code>FormFieldBuilder</code> object as as components.</p>
+<h4 id="directives">Directives</h4>
+<p><code>FormGroupBuilder</code> objects have five directives, in addition to the ones they inherit from <code>FormComponentBuilder</code>:</p>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>---</td>
+<td>@type</td>
+<td><strong>Required.</strong> Specifies what type of <code>FormFieldBuilder</code> object to create for this group.  Can be any of <em>text</em>, <em>password</em>, <em>number</em>, <em>email</em>, <em>url</em>, <em>color</em>, <em>select</em>, <em>select2</em>, <em>selecttime</em>, <em>hidden</em>, <em>textarea</em>, <em>checkbox</em>, <em>radio</em>, <em>switch</em>, <em>toggle</em>, <em>bootstrapradio</em>.</td>
+</tr>
+<tr>
+<td>label</td>
+<td>@label</td>
+<td><strong>Optional.</strong> The label for the field.  Automatically displayed above the field (vertical forms), to the left (horizontal forms), or hidden (inline forms).</td>
+</tr>
+<tr>
+<td>display</td>
+<td>@display</td>
+<td><strong>Optional.</strong> Display mode for the field. Can be <em>show</em> (default), <em>disabled</em>, <em>readonly</em>, or <em>hidden</em>.  If set to <em>hidden</em>, the entire group will render as a null string.  Useful for dynamically specifying which fields to render.</td>
+</tr>
+<tr>
+<td>label_width</td>
+<td>@label_width</td>
+<td><strong>Optional.</strong> The width of the form group label, in columns (1-12), for horizontal forms.  Inherits from the parent <code>FormFieldCollectionBuilder</code> object if not explicitly set.</td>
+</tr>
+<tr>
+<td>layout</td>
+<td>@layout</td>
+<td><strong>Optional.</strong> The <a href="http://getbootstrap.com/css/#forms-inline">layout</a> for the group.  &#39;vertical&#39; (default), &#39;horizontal&#39;, or &#39;inline&#39;. Inherits from the parent <code>FormFieldCollectionBuilder</code> object if not explicitly set.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h4 id="fields">Fields</h4>
+<p>Every <code>FormGroupBuilder</code> object contains exactly one field object (derived classes of <code>FormFieldBuilder</code>).  When a <code>FormGroupBuilder</code> is instantiated, the field object is automatically created using the <code>@type</code> directive of the <code>FormGroupBuilder</code> parent object, along with any additional content.  It is possible to manually override the field object using the <code>field</code> method.</p>
+
 </section>
 </div>
 </div>
