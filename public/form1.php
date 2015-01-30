@@ -40,7 +40,7 @@ $fb = new BS\FormBuilder([
             '@placeholder' => 'Please enter the user name'
         ],
         'title' => [
-            '@type' => 'select2',
+            '@type' => 'select',
             '@label' => 'Title',
             '@items' => [
                 'ta' => [
@@ -65,7 +65,6 @@ $fb = new BS\FormBuilder([
                     '@label' => 'Professor Emeritus'
                     ]
             ],
-            '@multiple' => "multiple",
             '@default' => 'emeritus',
             '@prepend' => "<span class='input-group-addon'><i class='fa fa-fw fa-mortar-board'></i></span>",            
         ],
@@ -173,10 +172,10 @@ $fb = new BS\FormBuilder([
         ])
     ],
     "@values" => [
-        'user_name' => "Bob",
+        //'user_name' => "Bob",
         'email' => "bob@bob.com",
         'wakeup' => "11:00 am",
-        'title' => "adjunct",
+        //'title' => "adjunct",
         'beard' => 'pointy',
         'password' => "yo",
         'school' => 'epicurist',

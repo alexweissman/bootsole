@@ -56,7 +56,7 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
            
         // Set @label_width if specified
         if (isset($content['@label_width'])){
-            $this->label_width($content['@label_width']);
+            $this->labelWidth($content['@label_width']);
         }
 
         // Set @validators if specified
@@ -108,7 +108,7 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
         $this->_values[$name] = $value;
     }
     
-    public function label_width($content){
+    public function labelWidth($content){
         $this->_label_width = $content;
     }
 
@@ -176,7 +176,7 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
         // set layout and label width for FormGroup and FormFieldCollections
         if (is_a($component, "Bootsole\FormGroupBuilder") || is_a($component, "Bootsole\FormComponentCollectionBuilder") ) {
             $component->layout($this->_layout);
-            $component->label_width($this->_label_width);
+            $component->labelWidth($this->_label_width);
         }
     }
     
@@ -193,7 +193,7 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
                 } else {
                     $component = new FormGroupBuilder($content);
                     $component->layout($this->_layout);              // Pass on form layout to component.  Should be overridable?
-                    $component->label_width($this->_label_width);    // Pass on form label width to component.  Should be overridable?
+                    $component->labelWidth($this->_label_width);    // Pass on form label width to component.  Should be overridable?
                 }
                 return $component;
             } else {
@@ -210,7 +210,7 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
                 $content->name($name);
             // Push down form properties
             $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
-            $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
+            $content->labelWidth($this->_label_width);     // Pass on form label width to component.  Should be overridable?
             return $content;                               // FormGroupBuilder passed in            
         } else if (is_a($content, "Bootsole\FormGroupBuilder")){
             // Set name if not set in content
@@ -218,7 +218,7 @@ class FormComponentCollectionBuilder extends HtmlBuilder {
                 $content->name($name);            
             // Push down form properties
             $content->layout($this->_layout);               // Pass on form layout to component.  Should be overridable?
-            $content->label_width($this->_label_width);     // Pass on form label width to component.  Should be overridable?
+            $content->labelWidth($this->_label_width);     // Pass on form label width to component.  Should be overridable?
             return $content;                               // FormGroupBuilder passed in
         } else if (is_a($content, "Bootsole\FormFieldBuilder")){
             // Set name if not set in content
@@ -286,14 +286,15 @@ class FormBuilder extends FormComponentCollectionBuilder {
    @name
    @value
    @default
+   @validator
 */
 
 abstract class FormComponentBuilder extends HtmlBuilder {
     use HtmlAttributesBuilder;
     
-    protected $_name;                // The name of the field.
-    protected $_value;          // The value of the field (optional).
-    protected $_default = "";        // The default value of the field, if none is specified (optional).
+    protected $_name;               // The name of the field (required).
+    protected $_value;              // The value of the field (optional).
+    protected $_default = "";       // The default value of the field, if none is specified (optional).
     protected $_validator = "";     // A string containing FormValidator validation rules, as HTML5 data* attributes
 
     public function __construct($content = [], $template_file = null, $options = []){
@@ -403,7 +404,7 @@ class FormGroupBuilder extends FormComponentBuilder {
         
         // Set @label_width if specified
         if (isset($content['@label_width'])){
-            $this->label_width($content['@label_width']);
+            $this->labelWidth($content['@label_width']);
         }
 
         // Set @label if specified
@@ -448,7 +449,7 @@ class FormGroupBuilder extends FormComponentBuilder {
         }
     }    
 
-    public function label_width($content){
+    public function labelWidth($content){
         $this->_label_width = $content;           
     }
 
