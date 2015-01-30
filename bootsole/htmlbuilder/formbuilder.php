@@ -907,6 +907,50 @@ class FormSelectTimeFieldBuilder extends FormSelectFieldBuilder {
     }
 }
 
+
+
+/* Represents a toggle group (checkbox or radio group) */
+
+class FormToggleFieldBuilder extends FormSelectFieldBuilder {
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+                <div class='btn-group' data-toggle='buttons'>
+                {{_items}}
+                </div>");
+        }        
+    }
+    
+    public function render(){
+        // Pass on _name and _display to children
+        foreach ($this->_items as $item){
+            $item->setContent("_name", $this->_name);
+            $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
+        }
+    
+        // Select default item(s), if nothing is selected
+        if (count($this->getSelectedItems()) <= 0){
+            $this->selectItem($this->_default);     // Will only work if name = value for the option
+        }
+
+        // Render the items as radios or checkboxes, depending on value of _multiple
+        if ($this->_multiple)
+            $items = $this->renderItems("togglecheckbox");
+        else
+            $items = $this->renderItems("toggleradio");
+        
+        $this->setContent("_items", $items);
+    
+        return $this->renderInputGroup();       // Call trait FormFieldAddonable's render() function instead of parent's function
+    }
+    
+}
+
 /*
 Other field types:
    * textarea
@@ -1076,51 +1120,6 @@ class FormSwitchFieldBuilder  extends FormCheckboxFieldBuilder {
     }
 }
 
-
-
-/* Represents a toggle group (checkbox or radio group) */
-
-class FormToggleFieldBuilder extends FormSelectFieldBuilder {
-    
-    public function __construct($content = [], $template_file = null, $options = []){
-        // Load the specified template, or the default navbar template
-        if ($template_file)
-            parent::__construct($content, $template_file, $options);
-        else {
-            parent::__construct($content, null, $options);
-            $this->setTemplate("
-                <div class='btn-group' data-toggle='buttons'>
-                {{_items}}
-                </div>");
-        }        
-    }
-    
-    public function render(){
-        // Pass on _name and _display to children
-        foreach ($this->_items as $item){
-            $item->setContent("_name", $this->_name);
-            $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
-        }
-    
-        // Select default item(s), if nothing is selected
-        if (count($this->getSelectedItems()) <= 0){
-            $this->selectItem($this->_default);     // Will only work if name = value for the option
-        }
-
-        // Render the items as radios or checkboxes, depending on value of _multiple
-        if ($this->_multiple)
-            $items = $this->renderItems("togglecheckbox");
-        else
-            $items = $this->renderItems("toggleradio");
-        
-        $this->setContent("_items", $items);
-    
-        return $this->renderInputGroup();       // Call trait FormFieldAddonable's render() function instead of parent's function
-    }
-    
-}
-
-
 /* A Bootstrap Radio group */
 
 class FormBootstrapRadioBuilder extends FormFieldBuilder {
@@ -1241,7 +1240,7 @@ class FormButtonBuilder extends FormComponentBuilder {
         else {
             parent::__construct($content, null, $options);
             $this->setTemplate("
-            <div class='vert-pad'>
+            <div>
                 {{_button}}
             </div>");
         }
