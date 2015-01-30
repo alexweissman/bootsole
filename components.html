@@ -102,15 +102,21 @@
             <li>&larr; FormFieldBuilder</li>
             <ul class="toc">
                 <li>&larr; FormTextFieldBuilder</li>
-                <li>&larr; FormPasswordFieldBuilder</li>
-                <li>&larr; FormNumberFieldBuilder</li>
-                <li>&larr; FormEmailFieldBuilder</li>
-                <li>&larr; FormUrlFieldBuilder</li>
-                <li>&larr; FormColorFieldBuilder</li>
-                <li>&larr; FormSearchFieldBuilder</li>
+                    <ul class="toc">
+                        <li>&larr; FormPasswordFieldBuilder</li>
+                        <li>&larr; FormNumberFieldBuilder</li>
+                        <li>&larr; FormEmailFieldBuilder</li>
+                        <li>&larr; FormUrlFieldBuilder</li>
+                        <li>&larr; FormColorFieldBuilder</li>
+                        <li>&larr; FormSearchFieldBuilder</li>
+                    </ul>
                 <li>&larr; FormSelectFieldBuilder</li>
-                <li>&larr; FormSelect2FieldBuilder</li>
-                <li>&larr; FormSelectTimeFieldBuilder</li>
+                    <ul class="toc">
+                        <li>&diams; FormFieldOptionBuilder</li>
+                        <li>&larr; FormSelect2FieldBuilder</li>
+                        <li>&larr; FormSelectTimeFieldBuilder</li>
+                        <li>+ FormFieldSelectableItem</li>  
+                    </ul>
                 <li>&larr; FormHiddenFieldBuilder</li>
                 <li>&larr; FormTextAreaFieldBuilder</li>
                 <li>&larr; FormCheckboxFieldBuilder</li>
@@ -118,6 +124,8 @@
                 <li>&larr; FormSwitchFieldBuilder</li>
                 <li>&larr; FormToggleFieldBuilder</li>
                 <li>&larr; FormBootstrapRadioBuilder</li>
+                <li>+ FormFieldAddonable</li>
+                <li>+ FormFieldSelectable</li>
             </ul>
             <li>&larr; FormButtonBuilder</li>
         </ul>
@@ -798,7 +806,7 @@ $table = new BS\TableBuilder($table_content);
 </thead>
 <tbody>
 <tr>
-<td><code>label_width</code></td>
+<td><code>labelWidth</code></td>
 <td>@label_width</td>
 <td><strong>Optional.</strong> The width of form group labels, in columns (1-12), for horizontal forms</td>
 </tr>
@@ -982,7 +990,7 @@ $fb-&gt;render();
 <td><strong>Optional.</strong> Display mode for the field. Can be <em>show</em> (default), <em>disabled</em>, <em>readonly</em>, or <em>hidden</em>.  If set to <em>hidden</em>, the entire group will render as a null string.  Useful for dynamically specifying which fields to render.</td>
 </tr>
 <tr>
-<td>label_width</td>
+<td>labelWidth</td>
 <td>@label_width</td>
 <td><strong>Optional.</strong> The width of the form group label, in columns (1-12), for horizontal forms.  Inherits from the parent <code>FormFieldCollectionBuilder</code> object if not explicitly set.</td>
 </tr>
@@ -997,6 +1005,188 @@ $fb-&gt;render();
 </div>
 <h4 id="fields">Fields</h4>
 <p>Every <code>FormGroupBuilder</code> object contains exactly one field object (derived classes of <code>FormFieldBuilder</code>).  When a <code>FormGroupBuilder</code> is instantiated, the field object is automatically created using the <code>@type</code> directive of the <code>FormGroupBuilder</code> parent object, along with any additional content.  It is possible to manually override the field object using the <code>field</code> method.</p>
+
+<h3 id="formfieldbuilder">FormFieldBuilder</h3>
+<p><code>FormFieldBuilder</code> is an abstract class that represents a form field object.  These include all fields based on the HTML <code>&lt;input&gt;</code> tag (including checkboxes and radio buttons), as well as <code>&lt;textarea&gt;</code> and <code>&lt;select&gt;</code> fields.  Bootsole does not currently support fields based on the <code>&lt;datalist&gt;</code>, <code>&lt;keygen&gt;</code>, or <code>&lt;output&gt;</code> tags (instead of <code>&lt;datalist&gt;</code>, we provide templating for the extremely popular <a href="https://select2.github.io/"><strong>select2</strong></a> widget).</p>
+<h4 id="directives">Directives</h4>
+<p>In addition to the directives that it inherits from <code>FormComponentBuilder</code>, <code>FormFieldBuilder</code> includes the following directives:</p>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>display</td>
+<td>@display</td>
+<td><strong>Optional.</strong> Display mode for the field. Can be <em>show</em> (default), <em>disabled</em>, <em>readonly</em>, or <em>hidden</em>.  If set to <em>hidden</em>, the entire group will render as a null string.  Useful for dynamically specifying which fields to render.  Inherits from the parent <code>FormGroupBuilder</code> object if not explicitly set.</td>
+</tr>
+<tr>
+<td>placeholder</td>
+<td>@placeholder</td>
+<td><strong>Optional.</strong> A placeholder for the field.  Used to populate the <code>placeholder</code> attribute of the HTML tag.</td>
+</tr>
+<tr>
+<td>prepend</td>
+<td>@prepend</td>
+<td><strong>Optional.  Only available for fields that use the <code>FormFieldAddonable</code> trait.</strong> Sets the content for an <strong><a href="http://getbootstrap.com/components/#input-groups-basic">input group addon</a></strong> in front of the field, and tells the <code>FormFieldBuilder</code> object to automatically wrap the field and addon in an <strong><a href="http://getbootstrap.com/components/#input-groups">input group</a></strong>.</td>
+</tr>
+<tr>
+<td>append</td>
+<td>@append</td>
+<td><strong>Optional.  Only available for fields that use the <code>FormFieldAddonable</code> trait.</strong> Sets the content for an <strong><a href="http://getbootstrap.com/components/#input-groups-basic">input group addon</a></strong> after the field and tells the <code>FormFieldBuilder</code> object to automatically wrap the field and addon in an <strong><a href="http://getbootstrap.com/components/#input-groups">input group</a></strong>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h4 id="generating-derived-classes">Generating derived classes</h4>
+<p>Although <code>FormFieldBuilder</code> is an abstract class, it provides the static &quot;factory&quot; method <code>generate</code> for generating different types of derived classes.  This is mainly used 
+by <code>FormGroupBuilder</code> objects to determine what kind of field to create based on the <strong>@type</strong> directive.  It takes two parameters, <code>$type</code> and <code>$content</code>, and returns the appropriate kind of <code>FormFieldBuilder</code> object.  <code>$type</code> can be any of the types mentioned in the <code>FormGroupBuilder</code> documentation.  <code>$content</code> is an array containing directives and placeholders for the new object.</p>
+<h3 id="formtextfieldbuilder">FormTextFieldBuilder</h3>
+<p><code>FormTextFieldBuilder</code> is the most generic type of <code>&lt;input&gt;</code>-based field that can be instantiated.  It simply generates an HTML <code>&lt;input&gt;</code> element of type <code>text</code>, and uses the relevant <code>FormComponentBuilder</code> and <code>FormFieldBuilder</code> directives to populate the attributes.</p>
+<p><strong>Example:</strong></p>
+<pre><code>$ftfb = new FormTextFieldBuilder([
+    &#39;@name&#39; =&gt; &#39;user_name&#39;,
+    &#39;@display&#39; =&gt; &#39;disabled&#39;,
+    &#39;@placeholder&#39; =&gt; &#39;Please enter the user name&#39;
+]);
+$ftfb-&gt;render();
+</code></pre><p><strong> Outputs: </strong></p>
+<pre><code>&lt;input type=&#39;text&#39; class=&#39;form-control &#39; name=&#39;user_name&#39; autocomplete=&#39;off&#39; value=&#39;&#39; placeholder=&#39;Please enter the user name&#39; disabled&gt;
+</code></pre><p>If you define it implicitly within a FormGroupBuilder, you can add a label and wrap it in a <strong>form group</strong>:</p>
+<pre><code>$ftfb = new FormGroupBuilder([
+    &#39;@type&#39; =&gt; &#39;text&#39;,
+    &#39;@name&#39; =&gt; &#39;user_name&#39;,            
+    &#39;@display&#39; =&gt; &#39;disabled&#39;,            
+    &#39;@label&#39; =&gt; &#39;Username&#39;,
+    &#39;@placeholder&#39; =&gt; &#39;Please enter the user name&#39;
+]);
+$ftfb-&gt;render();
+</code></pre><strong> Outputs: </strong>
+<p><img src="screenshots/bootsole-field-text.png" alt="Basic text field" title="Basic Text Field"></p>
+<pre><code>&lt;div class=&#39;form-group   &#39;&gt;
+    &lt;label class=&#39;control-label  &#39;&gt;Username&lt;/label&gt;
+    &lt;input type=&#39;text&#39; class=&#39;form-control &#39; name=&#39;user_name&#39; autocomplete=&#39;off&#39; value=&#39;&#39; placeholder=&#39;Please enter the user name&#39; disabled&gt;
+&lt;/div&gt;
+</code></pre><h3 id="formpasswordfieldbuilder">FormPasswordFieldBuilder</h3>
+<p><code>FormPasswordFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;password&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.</p>
+<h3 id="formnumberfieldbuilder">FormNumberFieldBuilder</h3>
+<p><code>FormNumberFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;number&#39;</code> (integer only) attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.</p>
+<h3 id="formemailfieldbuilder">FormEmailFieldBuilder</h3>
+<p><code>FormEmailFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;email&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.</p>
+<h3 id="formurlfieldbuilder">FormUrlFieldBuilder</h3>
+<p><code>FormUrlFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;url&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.</p>
+<h3 id="formcolorfieldbuilder">FormColorFieldBuilder</h3>
+<p><code>FormColorFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;color&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.  Note that the built-in <a href="http://www.w3schools.com/tags/att_input_type.asp">color picker</a> is not supported by all browsers.</p>
+<h3 id="formsearchfieldbuilder">FormSearchFieldBuilder</h3>
+<p><code>FormSearchFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;search&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.</p>
+<h3 id="formselectfieldbuilder">FormSelectFieldBuilder</h3>
+<p><code>FormSelectFieldBuilder</code> renders a <code>&lt;select&gt;</code> element, along with one or more child <code>&lt;option&gt;</code> elements.  </p>
+<h4 id="items">Items</h4>
+<p>Each child item is represented using a <code>FormFieldOptionBuilder</code> object.  These can be defined explicitly, or implicitly as arrays.  Items can be set through the <code>@items</code> directive or through the <code>items</code> method.  <code>FormSelectFieldBuilder</code> uses the <code>FormFieldSelectable</code> trait to implement adding, getting, and selecting items.</p>
+<p>Options can be selected in three ways: via the <code>selectItem</code> method, the <code>selectItems</code> method, or by the <code>value</code> method.  <code>selectItem</code> takes the name of the option (based on its array key in <code>@items</code>, and selects exactly one item.  <code>selectItems</code> takes a value, and selects all options that have that value.  <code>value</code> serves as a wrapper for <code>selectItems</code>, but also sets the field <code>multiple</code> attribute if an array of values is specified.</p>
+<h4 id="directives">Directives</h4>
+<p>In addition to the directives that it inherits from <code>FormComponentBuilder</code>, <code>FormSelectBuilder</code> includes the following directives:</p>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>multiple</td>
+<td>@multiple</td>
+<td><strong>Optional.</strong> Set to <em>&quot;&quot;</em> (default) or <em>multiple</em>. Determines whether it is possible select more than one option.</td>
+</tr>
+<tr>
+<td>items</td>
+<td>@items</td>
+<td><strong>Optional.</strong> An array of <code>FormFieldOptionBuilder</code> objects, defined explicitly or as arrays.</td>
+</tr>
+<tr>
+<td>itemClasses</td>
+<td>@item_classes</td>
+<td><strong>Optional.</strong> An array of additional CSS classes to be applied to each child option.  A shortcut for applying CSS classes individually to each element.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Example:</strong></p>
+<pre><code>$fsfb = new FormSelectFieldBuilder([
+    &#39;@type&#39; =&gt; &#39;select&#39;,
+    &#39;@layout&#39; =&gt; &#39;horizontal&#39;,
+    &#39;@label_width&#39; =&gt; &#39;2&#39;,
+    &#39;@label&#39; =&gt; &#39;Title&#39;,
+    &#39;@items&#39; =&gt; [
+        &#39;ta&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Teaching Assistant&#39;
+            ],
+        &#39;street_lord&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Street Lord&#39;
+            ],
+        &#39;adjunct&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Adjunct Instructor&#39;
+            ],
+        &#39;assistant&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Assistant Professor&#39;
+            ],
+        &#39;associate&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Associate Professor&#39;
+            ],
+        &#39;professor&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Professor&#39;
+            ],
+        &#39;emeritus&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Professor Emeritus&#39;
+            ]
+    ],
+    &#39;@default&#39; =&gt; &#39;emeritus&#39;,
+    &#39;@prepend&#39; =&gt; &quot;&lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-mortar-board&#39;&gt;&lt;/i&gt;&lt;/span&gt;&quot;
+]);
+</code></pre><strong>Outputs:</strong>
+<p><img src="screenshots/bootsole-field-select.png" alt="Select field" title="Select Field"></p>
+<pre><code>&lt;div class=&#39;form-group   &#39;&gt;
+    &lt;label class=&#39;control-label  col-sm-2&#39;&gt;
+        Title
+    &lt;/label&gt;
+    &lt;div class=&#39;col-sm-10&#39;&gt;
+        &lt;div class=&#39;input-group&#39;&gt;
+            &lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-mortar-board&#39;&gt;&lt;/i&gt;&lt;/span&gt;
+            &lt;select class=&#39;form-control &#39; name=&#39;title&#39; autocomplete=&#39;off&#39;  placeholder=&#39;&#39;&gt;
+                &lt;option class=&#39;&#39; value=&#39;ta&#39;  &gt;Teaching Assistant&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;street_lord&#39;  &gt;Street Lord&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;adjunct&#39;  &gt;Adjunct Instructor&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;assistant&#39;  &gt;Assistant Professor&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;associate&#39;  &gt;Associate Professor&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;professor&#39;  &gt;Professor&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;emeritus&#39;  selected&gt;Professor Emeritus&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><h3 id="formselectoptionbuilder">FormSelectOptionBuilder</h3>
+<h3 id="formselect2fieldbuilder">FormSelect2FieldBuilder</h3>
+<h3 id="formselecttimefieldbuilder">FormSelectTimeFieldBuilder</h3>
+<h3 id="formhiddenfieldbuilder">FormHiddenFieldBuilder</h3>
+<h3 id="formtextareafieldbuilder">FormTextAreaFieldBuilder</h3>
+<h3 id="formcheckboxfieldbuilder">FormCheckboxFieldBuilder</h3>
+<h3 id="formradiofieldbuilder">FormRadioFieldBuilder</h3>
+<h3 id="formswitchfieldbuilder">FormSwitchFieldBuilder</h3>
+<h3 id="formtogglefieldbuilder">FormToggleFieldBuilder</h3>
+<h3 id="formbootstrapradiobuilder">FormBootstrapRadioBuilder</h3>
+<h3 id="formbuttonbuilder">FormButtonBuilder</h3>
 
 </section>
 </div>
