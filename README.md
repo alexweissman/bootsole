@@ -8,6 +8,30 @@ A nestable, object-oriented templating engine for generating beautiful Bootstrap
 
 #### https://alexweissman.github.io/bootsole/
 
+## What is it?
+Bootsole is a templating engine for web development in PHP.
+
+## Why do we need another templating engine?  Why don't you use Smarty or Twig?! >:o
+The purpose of a templating engine is to separate the **presentation** of your content from the **business logic** (i.e., your data model).  Smarty and Twig solve this problem with the following line of reasoning:
+
+- We need a way to separate presentation from the model.
+- ...PHP is too verbose, so it should be reserved for dealing with the model.
+- ...Let's build a less powerful, but more concise meta-language for the presentation.
+- ...Developers will be mindful of building too much business logic with the meta-language, and reserve it for presentation logic as much as possible.
+
+This approach makes sense, especially if you run a large operation and have "web developer" and "web designer" as two separate jobs (or departments).  But what if you are a general-purpose web programmer running a small operation, and your main concern is rapid development and reusable, maintainable code?  It would be nice if instead, your templating system actually makes it faster to design and assemble real web pages.  Enter Bootsole.
+
+Bootsole's focus is on developing a DRY (Don't Repeat Yourself) design paradigm for rapid development.  It models the way that a human designer thinks about a web page - a page contains a header, body, and footer; the body might contain some forms and tables; each form will contain fields and buttons, and so forth.  Bootsole's line of reasoning is:
+
+- We need a way to separate presentation from the model.
+- ...Let's keep the "presentation" side as minimal as possible.
+- ...Templates should be simple, fill-in-the-blank HTML documents.
+- ...PHP is verbose but powerful, and can be used to transform our model into a presentable format.
+- ...Just tell me where to stick these transformed objects in the HTML templates when you're ready to render them.
+- ...We can minimize the amount of presentation logic that developers need to write in the first place, by providing common functionality through **components**.  Developers can extend our components for project-specific needs.
+
+Through an extensive class [hierarchy](components), Bootsole lets you explicitly declare pages, forms, tables, and more as PHP objects.  These objects can be configured to set the content and layout, modified, and reused throughout your project.  Where appropriate, they can be nested inside each other.  When ready, you simply call `render` on the top-level object, and it recursively generates the appropriate HTML for itself and all its children.
+
 ## Dependencies
 
 ### PHP
