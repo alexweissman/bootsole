@@ -60,6 +60,31 @@
       <div class="inner clearfix">
         <section id="main-content">
 
+        
+<h2>
+<a id="what" class="anchor" href="#what" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is it?</h2>
+<p>Bootsole is a templating engine for web development in PHP.</p>
+
+<h2>
+<a id="why" class="anchor" href="#why" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why do we need another templating engine?  Why don't you use Smarty or Twig?! >:o</h2>
+<p>The purpose of a templating engine is to separate the <strong>presentation</strong> of your content from the <strong>business logic</strong> (i.e., your data model).  Smarty and Twig solve this problem with the following line of reasoning:</p>
+<ul>
+<li>We need a way to separate presentation from the model.</li>
+<li>...PHP is too verbose, so it should be reserved for dealing with the model.</li>
+<li>...Let's build a less powerful, but more concise meta-language for the presentation.</li>
+<li>...Developers will be mindful of building too much business logic with the meta-language, and reserve it for presentation logic as much as possible.</li>
+</ul>
+<p>This approach makes sense, especially if you run a large operation and have "web developer" and "web designer" as two separate jobs (or departments).  But what if you are a general-purpose web programmer running a small operation, and your main concern is rapid development and reusable, maintainable code?  It would be nice if instead, your templating system actually makes it faster to design and assemble real web pages.  Enter Bootsole.</p>
+<p>Bootsole's focus is on developing a DRY (Don't Repeat Yourself) design paradigm for rapid development.  It models the way that a human designer thinks about a web page - a page contains a header, body, and footer; the body might contain some forms and tables; each form will contain fields and buttons, and so forth.  Bootsole's line of reasoning is:</p>
+<ul>
+<li>We need a way to separate presentation from the model.</li>
+<li>...Let's keep the "presentation" side as minimal as possible.</li>
+<li>...Templates should be simple, fill-in-the-blank HTML documents.</li>
+<li>...PHP is verbose but powerful, and can be used to transform our model into a presentable format.</li>
+<li>...Just tell me where to stick these transformed objects in the HTML templates when you're ready to render them.</li>
+<li>...We can minimize the amount of presentation logic that developers need to write in the first place, by providing common functionality through <strong>components</strong>.  Developers can extend our components for project-specific needs.</li>
+</ul>
+<p>Through an extensive <a href='components'>class hierarchy</a>, Bootsole lets you explicitly declare pages, forms, tables, and more as PHP objects.  These objects can be configured to set the content and layout, modified, and reused throughout your project.  Where appropriate, they can be nested inside each other.  When ready, you simply call <code>render</code> on the top-level object, and it recursively generates the appropriate HTML for itself and all its children.</p>
 <h2>
 <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
 
