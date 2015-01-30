@@ -109,20 +109,22 @@
                         <li>&larr; FormUrlFieldBuilder</li>
                         <li>&larr; FormColorFieldBuilder</li>
                         <li>&larr; FormSearchFieldBuilder</li>
+                        <li>&larr; FormHiddenFieldBuilder</li>
                     </ul>
+                <li>&larr; FormTextAreaFieldBuilder</li>
                 <li>&larr; FormSelectFieldBuilder</li>
                     <ul class="toc">
                         <li>&diams; FormFieldOptionBuilder</li>
                         <li>&larr; FormSelect2FieldBuilder</li>
                         <li>&larr; FormSelectTimeFieldBuilder</li>
+                        <li>&larr; FormToggleFieldBuilder</li>
                         <li>+ FormFieldSelectableItem</li>  
                     </ul>
-                <li>&larr; FormHiddenFieldBuilder</li>
-                <li>&larr; FormTextAreaFieldBuilder</li>
                 <li>&larr; FormCheckboxFieldBuilder</li>
-                <li>&larr; FormRadioFieldBuilder</li>
-                <li>&larr; FormSwitchFieldBuilder</li>
-                <li>&larr; FormToggleFieldBuilder</li>
+                    <ul class="toc">
+                        <li>&larr; FormRadioFieldBuilder</li>
+                        <li>&larr; FormSwitchFieldBuilder</li>
+                    </ul>
                 <li>&larr; FormBootstrapRadioBuilder</li>
                 <li>+ FormFieldAddonable</li>
                 <li>+ FormFieldSelectable</li>
@@ -1051,7 +1053,7 @@ by <code>FormGroupBuilder</code> objects to determine what kind of field to crea
 <h3 id="formtextfieldbuilder">FormTextFieldBuilder</h3>
 <p><code>FormTextFieldBuilder</code> is the most generic type of <code>&lt;input&gt;</code>-based field that can be instantiated.  It simply generates an HTML <code>&lt;input&gt;</code> element of type <code>text</code>, and uses the relevant <code>FormComponentBuilder</code> and <code>FormFieldBuilder</code> directives to populate the attributes.</p>
 <p><strong>Example:</strong></p>
-<pre><code>$ftfb = new FormTextFieldBuilder([
+<pre><code>$ftfb = new BS\FormTextFieldBuilder([
     &#39;@name&#39; =&gt; &#39;user_name&#39;,
     &#39;@display&#39; =&gt; &#39;disabled&#39;,
     &#39;@placeholder&#39; =&gt; &#39;Please enter the user name&#39;
@@ -1060,7 +1062,7 @@ $ftfb-&gt;render();
 </code></pre><p><strong> Outputs: </strong></p>
 <pre><code>&lt;input type=&#39;text&#39; class=&#39;form-control &#39; name=&#39;user_name&#39; autocomplete=&#39;off&#39; value=&#39;&#39; placeholder=&#39;Please enter the user name&#39; disabled&gt;
 </code></pre><p>If you define it implicitly within a FormGroupBuilder, you can add a label and wrap it in a <strong>form group</strong>:</p>
-<pre><code>$ftfb = new FormGroupBuilder([
+<pre><code>$ftfb = new BS\FormGroupBuilder([
     &#39;@type&#39; =&gt; &#39;text&#39;,
     &#39;@name&#39; =&gt; &#39;user_name&#39;,            
     &#39;@display&#39; =&gt; &#39;disabled&#39;,            
@@ -1086,6 +1088,10 @@ $ftfb-&gt;render();
 <p><code>FormColorFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;color&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.  Note that the built-in <a href="http://www.w3schools.com/tags/att_input_type.asp">color picker</a> is not supported by all browsers.</p>
 <h3 id="formsearchfieldbuilder">FormSearchFieldBuilder</h3>
 <p><code>FormSearchFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;search&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object.</p>
+<h3 id="formhiddenfieldbuilder">FormHiddenFieldBuilder</h3>
+<p><code>FormHiddenFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;hidden&#39;</code> attribute.  It is otherwise identical to a <code>FormTextFieldBuilder</code> object, except that it does not support the <code>@prepend</code>, <code>@append</code>, or <code>@placeholder</code> directives.</p>
+<h3 id="formtextareafieldbuilder">FormTextAreaFieldBuilder</h3>
+<p><code>FormTextAreaFieldBuilder</code> creates a <code>&lt;textarea&gt;</code> field.  The API is basically the same as for <code>FormTextFieldBuilder</code>, except that it offers the <code>@rows</code> directive and <code>rows</code> method.  This is used to set the number of text rows to display in the field.  Note that we do not offer the <code>cols</code> method, because Bootstrap by default renders textareas to take up the entire width of the container.  For a narrower field, you should use a container class, for example a Bootstrap grid element.</p>
 <h3 id="formselectfieldbuilder">FormSelectFieldBuilder</h3>
 <p><code>FormSelectFieldBuilder</code> renders a <code>&lt;select&gt;</code> element, along with one or more child <code>&lt;option&gt;</code> elements.  </p>
 <h4 id="items">Items</h4>
@@ -1124,7 +1130,7 @@ $ftfb-&gt;render();
 </div>
 </div>
 <p><strong>Example:</strong></p>
-<pre><code>$fsfb = new FormSelectFieldBuilder([
+<pre><code>$fsfb = new BS\FormSelectFieldBuilder([
     &#39;@type&#39; =&gt; &#39;select&#39;,
     &#39;@layout&#39; =&gt; &#39;horizontal&#39;,
     &#39;@label_width&#39; =&gt; &#39;2&#39;,
@@ -1176,18 +1182,363 @@ $ftfb-&gt;render();
         &lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-</code></pre><h3 id="formselectoptionbuilder">FormSelectOptionBuilder</h3>
-<h3 id="formselect2fieldbuilder">FormSelect2FieldBuilder</h3>
-<h3 id="formselecttimefieldbuilder">FormSelectTimeFieldBuilder</h3>
-<h3 id="formhiddenfieldbuilder">FormHiddenFieldBuilder</h3>
-<h3 id="formtextareafieldbuilder">FormTextAreaFieldBuilder</h3>
-<h3 id="formcheckboxfieldbuilder">FormCheckboxFieldBuilder</h3>
-<h3 id="formradiofieldbuilder">FormRadioFieldBuilder</h3>
-<h3 id="formswitchfieldbuilder">FormSwitchFieldBuilder</h3>
-<h3 id="formtogglefieldbuilder">FormToggleFieldBuilder</h3>
-<h3 id="formbootstrapradiobuilder">FormBootstrapRadioBuilder</h3>
-<h3 id="formbuttonbuilder">FormButtonBuilder</h3>
+</code></pre>
 
+<h3 id="formfieldoptionbuilder">FormFieldOptionBuilder</h3>
+<p>This class builds a selectable item in a <code>FormSelectFieldBuilder</code>, <code>FormSelect2FieldBuilder</code>, <code>FormSelectTimeFieldBuilder</code>, <code>FormToggleFieldBuilder</code>, or <code>FormBootstrapRadioBuilder</code> object.  It uses the <code>FormFieldSelectableItem</code> trait to implement the following directives:</p>
+<h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>itemValue</td>
+<td>@item_value</td>
+<td><strong>Optional.</strong> The value associated with this particular item.  If not specified, will be automatically taken from the key in the <code>@items</code> array of the parent object.</td>
+</tr>
+<tr>
+<td>label</td>
+<td>@label</td>
+<td><strong>Optional.</strong> The label to display for this option.  If not specified, will default to the <strong>item value</strong>.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>@title</td>
+<td><strong>Optional.</strong> Sets the <code>title</code> attribute for this option.  Useful for creating tooltips for the <code>FormFieldBootstrapRadioBuilder</code> components.</td>
+</tr>
+<tr>
+<td>selected</td>
+<td>@selected</td>
+<td><strong>Optional.</strong> Specifies whether this item should be set as a currently selected item. Set to <em>false</em> (default) or <em>true</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>There is typically no need to define these objects explicitly.  Instead, they can be defined implicitly in the <code>@items</code> directive of a parent object.  Items with an <code>item_value</code> that matches the parent <code>value</code> will be automatically selected upon construction.</p>
+
+<h3 id="formselect2fieldbuilder">FormSelect2FieldBuilder</h3>
+<p>This class is identical to <code>FormSelectFieldBuilder</code>, except that it adds the <code>select2</code> class to the <code>&lt;select&gt;</code> tag.  The <code>select2</code> class tells Bootsole to initialize the field as a <a href="https://select2.github.io/">select2</a> element.  If you aren&#39;t familiar with Select2, it is a extremely popular enhancement for standard <code>&lt;select&gt;</code> elements.  From their website:</p>
+<blockquote>
+<p>Select2 gives you a customizable select box with support for searching, tagging, remote data sets, infinite scrolling, and many other highly used options. </p>
+</blockquote>
+<p><strong>Note:</strong> to use <code>FormSelect2FieldBuilder</code>, you will need the relevant CSS and JS files.  You can download them from the Select2 website, or use the version included with this repository in the <code>public</code> directory.  You will also need the following JS code to perform basic initialization:</p>
+<pre><code>// Initialize select2 dropdowns, if enabled
+if (jQuery().select2){
+    $(&#39;.select2&#39;).select2();
+} else {
+    console.error(&quot;The select2 plugin has not been added.&quot;);
+}
+</code></pre><p>This code is included already in <code>public/js/bootsole.js</code>.</p>
+<h3 id="formselecttimefieldbuilder">FormSelectTimeFieldBuilder</h3>
+<p><code>FormSelectTimeFieldBuilder</code> is a special modification of <code>FormSelectFieldBuilder</code> that generates a list of times in a specific range, with a specified increment.  It will try to render as a <code>select2</code> field, if the library is available.  It uses the following additional directives:</p>
+<h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>timeStart</td>
+<td>@time_start</td>
+<td><strong>Optional.</strong> The start time.  Should be a time that can be parsed by <code>strtotime</code>.  Default is <em>12:00 am</em>.</td>
+</tr>
+<tr>
+<td>timeEnd</td>
+<td>@time_end</td>
+<td><strong>Optional.</strong> The end time.  Should be a time that can be parsed by <code>strtotime</code>.  Default is <em>11:45 pm</em>.</td>
+</tr>
+<tr>
+<td>timeIncrement</td>
+<td>@time_increment</td>
+<td><strong>Optional.</strong> The time increment, in minutes.  Default is <em>15</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Example:</strong></p>
+<pre><code>$fstb = new BS\FormGroupBuilder([
+    &#39;@type&#39; =&gt; &#39;selecttime&#39;,
+    &#39;@layout&#39; =&gt; &#39;horizontal&#39;,
+    &#39;@label&#39; =&gt; &#39;Wakeup Call&#39;,
+    &#39;@prepend&#39; =&gt; &quot;&lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-clock-o&#39;&gt;&lt;/i&gt;&lt;/span&gt;&quot;,
+    &#39;@time_start&#39; =&gt; &#39;5:00 am&#39;,
+    &#39;@time_end&#39; =&gt; &#39;12:00 pm&#39;,
+    &#39;@time_increment&#39; =&gt; 30,
+    &#39;@placeholder&#39; =&gt; &#39;When?&#39;,
+    &#39;@default&#39; =&gt; &#39;11:00 am&#39;
+]);
+echo $fstb-&gt;render();
+</code></pre><p><strong>Outputs:</strong></p>
+<p><img src="screenshots/bootsole-field-selecttime.png" alt="Select Time" title="Select Time"></p>
+<pre><code>&lt;div class=&#39;form-group   &#39;&gt;
+    &lt;label class=&#39;control-label  col-sm-2&#39;&gt;Wakeup Call&lt;/label&gt;
+    &lt;div class=&#39;col-sm-10&#39;&gt;
+        &lt;div class=&#39;input-group&#39;&gt;
+            &lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-clock-o&#39;&gt;&lt;/i&gt;&lt;/span&gt;
+            &lt;select class=&#39;form-control select2 &#39; name=&#39;wakeup&#39; autocomplete=&#39;off&#39;  placeholder=&#39;When?&#39;   &gt;
+                &lt;option&gt;&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;5:00 am&#39;  &gt;5:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;5:30 am&#39;  &gt;5:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;6:00 am&#39;  &gt;6:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;6:30 am&#39;  &gt;6:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;7:00 am&#39;  &gt;7:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;7:30 am&#39;  &gt;7:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;8:00 am&#39;  &gt;8:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;8:30 am&#39;  &gt;8:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;9:00 am&#39;  &gt;9:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;9:30 am&#39;  &gt;9:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;10:00 am&#39;  &gt;10:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;10:30 am&#39;  &gt;10:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;11:00 am&#39;  selected&gt;11:00 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;11:30 am&#39;  &gt;11:30 am&lt;/option&gt;
+                &lt;option class=&#39;&#39; value=&#39;12:00 pm&#39;  &gt;12:00 pm&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="formtogglefieldbuilder">FormToggleFieldBuilder</h3>
+<p><code>FormToggleFieldBuilder</code> generates a set of checkboxes or radio buttons, styled as <a href="http://getbootstrap.com/javascript/#buttons-checkbox-radio">Bootstrap toggle buttons</a>.  It extends the <code>FormSelectFieldBuilder</code> class, so each item is a <code>FormFieldOptionBuilder</code> object.  However, the items are rendered as <code>&lt;input&gt;</code> elements rather than <code>&lt;option&gt;</code> elements.</p>
+<p>The <code>@multiple</code> directive determines whether the items are rendered as <code>&lt;input&gt;</code> elements with <code>type=checkbox</code> or <code>type=radio</code> .  The <code>@display</code> and <code>@name</code> directives are automatically passed down to the child elements upon rendering.</p>
+<p><strong>Example:</strong></p>
+<pre><code>$ftfb = new BS\FormGroupBuilder([
+    &#39;@type&#39; =&gt; &#39;toggle&#39;,
+    `@name&#39; =&gt; &#39;beard&#39;,
+    &#39;@label&#39; =&gt; &#39;Beard&#39;,
+    &#39;@multiple&#39; =&gt; &quot;multiple&quot;,
+    &#39;@prepend&#39; =&gt; &quot;&lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-trophy&#39;&gt;&lt;/i&gt;&lt;/span&gt;&quot;,
+    &#39;@item_classes&#39; =&gt; [
+        &#39;btn-primary&#39;
+    ],
+    &#39;@items&#39; =&gt; [
+        &#39;fluffy&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Fluffy&#39;
+        ],
+        &#39;scraggly&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Scraggly&#39;
+        ],
+        &#39;pointy&#39; =&gt; [
+            &#39;@label&#39; =&gt; &#39;Pointy&#39;
+        ]
+    ],
+    &#39;@display&#39; =&gt; &#39;disabled&#39;
+]);
+echo $ftfb-&gt;render();
+</code></pre><p><strong>Outputs:</strong></p>
+<p><img src="screenshots/bootsole-field-toggle.png" alt="Toggle" title="Toggle"></p>
+<pre><code>&lt;div class=&#39;form-group   &#39;&gt;
+    &lt;label class=&#39;control-label  &#39;&gt;Beard&lt;/label&gt;
+    &lt;div class=&#39;input-group&#39;&gt;
+        &lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-trophy&#39;&gt;&lt;/i&gt;&lt;/span&gt;
+        &lt;div class=&#39;btn-group&#39; data-toggle=&#39;buttons&#39;&gt;
+
+        &lt;label class=&#39;btn btn-primary  disabled&#39;&gt;
+            &lt;input class=&#39;form-control&#39; type=&#39;checkbox&#39; name=&#39;beard&#39; value=&#39;fluffy&#39;   disabled&gt; Fluffy
+        &lt;/label&gt;
+
+        &lt;label class=&#39;btn btn-primary  disabled&#39;&gt;
+            &lt;input class=&#39;form-control&#39; type=&#39;checkbox&#39; name=&#39;beard&#39; value=&#39;scraggly&#39;   disabled&gt; Scraggly
+        &lt;/label&gt;
+
+        &lt;label class=&#39;btn btn-primary  active disabled&#39;&gt;
+            &lt;input class=&#39;form-control&#39; type=&#39;checkbox&#39; name=&#39;beard&#39; value=&#39;pointy&#39;   disabled checked&gt; Pointy
+        &lt;/label&gt;
+
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p><strong>Note:</strong> Bootstrap toggle buttons require some custom CSS to properly render options that are both selected and disabled.  Please see <code>public/css/bootstrap-custom.css</code>.</p>
+<h3 id="formcheckboxfieldbuilder">FormCheckboxFieldBuilder</h3>
+<p><code>FormCheckboxFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;checkbox&#39;</code> attribute. It uses the same directives as <code>FormFieldBuilder</code>, but includes the following additional directives:</p>
+<h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>itemValue</td>
+<td>@item_value</td>
+<td><strong>Required.</strong> The value associated with this particular checkbox.</td>
+</tr>
+<tr>
+<td>text</td>
+<td>@text</td>
+<td><strong>Optional.</strong> The text to display to the right of the checkbox.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>@title</td>
+<td><strong>Optional.</strong> Sets the <code>title</code> attribute for this option.</td>
+</tr>
+<tr>
+<td>selected</td>
+<td>@selected</td>
+<td><strong>Optional.</strong> Specifies whether this item should be set as a currently selected item. Set to <em>false</em> (default) or <em>true</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>You can use the <code>value</code> method on a checkbox as well.  However, it works differently from the way <code>value</code> would work on say, a text field.  For checkboxes (and radios), the <code>value</code> function will check whether the parameter is equal to the <code>item_value</code> for the checkbox.  If so, it will set the checkbox to <code>selected</code>.  If not, it will deselect the checkbox.  This allows you to preset checkboxes in the same way as you would other fields.</p>
+<h3 id="formradiofieldbuilder">FormRadioFieldBuilder</h3>
+<p><code>FormRadioFieldBuilder</code> renders an <code>&lt;input&gt;</code> tag with the <code>type=&#39;radio&#39;</code> attribute.  It is otherwise identical to a <code>FormCheckboxFieldBuilder</code> object.</p>
+<h3 id="formswitchfieldbuilder">FormSwitchFieldBuilder</h3>
+<p><code>FormSwitchFieldBuilder</code> is the same as <code>FormCheckboxFieldBuilder</code>, but adds the <code>switch</code> class to the <code>&lt;input&gt;</code> element.  The <code>switch</code> class tells Bootsole to initialize the field as a <a href="http://www.bootstrap-switch.org/">Bootstrap Switch</a> element.  This allows you to graphically style the checkbox as an on-off toggle switch:</p>
+<pre><code>$fsfb = new BS\FormGroupBuilder([
+    &#39;@type&#39; =&gt; &#39;switch&#39;,
+    &#39;@name&#39; =&gt; &quot;tos&quot;,
+    &#39;@label&#39; =&gt; &quot;TOS&quot;,
+    &#39;@text&#39; =&gt; &quot;I agree to the Terms and Conditions&quot;,
+    &#39;@text_on&#39; =&gt; &quot;Yes&quot;,
+    &#39;@text_off&#39; =&gt; &quot;No&quot;,
+    &#39;@item_value&#39; =&gt; &quot;yessir&quot;
+]);
+echo $fsfb-&gt;render();
+</code></pre><p><strong> Outputs: </strong></p>
+<p><img src="screenshots/bootsole-field-switch.png" alt="Switch" title="Switch"></p>
+<pre><code>&lt;div class=&#39;form-group   &#39;&gt;
+    &lt;label class=&#39;control-label  col-sm-4&#39;&gt;TOS&lt;/label&gt;
+    &lt;div class=&#39;col-sm-8&#39;&gt;
+        &lt;div&gt;
+            &lt;input type=&#39;checkbox&#39; class=&#39;form-control bootstrapswitch &#39; name=&#39;tos&#39; value=&#39;yessir&#39; title=&#39;&#39;  checked  data-on-text=&#39;Yes&#39; data-off-text=&#39;No&#39;&gt; 
+            I agree to the Terms and Conditions
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>textOn</td>
+<td>@text_on</td>
+<td><strong>Optional.</strong> The text to display for the switch in &#39;on&#39; (checked) mode.</td>
+</tr>
+<tr>
+<td>textOff</td>
+<td>@text_off</td>
+<td><strong>Optional.</strong> The text to display for the switch in &#39;off&#39; (unchecked) mode.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Note:</strong> to use <code>FormSwitchFieldBuilder</code>, you will need the relevant CSS and JS files.  You can download them from the Bootstrap Switch website, or use the version included with this repository in the <code>public</code> directory.  You will also need the following JS code to perform basic initialization:</p>
+<pre><code>// Initialize bootstrap switches, if enabled
+if (jQuery().bootstrapSwitch){
+    $(&#39;.bootstrapswitch&#39;).bootstrapSwitch();
+} else {
+    console.error(&quot;The bootstrap-switch plugin has not been added.&quot;);
+}
+</code></pre><p>This code is included already in <code>public/js/bootsole.js</code>.</p>
+<h3 id="formbootstrapradiobuilder">FormBootstrapRadioBuilder</h3>
+<p>This class uses the <a href="https://github.com/alexweissman/bootstrapradio">Bootstrap Radio</a> plugin to tie a group of buttons to a hidden <code>&lt;input&gt;</code> element, simulating a group of radio buttons.  Thus, you can read the selected value from an ordinary <code>&lt;input&gt;</code> element.</p>
+<p><strong>Example:</strong></p>
+<pre><code>$fbrfb = new BS\FormGroupBuilder([
+    &#39;@type&#39; =&gt; &#39;bootstrapradio&#39;,
+    &#39;@name&#39; =&gt; &#39;school&#39;,
+    &#39;@label&#39; =&gt; &#39;School&#39;,
+    &#39;@items&#39; =&gt; [
+        &#39;epicurist&#39; =&gt; [
+            &#39;@title&#39; =&gt; &#39;Epicurist.  Relax and enjoy life.&#39;,
+            &#39;@label&#39; =&gt; &quot;&lt;i class=&#39;fa fa-cutlery&#39;&gt;&lt;/i&gt;&quot;
+        ],
+        &#39;futurist&#39; =&gt; [
+            &#39;@title&#39; =&gt; &#39;Futurist.  Cyborgs unite!&#39;,
+            &#39;@label&#39; =&gt; &quot;&lt;i class=&#39;fa fa-space-shuttle&#39;&gt;&lt;/i&gt;&quot;
+        ],
+        &#39;stoic&#39; =&gt; [
+            &#39;@title&#39; =&gt; &#39;Stoic.  Grin and bear it.&#39;,
+            &#39;@label&#39; =&gt; &quot;&lt;i class=&#39;fa fa-tree&#39;&gt;&lt;/i&gt;&quot;
+        ]
+    ]                  
+]);
+echo $fbrfb-&gt;render();
+</code></pre><p><strong>Outputs:</strong></p>
+<p><img src="screenshots/bootsole-field-bootstrapradio.png" alt="Toggle" title="Toggle"></p>
+<pre><code>&lt;div class=&#39;form-group   &#39;&gt;
+    &lt;label class=&#39;control-label  &#39;&gt;School&lt;/label&gt;
+    &lt;div&gt;
+        &lt;input value=&quot;epicurist&quot; name=&quot;school&quot; type=&quot;hidden&quot;&gt;
+        &lt;button type=&#39;button&#39; class=&#39;bootstrapradio &#39; name=&#39;school&#39; value=&#39;epicurist&#39; title=&#39;Epicurist.  Relax and enjoy life.&#39;  data-selected=&#39;true&#39; data-size=&#39;xs&#39;&gt;
+            &lt;i class=&#39;fa fa-cutlery&#39;&gt;&lt;/i&gt;
+        &lt;/button&gt; 
+        &lt;button type=&#39;button&#39; class=&#39;bootstrapradio &#39; name=&#39;school&#39; value=&#39;futurist&#39; title=&#39;Futurist.  Cyborgs unite!&#39;  data-selected=&#39;false&#39; data-size=&#39;xs&#39;&gt;
+            &lt;i class=&#39;fa fa-space-shuttle&#39;&gt;&lt;/i&gt;
+        &lt;/button&gt; 
+        &lt;button type=&#39;button&#39; class=&#39;bootstrapradio &#39; name=&#39;school&#39; value=&#39;stoic&#39; title=&#39;Stoic.  Grin and bear it.&#39;  data-selected=&#39;false&#39; data-size=&#39;xs&#39;&gt;
+            &lt;i class=&#39;fa fa-tree&#39;&gt;&lt;/i&gt;
+        &lt;/button&gt; 
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><h4 id="directives-">Directives:</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>multiple</td>
+<td>@multiple</td>
+<td><strong>Optional.</strong> Set to <em>&quot;&quot;</em> (default) or <em>multiple</em>. Determines whether it is possible select more than one option.</td>
+</tr>
+<tr>
+<td>items</td>
+<td>@items</td>
+<td><strong>Optional.</strong> An array of <code>FormFieldOptionBuilder</code> objects, defined explicitly or as arrays.</td>
+</tr>
+<tr>
+<td>size</td>
+<td>@size</td>
+<td><strong>Optional.</strong> The size of the options.  Can be any of the Bootstrap button size classes: (<em>xs</em>, <em>sm</em>, <em>lg</em>, or <em>block</em>).</td>
+</tr>
+<tr>
+<td>itemClasses</td>
+<td>@item_classes</td>
+<td><strong>Optional.</strong> An array of additional CSS classes to be applied to each child option.  A shortcut for applying CSS classes individually to each element.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h3 id="formbuttonbuilder">FormButtonBuilder</h3>
+<p>This class builds an HTML <code>&lt;button&gt;</code> element to associate with the form.  It is simply a wrapper for a <code>ButtonBuilder</code> or <code>ButtonGroupBuilder</code> object.  It will automatically generate a <code>ButtonBuilder</code> object from the supplied content.</p>
 </section>
 </div>
 </div>
