@@ -742,6 +742,23 @@ class FormSearchFieldBuilder extends FormTextFieldBuilder {
     }           
 }
 
+/* Represents a hidden field.
+*/
+
+class FormHiddenFieldBuilder extends FormFieldBuilder {
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+            <input type='hidden' class='form-control {{_css_classes}}' name='{{_name}}' value='{{_value}}' {{_data}} {{_display}}>");
+        }
+
+    }            
+}
+
 /* Represents a field consisting of one or more options that can be selected.  Derived field types include:
 
    * select
@@ -890,54 +907,8 @@ class FormSelectTimeFieldBuilder extends FormSelectFieldBuilder {
     }
 }
 
-/* Represents a toggle group (checkbox or radio group) */
-
-class FormToggleFieldBuilder extends FormSelectFieldBuilder {
-    
-    public function __construct($content = [], $template_file = null, $options = []){
-        // Load the specified template, or the default navbar template
-        if ($template_file)
-            parent::__construct($content, $template_file, $options);
-        else {
-            parent::__construct($content, null, $options);
-            $this->setTemplate("
-                <div class='btn-group' data-toggle='buttons'>
-                {{_items}}
-                </div>");
-        }        
-    }
-    
-    public function render(){
-        // Pass on _name and _display to children
-        foreach ($this->_items as $item){
-            $item->setContent("_name", $this->_name);
-            $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
-        }
-    
-        // Select default item(s), if nothing is selected
-        if (count($this->getSelectedItems()) <= 0){
-            $this->selectItem($this->_default);     // Will only work if name = value for the option
-        }
-
-        // Render the items as radios or checkboxes, depending on value of _multiple
-        if ($this->_multiple)
-            $items = $this->renderItems("togglecheckbox");
-        else
-            $items = $this->renderItems("toggleradio");
-        
-        $this->setContent("_items", $items);
-    
-        return $this->renderInputGroup();       // Call trait FormFieldAddonable's render() function instead of parent's function
-    }
-    
-}
-
-
 /*
 Other field types:
-   
-   (No input groups)
-   * hidden
    * textarea
    * switch (bootstrap-switch)
    * radio
@@ -945,22 +916,7 @@ Other field types:
    * bootstrapradio
 */
 
-/* Represents a hidden field.
-*/
 
-class FormHiddenFieldBuilder extends FormFieldBuilder {
-    public function __construct($content = [], $template_file = null, $options = []){
-        // Load the specified template, or the default navbar template
-        if ($template_file)
-            parent::__construct($content, $template_file, $options);
-        else {
-            parent::__construct($content, null, $options);
-            $this->setTemplate("
-            <input type='hidden' class='form-control {{_css_classes}}' name='{{_name}}' value='{{_value}}' {{_data}} {{_display}}>");
-        }
-
-    }            
-}
 
 /* Represents a textarea field.
 */
@@ -1022,7 +978,7 @@ class FormCheckboxFieldBuilder extends FormFieldBuilder {
         }
         
         if (isset($content['@item_value'])){
-            $this->item_value($content['@item_value']);
+            $this->itemValue($content['@item_value']);
         }
         
         if (isset($content['@text'])){
@@ -1091,25 +1047,25 @@ class FormSwitchFieldBuilder  extends FormCheckboxFieldBuilder {
             parent::__construct($content, null, $options);
             $this->setTemplate("
             <div>
-                <input type='checkbox' class='form-control bootstrapswitch {{_css_classes}}' name='{{name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}} data-on-text='{{_text_on}}' data-off-text='{{_text_off}}'> {{_text}}
+                <input type='checkbox' class='form-control bootstrapswitch {{_css_classes}}' name='{{_name}}' value='{{_item_value}}' title='{{_title}}' {{_data}} {{_selected}} {{_display}} data-on-text='{{_text_on}}' data-off-text='{{_text_off}}'> {{_text}}
             </div>
             ");
         }
         
         if (isset($content['@text_on'])){
-            $this->text_on($content['@text_on']);
+            $this->textOn($content['@text_on']);
         }        
 
         if (isset($content['@text_off'])){
-            $this->text_off($content['@text_off']);
+            $this->textOff($content['@text_off']);
         } 
     }
 
-    public function text_on($text){
+    public function textOn($text){
         $this->_text_on = $text;
     }
 
-    public function text_off($text){
+    public function textOff($text){
         $this->_text_off = $text;
     }
     
@@ -1118,6 +1074,50 @@ class FormSwitchFieldBuilder  extends FormCheckboxFieldBuilder {
         $this->setContent('_text_off', $this->_text_off);
         return parent::render();
     }
+}
+
+
+
+/* Represents a toggle group (checkbox or radio group) */
+
+class FormToggleFieldBuilder extends FormSelectFieldBuilder {
+    
+    public function __construct($content = [], $template_file = null, $options = []){
+        // Load the specified template, or the default navbar template
+        if ($template_file)
+            parent::__construct($content, $template_file, $options);
+        else {
+            parent::__construct($content, null, $options);
+            $this->setTemplate("
+                <div class='btn-group' data-toggle='buttons'>
+                {{_items}}
+                </div>");
+        }        
+    }
+    
+    public function render(){
+        // Pass on _name and _display to children
+        foreach ($this->_items as $item){
+            $item->setContent("_name", $this->_name);
+            $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
+        }
+    
+        // Select default item(s), if nothing is selected
+        if (count($this->getSelectedItems()) <= 0){
+            $this->selectItem($this->_default);     // Will only work if name = value for the option
+        }
+
+        // Render the items as radios or checkboxes, depending on value of _multiple
+        if ($this->_multiple)
+            $items = $this->renderItems("togglecheckbox");
+        else
+            $items = $this->renderItems("toggleradio");
+        
+        $this->setContent("_items", $items);
+    
+        return $this->renderInputGroup();       // Call trait FormFieldAddonable's render() function instead of parent's function
+    }
+    
 }
 
 
@@ -1205,7 +1205,7 @@ class FormFieldOptionBuilder extends HtmlBuilder {
         }
         
         if (isset($content['@item_value'])){
-            $this->item_value($content['@item_value']);
+            $this->itemValue($content['@item_value']);
         }
         
         if (isset($content['@label'])){
@@ -1379,7 +1379,7 @@ trait FormFieldSelectable {
         
         // Set item value to name of item, if not otherwise specified
         if (!$result->getItemValue())
-            $result->item_value($name);
+            $result->itemValue($name);
     
         return $result;
     }
@@ -1392,7 +1392,7 @@ trait FormFieldSelectableItem {
     protected $_title = "";
     protected $_selected = false;   // Whether or not this option is selected
 
-    public function item_value($content){
+    public function itemValue($content){
         $this->_item_value = $content;
     }
     
