@@ -835,7 +835,7 @@ class FormSelect2FieldBuilder extends FormSelectFieldBuilder {
 class FormSelectTimeFieldBuilder extends FormSelectFieldBuilder {
     
     protected $_time_start = "12:00 am";
-    protected $_time_end = "11:30 pm";
+    protected $_time_end = "11:45 pm";
     protected $_time_increment = "15";
     
     public function __construct($content = [], $template_file = null, $options = []){
@@ -848,26 +848,26 @@ class FormSelectTimeFieldBuilder extends FormSelectFieldBuilder {
         }
         
         if (isset($content['@time_start']))
-            $this->time_start($content['@time_start']);    
+            $this->timeStart($content['@time_start']);    
     
         if (isset($content['@time_end']))
-            $this->time_end($content['@time_end']);
+            $this->timeEnd($content['@time_end']);
     
         if (isset($content['@time_increment']))
-            $this->time_increment($content['@time_increment']);
+            $this->timeIncrement($content['@time_increment']);
             
         $this->generateTimes();
     }
     
-    public function time_start($content){
+    public function timeStart($content){
         $this->_time_start = $content;
     }
 
-    public function time_end($content){
+    public function timeEnd($content){
         $this->_time_end = $content;
     }
     
-    public function time_increment($content){
+    public function timeIncrement($content){
         $this->_time_increment = $content;
     }
     

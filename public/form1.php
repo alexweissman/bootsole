@@ -31,7 +31,6 @@ $vs = new BS\ValidationSchema("forms/philosophers.json", "en_US");
 
 $fb = new BS\FormBuilder([
     "@layout" => "horizontal",
-    "@label_width" => 2,
     "@components" => [
         'user_name' => [
             '@type' => 'text',
@@ -125,6 +124,7 @@ $fb = new BS\FormBuilder([
         'wakeup' => [
             '@type' => 'selecttime',
             '@label' => 'Wakeup Call',
+            '@label_width' => "4",
             '@prepend' => "<span class='input-group-addon'><i class='fa fa-fw fa-clock-o'></i></span>",
             '@time_start' => '5:00 am',
             '@time_end' => '12:00 pm',
