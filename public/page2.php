@@ -52,7 +52,7 @@ $nb = new BS\NavbarBuilder([
                     "@url" => BS\URI_PUBLIC_ROOT. "about"
                 ],
                 "courses" => [
-                    "@active" => "active",
+                    "@active" => true,
                     "@label" => "Courses",
                     "@url" => BS\URI_PUBLIC_ROOT . "courses",
                     "@align" => "left",

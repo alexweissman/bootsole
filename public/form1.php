@@ -41,6 +41,7 @@ $fb = new BS\FormBuilder([
         'title' => [
             '@type' => 'select',
             '@label' => 'Title',
+            '@multiple' => true,
             '@items' => [
                 'ta' => [
                     '@label' => 'Teaching Assistant'
@@ -103,7 +104,7 @@ $fb = new BS\FormBuilder([
         'beard' => [
             '@type' => 'toggle',
             '@label' => 'Beard',
-            '@multiple' => "multiple",
+            '@multiple' => true,
             '@prepend' => "<span class='input-group-addon'><i class='fa fa-fw fa-trophy'></i></span>",
             '@item_classes' => [
                 'btn-primary'
@@ -119,7 +120,7 @@ $fb = new BS\FormBuilder([
                     '@label' => 'Pointy'
                 ]
             ],
-            '@display' => 'disabled'
+            //'@display' => 'disabled'
         ],        
         'wakeup' => [
             '@type' => 'selecttime',

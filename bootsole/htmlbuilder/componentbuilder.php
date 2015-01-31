@@ -70,7 +70,7 @@ class ButtonBuilder extends HtmlBuilder {
     protected $_type = "button";
     protected $_name = "";
     protected $_label = "";
-    protected $_active = "";
+    protected $_active = false;
     protected $_display = "";
     
     public function __construct($content = [], $template_file = null, $options = []){
@@ -99,11 +99,11 @@ class ButtonBuilder extends HtmlBuilder {
 
         // Initialize @display if passed in
         if (isset($content['@display']))
-            $this->_display = $content['@display'];
+            $this->display($content['@display']);
 
         // Initialize @active if passed in
         if (isset($content['@active']))
-            $this->_active = $content['@active'];
+            $this->active($content['@active']);
             
         if (isset($content['@data'])){
             $this->dataAttributes($content['@data']);
@@ -120,7 +120,18 @@ class ButtonBuilder extends HtmlBuilder {
     }
     
     public function active($active){
-        $this->_active = $active;
+        if (is_bool($active)) {
+            $this->_active = $active;
+        }
+        else {
+            switch(strtolower($active)){
+                case "true":
+                case "1": $this->_active = true;  break;     
+                case "false":
+                case "0": $this->_active = false; break;            
+                default: throw new \Exception("'active' must be a boolean value.");
+            }
+        }
     }
 
     public function label($label){
@@ -128,7 +139,7 @@ class ButtonBuilder extends HtmlBuilder {
     }
     
     public function display($display){
-        switch($content){
+        switch($display){
             case "show":        
             case "hidden":  
             case "disabled":    $this->_display = $display; break;
@@ -147,7 +158,7 @@ class ButtonBuilder extends HtmlBuilder {
     
         $this->setContent('_name', $this->_name);
         $this->setContent('_label', $this->_label);    
-        $this->setContent('_active', $this->_active);
+        $this->setContent('_active', $this->_active ? "active" : "");
         $this->setContent('_display', $this->_display);
         
         // Add data attributes for special button types
@@ -319,7 +330,7 @@ class MenuItemBuilder extends HtmlBuilder {
     protected $_label = "";
     protected $_url = "";
     protected $_display = "show";
-    protected $_active = "";
+    protected $_active = false;
     
     public function __construct($content = [], $template_file = null, $options = []){
         // Load the specified template, or the default navbar template
@@ -340,7 +351,7 @@ class MenuItemBuilder extends HtmlBuilder {
         
         // Initialize @display if passed in
         if (isset($content['@display']))
-            $this->_display = $content['@display'];
+            $this->display($content['@display']);
 
         if (isset($content['@data'])){
             $this->dataAttributes($content['@data']);
@@ -352,11 +363,22 @@ class MenuItemBuilder extends HtmlBuilder {
         
         // Initialize @active if passed in
         if (isset($content['@active']))
-            $this->_active = $content['@active']; 
+            $this->active($content['@active']); 
     }
     
     public function active($active){
-        $this->_active = $active;
+        if (is_bool($active)) {
+            $this->_active = $active;
+        }
+        else {
+            switch(strtolower($active)){
+                case "true":
+                case "1": $this->_active = true;  break;     
+                case "false":
+                case "0": $this->_active = false; break;            
+                default: throw new \Exception("'active' must be a boolean value.");
+            }
+        }
     }
 
     public function label($label){
@@ -368,8 +390,13 @@ class MenuItemBuilder extends HtmlBuilder {
     }  
 
     public function display($display){
-        $this->_display = $display;
-    }    
+        switch($display){
+            case "show":        
+            case "hidden":  
+            case "disabled":    $this->_display = $display; break;
+            default:            throw new \Exception("display must be 'show', 'hidden', or 'disabled'.");
+        }
+    }   
     
     // Set styles and render
     public function render(){
@@ -379,7 +406,7 @@ class MenuItemBuilder extends HtmlBuilder {
         
         $this->setContent('_label', $this->_label);
         $this->setContent('_url', $this->_url);       
-        $this->setContent('_active', $this->_active);
+        $this->setContent('_active', $this->_active ? "active" : "");
         $this->setContent('_display', ($this->_display == "disabled") ? "disabled" : "");
         $this->setContent('_css_classes', $this->renderCssClasses());
         $this->setContent('_data', $this->renderDataAttributes());

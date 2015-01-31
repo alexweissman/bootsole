@@ -176,9 +176,9 @@ class NavBuilder extends NavComponentBuilder {
     // Set the active menu item
     public function setActiveItem($name){
         foreach ($this->_items as $item){
-            $item->active("");
+            $item->active(false);
         }
-        $this->_items[$name]->active("active");
+        $this->_items[$name]->active(true);
         return $this->_items[$name];
     }
     

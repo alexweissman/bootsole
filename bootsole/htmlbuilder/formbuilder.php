@@ -768,7 +768,7 @@ class FormHiddenFieldBuilder extends FormFieldBuilder {
 */
 
 class FormSelectFieldBuilder extends FormFieldBuilder {
-    protected $_multiple = "";   // Set to "multiple" if it is possible to have multiple selected items.
+    protected $_multiple = false;   // Set to true if it is possible to have multiple selected items.
     
     use FormFieldSelectable, FormFieldAddonable {
         render as renderInputGroup;        // Can select options with this one
@@ -787,18 +787,33 @@ class FormSelectFieldBuilder extends FormFieldBuilder {
             $this->items($content['@items']);
 
         if (isset($content['@multiple']))
-            $this->_multiple = $content['@multiple'];
+            $this->multiple($content['@multiple']);
 
         if (isset($content['@item_classes']))
             $this->itemClasses($content['@item_classes']);            
             
     }
     
+    public function multiple($multiple){
+        if (is_bool($multiple)) {
+            $this->_multiple = $multiple;
+        }
+        else {
+            switch(strtolower($multiple)){
+                case "true":
+                case "1": $this->_multiple = true;  break;     
+                case "false":
+                case "0": $this->_multiple = false; break;            
+                default: throw new \Exception("'multiple' must be a boolean value.");
+            }
+        }
+    }
+    
     // Select elements do not have a value attribute.  So, we override and select one of the child options. 
     public function value($content){
         // If an array, automatically override the 'multiple' attribute
         if (is_array($content))
-            $this->_multiple = "multiple";
+            $this->multiple(true);
 
         $this->unselectItems();
         $this->selectItems($content);        // Calling from trait FormFieldSelectable's
@@ -807,7 +822,7 @@ class FormSelectFieldBuilder extends FormFieldBuilder {
     public function render(){
         $items = "";
     
-        $this->setContent("_multiple", $this->_multiple);
+        $this->setContent("_multiple", $this->_multiple ? "multiple" : "");
     
         // Select default item(s), if nothing is selected
         if (count($this->getSelectedItems()) <= 0){
@@ -975,7 +990,7 @@ class FormTextAreaFieldBuilder extends FormFieldBuilder {
         else {
             parent::__construct($content, null, $options);
             $this->setTemplate("
-            <textarea class='form-control {{_css_classes}}' name='{{_name}}' autocomplete='off' {{_multiple}} placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}} rows={{_rows}}>{{_value}}</textarea>");
+            <textarea class='form-control {{_css_classes}}' name='{{_name}}' autocomplete='off' placeholder='{{_placeholder}}' {{_validator}} {{_data}} {{_display}} rows={{_rows}}>{{_value}}</textarea>");
         }
 
         if (isset($content['@rows']))
@@ -1123,7 +1138,7 @@ class FormSwitchFieldBuilder  extends FormCheckboxFieldBuilder {
 /* A Bootstrap Radio group */
 
 class FormBootstrapRadioBuilder extends FormFieldBuilder {
-    protected $_multiple = "";   // Set to "multiple" if it is possible to have multiple selected items.
+    protected $_multiple = false;   // Set to true if it is possible to have multiple selected items.
     protected $_size = "xs";
     
     use FormFieldSelectable;
@@ -1141,21 +1156,47 @@ class FormBootstrapRadioBuilder extends FormFieldBuilder {
             $this->items($content['@items']);
 
         if (isset($content['@multiple']))
-            $this->_multiple = $content['@multiple'];
+            $this->multiple($content['@multiple']);
 
         if (isset($content['@size']))
-            $this->_size = $content['@size'];            
+            $this->size($content['@size']);            
     
         if (isset($content['@item_classes']))
             $this->itemClasses($content['@item_classes']);            
             
     }
     
+    public function multiple($multiple){
+        if (is_bool($multiple)) {
+            $this->_multiple = $multiple;
+        }
+        else {
+            switch(strtolower($multiple)){
+                case "true":
+                case "1": $this->_multiple = true;  break;     
+                case "false":
+                case "0": $this->_multiple = false; break;            
+                default: throw new \Exception("'multiple' must be a boolean value.");
+            }
+        }
+    }  
+    
+    public function size($size){
+        switch($size){
+            case "xs":
+            case "sm": 
+            case "md":
+            case "lg":
+            case "block": $this->_size = $size; break;            
+            default: throw new \Exception("'size' must be 'xs', 'sm', 'md', 'lg', or 'block'.");
+        }
+    }    
+    
     // Select elements do not have a value attribute.  So, we override and select one of the child options. 
     public function value($content){
         // If an array, automatically override the 'multiple' attribute
         if (is_array($content))
-            $this->_multiple = "multiple";
+            $this->_multiple = true;
 
         $this->unselectItems();
         $this->selectItems($content);        // Calling from trait FormFieldSelectable's
@@ -1169,7 +1210,7 @@ class FormBootstrapRadioBuilder extends FormFieldBuilder {
             $item->setContent("_display", in_array($this->_display, ["disabled", "readonly"]) ? $this->_display : "" );
         }
         
-        $this->setContent("_multiple", $this->_multiple);
+        $this->setContent("_multiple", $this->_multiple ? "multiple" : "");
         
         // Select default item(s), if nothing is selected
         if (count($this->getSelectedItems()) <= 0){
@@ -1386,7 +1427,7 @@ trait FormFieldSelectable {
 }
 
 trait FormFieldSelectableItem {
-    protected $_item_value;              // The value of this item (required).  Not to be confused with the actual *selected* value.
+    protected $_item_value;         // The value of this item (required).  Not to be confused with the actual *selected* value.
     protected $_label;              // The label to display for this item (set to value by default)
     protected $_title = "";
     protected $_selected = false;   // Whether or not this option is selected
