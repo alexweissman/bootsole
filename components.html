@@ -139,7 +139,53 @@
 
 <h3>
 <a id="buttongroupbuilder" class="anchor" href="#buttongroupbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>ButtonGroupBuilder</h3>
+
+
+
+
 <h3 id="buttonbuilder">ButtonBuilder</h3>
+<p><code>ButtonBuilder</code> objects create HTML5 <code>&lt;button&gt;</code> elements.  In addition to the <code>@css_classes</code> and <code>@data</code> directives, they support the following class-specific directives:</p>
+<h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>@type</td>
+<td><strong>Optional.</strong> The type of button.  There are currently four types of buttons: <em>submit</em>, <em>launch</em>, <em>cancel</em>, and <em>button</em>.  <em>submit</em> renders a button with the <code>type=&#39;submit&#39;</code> attribute.  <em>launch</em> renders a regular button with an additional <code>data-toggle=modal</code> attribute, and <em>cancel</em> adds a <code>data-dismiss=modal</code> attribute.  These are used primarily for buttons that launch and close Bootstrap modals.</td>
+</tr>
+<tr>
+<td>name</td>
+<td>@name</td>
+<td><strong>Optional.</strong> The name of the button.  Used to populate the <code>name</code> attribute in the <code>&lt;button&gt;</code> tag.</td>
+</tr>
+<tr>
+<td>label</td>
+<td>@label</td>
+<td><strong>Optional.</strong> The label to be displayed on this button.</td>
+</tr>
+<tr>
+<td>active</td>
+<td>@active</td>
+<td><strong>Optional.</strong> Render this button with the <code>active</code> class. Set to <em>false</em> (default) or <em>true</em>.</td>
+</tr>
+<tr>
+<td>display</td>
+<td>@display</td>
+<td><strong>Optional.</strong> Set to <em>show</em> (default), <em>hidden</em>, or <em>disabled</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <h3 id="dropdownbuttonbuilder">DropdownButtonBuilder</h3>
 <h3 id="buttondropdownaddonbuilder">ButtonDropdownAddonBuilder</h3>
 <h3 id="dropdownbuilder">DropdownBuilder</h3>
@@ -364,7 +410,7 @@ echo $pb-&gt;render();
             "@align" =&gt; "right",
             "@items" =&gt; [
                 "home" =&gt;  [
-                    "@active" =&gt; "active",
+                    "@active" =&gt; "true",
                     "@label" =&gt; "Home",
                     "@url" =&gt; BS\URI_PUBLIC_ROOT
                 ],
@@ -483,7 +529,7 @@ echo $pb-&gt;render();
     "@align" =&gt; "right",
     "@items" =&gt; [
         "home" =&gt;  [
-            "@active" =&gt; "active",
+            "@active" =&gt; "true",
             "@label" =&gt; "Home",
             "@url" =&gt; BS\URI_PUBLIC_ROOT
         ],
@@ -525,9 +571,9 @@ echo $pb-&gt;render();
 
 <ul>
 <li>
-<code>@active</code>: Setting <code>@active</code> to <code>active</code> will make the specified item be highlighted as active in the nav.  Optional.</li>
+<code>@active</code>: <strong>Optional.</strong>  Make the specified item be highlighted as active in the nav.  Set to <em>false</em> (default) or <em>true</em>.</li>
 <li>
-<code>@display</code>: Setting <code>@display</code> to <code>disabled</code> will make the specified item be disabled, while setting it to <code>hidden</code> will make it not show up at all.  Optional.</li>
+<code>@display</code>: <strong>Optional.</strong>  Setting <code>@display</code> to <code>disabled</code> will make the specified item be disabled, while setting it to <code>hidden</code> will make it not show up at all.</li>
 </ul>
 
 <p>A <code>NavDropdownBuilder</code> builds a dropdown with submenu items.  It is called in the same way as <code>NavBuilder</code>, with an <code>@items</code> directive specifying the child <code>NavItemBuilder</code> objects.</p>
@@ -1113,7 +1159,7 @@ $ftfb-&gt;render();
 <tr>
 <td>multiple</td>
 <td>@multiple</td>
-<td><strong>Optional.</strong> Set to <em>&quot;&quot;</em> (default) or <em>multiple</em>. Determines whether it is possible select more than one option.</td>
+<td><strong>Optional.</strong> Set to <em>false</em> (default) or <em>true</em>. Determines whether it is possible select more than one option.</td>
 </tr>
 <tr>
 <td>items</td>
@@ -1320,7 +1366,7 @@ echo $fstb-&gt;render();
     &#39;@type&#39; =&gt; &#39;toggle&#39;,
     `@name&#39; =&gt; &#39;beard&#39;,
     &#39;@label&#39; =&gt; &#39;Beard&#39;,
-    &#39;@multiple&#39; =&gt; &quot;multiple&quot;,
+    &#39;@multiple&#39; =&gt; &quot;true&quot;,
     &#39;@prepend&#39; =&gt; &quot;&lt;span class=&#39;input-group-addon&#39;&gt;&lt;i class=&#39;fa fa-fw fa-trophy&#39;&gt;&lt;/i&gt;&lt;/span&gt;&quot;,
     &#39;@item_classes&#39; =&gt; [
         &#39;btn-primary&#39;
@@ -1516,7 +1562,7 @@ echo $fbrfb-&gt;render();
 <tr>
 <td>multiple</td>
 <td>@multiple</td>
-<td><strong>Optional.</strong> Set to <em>&quot;&quot;</em> (default) or <em>multiple</em>. Determines whether it is possible select more than one option.</td>
+<td><strong>Optional.</strong> Set to <em>false</em> (default) or <em>true</em>. Determines whether it is possible select more than one option.</td>
 </tr>
 <tr>
 <td>items</td>
