@@ -68,7 +68,10 @@
 <ul class="toc">
 <li>&larr; <a href="#basic-components">Basic Components (Built from HtmlBuilder)</a></li>
 <ul class="toc">
-    <li>&larr; <a href="#buttongroupbuilder">ButtonGroupBuilder</a></li>
+    <li>&larr; <a href="#dropdownbuilder">DropdownBuilder</a></li>
+    <ul class="toc">
+        &diams; <a href="#menuitembuilder">MenuItemBuilder</a></li>
+    </ul>
     <li>&larr; <a href="#buttonbuilder">ButtonBuilder</a></li>
     <ul class="toc">
         <li>&larr; <a href="#dropdownbuttonbuilder">DropdownButtonBuilder</a></li>
@@ -76,10 +79,7 @@
             <li>&larr; <a href="#buttondropdownaddonbuilder">ButtonDropdownAddonBuilder</a></li>
         </ul>
     </ul>
-    <li>&larr; <a href="#dropdownbuilder">DropdownBuilder</a></li>
-    <ul class="toc">
-        &diams; <a href="#menuitembuilder">MenuItemBuilder</a></li>
-    </ul>
+    <li>&larr; <a href="#buttongroupbuilder">ButtonGroupBuilder</a></li>
     <li>+ <a href="#htmlattributesbuilder">HtmlAttributesBuilder</a></li>    
 </ul>
 <li>&larr; <a href="#pagebuilder">PageBuilder</a></li>
@@ -149,12 +149,72 @@
 <h2>
 <a id="basic-components" class="anchor" href="#basic-components" aria-hidden="true"></a><i class='side-icon fa fa-cubes'></i> Basic Components</h2>
 
-<h3>
-<a id="buttongroupbuilder" class="anchor" href="#buttongroupbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>ButtonGroupBuilder</h3>
-
-
-
-
+<h3 id="dropdownbuilder">DropdownBuilder</h3>
+<p><code>DropdownBuilder</code> represents a basic <a href="http://getbootstrap.com/components/#dropdowns">dropdown menu</a>.  Typically, you will want to construct it implicitly in a parent object, such as a <code>DropdownButtonBuilder</code> or <code>NavDropdownBuilder</code> object.  It uses the <code>ItemCollection</code> trait to implement a generic group of <code>MenuItem</code> objects.</p>
+<h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>addItem</td>
+<td>@items</td>
+<td><strong>Optional.</strong> An array of <code>MenuItemBuilder</code> objects, defined explicitly or implicitly as arrays.</td>
+</tr>
+<tr>
+<td>align</td>
+<td>@align</td>
+<td><strong>Optional.</strong> The alignment of the menu, relative to the parent object.  Set to <em>inherit</em> (default), <em>left</em>,  or <em>right</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h3 id="menuitembuilder">MenuItemBuilder</h3>
+<p><code>MenuItemBuilder</code> represents a generic menu item, such as that which would be found in a navigation menu or button dropdown.  It renders as an <code>&lt;li&gt;</code> HTML element.</p>
+<h4 id="directives">Directives</h4>
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Class method</th>
+<th>Directive</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>label</td>
+<td>@label</td>
+<td><strong>Optional.</strong> The content to be displayed on this menu item.</td>
+</tr>
+<tr>
+<td>url</td>
+<td>@url</td>
+<td><strong>Optional.</strong> The URI that this menu item should link to.</td>
+</tr>
+<tr>
+<td>active</td>
+<td>@active</td>
+<td><strong>Optional.</strong> Render this item with the <code>active</code> class. Set to <em>false</em> (default) or <em>true</em>.</td>
+</tr>
+<tr>
+<td>display</td>
+<td>@display</td>
+<td><strong>Optional.</strong> Set to <em>show</em> (default), <em>hidden</em>, or <em>disabled</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <h3 id="buttonbuilder">ButtonBuilder</h3>
 <p><code>ButtonBuilder</code> objects create HTML5 <code>&lt;button&gt;</code> elements.  In addition to the <code>@css_classes</code> and <code>@data</code> directives, they support the following class-specific directives:</p>
 <h4 id="directives">Directives</h4>
@@ -198,6 +258,40 @@
 </table>
 </div>
 </div>
+<h3 id="dropdownbuttonbuilder">DropdownButtonBuilder</h3>
+<p>Similar to <code>ButtonBuilder</code>, but also contains a <code>DropdownBuilder</code> child object to achieve a Bootstrap <a href="http://getbootstrap.com/components/#btn-dropdowns">button dropdown</a>.  The <code>DropdownBuilder</code> directives can be set directly in the definition of the <code>DropdownButtonBuilder</code> object.</p>
+<p><strong>Example:</strong></p>
+<pre><code>$dbb = new BS\DropdownButtonBuilder([
+    &quot;@align&quot; =&gt; &quot;right&quot;,
+    &quot;@label&quot; =&gt; &quot;Press me!&quot;,
+    &quot;@css_classes&quot; =&gt; [&quot;btn-success&quot;],
+    &quot;@items&quot; =&gt; [
+        &quot;algebra&quot; =&gt; [
+            &quot;@label&quot; =&gt; &quot;Algebra&quot;,
+            &quot;@url&quot; =&gt; BS\URI_PUBLIC_ROOT. &quot;courses/algebra&quot;
+        ],
+        &quot;calculus&quot; =&gt; [
+            &quot;@label&quot; =&gt; &quot;Calculus&quot;,
+            &quot;@url&quot; =&gt; BS\URI_PUBLIC_ROOT. &quot;courses/calculus&quot;
+
+        ]
+    ]
+]);
+echo $dbb-&gt;render();
+</code></pre><p><strong> Outputs: </strong></p>
+<p><img src="screenshots/bootsole-button-dropdown.png" alt="Dropdown Button" title="Dropdown Button"></p>
+<pre><code>&lt;div class=&#39;btn-group&#39;&gt;
+    &lt;button type=&#39;button&#39; name=&#39;&#39; class=&#39;btn btn-success   dropdown-toggle&#39;   data-toggle=&#39;dropdown&#39; aria-expanded=&#39;false&#39;&gt;
+        Press me! &lt;span class=&#39;caret&#39;&gt;&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;ul class=&#39;dropdown-menu dropdown-menu-right&#39; role=&#39;menu&#39;&gt;
+        &lt;li class=&#39; &#39;&gt;&lt;a role=&#39;menuitem&#39; class=&#39;&#39;  href=&#39;http://localhost/bootsole/public/courses/algebra&#39;&gt;Algebra&lt;/a&gt;&lt;/li&gt;
+        &lt;li class=&#39; &#39;&gt;&lt;a role=&#39;menuitem&#39; class=&#39;&#39;  href=&#39;http://localhost/bootsole/public/courses/calculus&#39;&gt;Calculus&lt;/a&gt;&lt;/li&gt;
+
+    &lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+
 
 
 <h3>
