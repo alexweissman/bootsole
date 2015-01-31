@@ -291,9 +291,69 @@ echo $dbb-&gt;render();
     &lt;/ul&gt;
 &lt;/div&gt;
 </code></pre>
+<h3 id="buttondropdownaddonbuilder">ButtonDropdownAddonBuilder</h3>
+<p><code>ButtonDropdownAddonBuilder</code> is identical to <code>DropdownButtonBuilder</code>, except that it generates a &quot;split&quot; dropdown menu.  This allows the associated button to perform a distinct action, beyond simply opening the dropdown menu.</p>
+<h3 id="buttongroupbuilder">ButtonGroupBuilder</h3>
+<p><code>ButtonGroupBuilder</code> generates a Bootstrap <a href="http://getbootstrap.com/components/#btn-groups">button group</a>.  It contains a collection of <code>ButtonBuilder</code>, <code>DropdownButtonBuilder</code>, or <code>ButtonDropdownAddonBuilder</code> objects, implemented via the <code>ItemCollection</code> trait.</p>
+<p>Use the <code>@items</code> directive to define the buttons contained in the button group.</p>
+<p><strong>Example:</strong></p>
+<pre><code>$bgb = new BS\ButtonGroupBuilder([
+    &quot;@items&quot; =&gt; [
+        [
+            &quot;@type&quot; =&gt; &quot;button&quot;,
+            &quot;@label&quot; =&gt; &quot;Do it!&quot;,
+            &quot;@css_classes&quot; =&gt; [&quot;btn-warning&quot;],
+            &quot;@name&quot; =&gt; &quot;action1&quot;,
+            &quot;@display&quot; =&gt; &quot;disabled&quot;
+        ],
+        [
+            &quot;@type&quot; =&gt; &quot;button&quot;,
+            &quot;@label&quot; =&gt; &quot;Do it again!&quot;,
+            &quot;@css_classes&quot; =&gt; [&quot;btn-danger&quot;],
+            &quot;@name&quot; =&gt; &quot;action2&quot;
+        ],                    
+        [
+            &quot;@type&quot; =&gt; &quot;button&quot;,
+            &quot;@css_classes&quot; =&gt; [&quot;btn-danger&quot;],
+            &quot;@name&quot; =&gt; &quot;dropdown_addon&quot;,
+            &quot;@align&quot; =&gt; &quot;inherit&quot;,
+            &quot;@items&quot; =&gt; [
+                &quot;algebra&quot; =&gt; [
+                    &quot;@label&quot; =&gt; &quot;Algebra&quot;,
+                    &quot;@url&quot; =&gt; BS\URI_PUBLIC_ROOT. &quot;courses/algebra&quot;
+                ],
+                &quot;calculus&quot; =&gt; [
+                    &quot;@label&quot; =&gt; &quot;Calculus&quot;,
+                    &quot;@url&quot; =&gt; BS\URI_PUBLIC_ROOT. &quot;courses/calculus&quot;,
+                    &quot;@display&quot; =&gt; &quot;disabled&quot;
 
+                ]
+            ]                
+        ]
+    ]
+]);
+echo $bgb-&gt;render();
+</code></pre><p><strong>Outputs:</strong></p>
+<p><img src="screenshots/bootsole-button-group.png" alt="Button Group" title="Button Group"></p>
+<pre><code>&lt;div class=&#39;btn-group &#39; &gt;
 
+    &lt;button type=&#39;button&#39; name=&#39;action1&#39; class=&#39;btn btn-warning  &#39; disabled &gt;
+        Do it!
+    &lt;/button&gt;
 
+    &lt;button type=&#39;button&#39; name=&#39;action2&#39; class=&#39;btn btn-danger  &#39;  &gt;
+        Do it again!
+    &lt;/button&gt;
+
+    &lt;button type=&#39;button&#39; name=&#39;dropdown_addon&#39; class=&#39;btn btn-danger   dropdown-toggle&#39;   data-toggle=&#39;dropdown&#39; aria-expanded=&#39;false&#39;&gt;
+        &lt;span class=&#39;caret&#39;&gt;&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;ul class=&#39;dropdown-menu &#39; role=&#39;menu&#39;&gt;
+        &lt;li class=&#39; &#39;&gt;&lt;a role=&#39;menuitem&#39; class=&#39;&#39;  href=&#39;http://localhost/bootsole/public/courses/algebra&#39;&gt;Algebra&lt;/a&gt;&lt;/li&gt;
+    &lt;li class=&#39; disabled&#39;&gt;&lt;a role=&#39;menuitem&#39; class=&#39;&#39;  href=&#39;http://localhost/bootsole/public/courses/calculus&#39;&gt;Calculus&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
 <h3>
 <a id="htmlattributesbuilder" class="anchor" href="#htmlattributesbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>HtmlAttributesBuilder</h3>
 
