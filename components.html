@@ -1046,11 +1046,13 @@ $table = new BS\TableBuilder($table_content);
 </div>
 </div>
 <p>When a <code>FormComponentCollectionBuilder</code> is rendered, the <b>layout</b> and <b>label_width</b> will be passed along to its components.  To mix and match layouts, you can use separate <code>FormComponentCollectionBuilder</code> components in a parent <code>FormComponentCollectionBuilder</code> or <code>FormBuilder</code> object.</p>
-<p>Also on rendering, the appropriate <b>validator</b> and <b>value</b> will be passed along to the component with the corresponding name.  This allows you to set the values and validators for all the components in one convenient array.  This is especially useful when you want to load a set of data into a pre-existing form (for example, to update a database record), and for loading validation information from a validation schema.</p>
+<p>Also on rendering, the appropriate <b>validator</b> and <b>value</b> will be passed along to the component with the corresponding name.  This allows you to set the values and validators for all the components in one convenient array.  This is especially useful when you want to load a set of data into a pre-existing form (for example, to update a database record), and for loading validation information from a validation schema.  To load validation rules from a schema, you can use the <a href="https://github.com/alexweissman/fortress">Fortress</a> package and create a <code>ClientSideValidator</code> object.</p>
 <h3 id="formbuilder">FormBuilder</h3>
 <p>The <code>FormBuilder</code> class extends the <code>FormComponentCollectionBuilder</code> class, and inherits all the functionality of that class.  It also includes two additional directives, <code>@method</code> and <code>@action</code>, which correspond to the attributes of the top-level <code>&lt;form&gt;</code> tag.</p>
 <p><strong>Example</strong></p>
-<pre><code>$fb = new BS\FormBuilder([
+<pre><code>
+    $csv = new Fortress\ClientSideValidator(BS\PATH_SCHEMA . "forms/form-login.json", "en_US");
+    $fb = new BS\FormBuilder([
     &quot;@action&quot; =&gt; &quot;https://mysite.com/login/auth&quot;,
     &quot;@layout&quot; =&gt; &quot;horizontal&quot;,
     &quot;@label_width&quot; =&gt; 2,
@@ -1071,7 +1073,7 @@ $table = new BS\TableBuilder($table_content);
             &quot;@css_classes&quot; =&gt; [&quot;btn-primary&quot;, &quot;btn-lg&quot;]
         ])
     ],
-    &quot;@validators&quot; =&gt; $vs-&gt;clientRules()
+    &quot;@validators&quot; =&gt; $csv-&gt;clientRules()
 ], &quot;forms/form-login.html&quot;) ;
 
 $fb-&gt;render();
