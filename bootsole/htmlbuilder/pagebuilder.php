@@ -139,7 +139,7 @@ class PageHeaderBuilder extends HtmlBuilder {
         $this->_content['_css_includes'] = "";
         
         // Ok, either load list of CSS files if CSS_DEV is enabled, or the minified CSS file if we are in production mode
-        if (!defined('CSS_DEV') || CSS_DEV){
+        if (!defined('Bootsole\CSS_DEV') || CSS_DEV){
             foreach ($this->_css_includes['css'] as $include){
                 $this->_content['_css_includes'] .= "<link href='{$site_path}$include' rel='stylesheet'>\n";
             }    
@@ -183,7 +183,7 @@ class PageFooterBuilder extends HtmlBuilder {
         $this->_content['_js_includes'] = "";
         
         // Ok, either load list of JS files if JS_DEV is enabled, or the minified JS file if we are in production mode
-        if (!defined('JS_DEV') || JS_DEV){
+        if (!defined('Bootsole\JS_DEV') || JS_DEV){
             foreach ($this->_js_includes['js'] as $include){
                 $this->_content['_js_includes'] .= "<script src='{$site_path}$include'></script>\n";
             }    

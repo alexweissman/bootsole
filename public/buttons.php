@@ -28,14 +28,20 @@ $content = [
                 "@items" => [
                     [
                         "@type" => "button",
-                        "@label" => "Oh hi",
-                        "@css_classes" => ["btn-default"],
-                        "@name" => "basic",
+                        "@label" => "Do it!",
+                        "@css_classes" => ["btn-warning"],
+                        "@name" => "action1",
                         "@display" => "disabled"
                     ],
                     [
                         "@type" => "button",
-                        "@css_classes" => ["btn-default"],
+                        "@label" => "Do it again!",
+                        "@css_classes" => ["btn-danger"],
+                        "@name" => "action2"
+                    ],                    
+                    [
+                        "@type" => "button",
+                        "@css_classes" => ["btn-danger"],
                         "@name" => "dropdown_addon",
                         "@align" => "inherit",
                         "@items" => [
@@ -80,6 +86,8 @@ $dropdown = new BS\DropdownButtonBuilder($dropdown_content);
 $pb = new BS\PageBuilder($content);
 
 $pb->getContent("content")->setContent("dropdown_button", $dropdown);
+
+//$pb->setContent("content", $dropdown);
 
 echo $pb->render();
 

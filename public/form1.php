@@ -26,8 +26,8 @@ $content = [
     ]
 ];
 
-// Load validation schema
-$vs = new BS\ValidationSchema("forms/philosophers.json", "en_US");
+// Load validation schema (requires the Fortress package)
+$vs = new Fortress\ClientSideValidator(BS\PATH_SCHEMA . "forms/philosophers.json", "en_US");
 
 $fb = new BS\FormBuilder([
     "@layout" => "horizontal",

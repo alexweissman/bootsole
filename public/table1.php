@@ -7,7 +7,7 @@ use \Bootsole as BS;
 $header_content = [
     "author" => "Alex Weissman",
     "site_title" => SITE_TITLE,
-    "page_title" => "Simple, nested templating for rendering Bootstrap themed pages with PHP",
+    "page_title" => "Sample Tablesorter table",
     "description" => "A sample page for Bootsole",
     "favicon_path" => BS\URI_PUBLIC_ROOT . "css/favicon.ico"
 ];

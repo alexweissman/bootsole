@@ -12,12 +12,12 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "alexweissman/fortress": "dev-master"
     },
     "autoload": {
         "classmap" : [
-            "bootsole/htmlbuilder/",
-            "bootsole/validation/"
+            "bootsole/htmlbuilder/"
         ],
         "files" : [
             "bootsole/config-bootsole.php"

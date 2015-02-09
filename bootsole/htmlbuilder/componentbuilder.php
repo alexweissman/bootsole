@@ -353,6 +353,10 @@ class MenuItemBuilder extends HtmlBuilder {
         if (isset($content['@display']))
             $this->display($content['@display']);
 
+        // Initialize @active if passed in
+        if (isset($content['@active']))
+            $this->active($content['@active']);
+            
         if (isset($content['@data'])){
             $this->dataAttributes($content['@data']);
         }
@@ -360,10 +364,6 @@ class MenuItemBuilder extends HtmlBuilder {
         if (isset($content['@css_classes'])){
             $this->cssClasses($content['@css_classes']);
         }
-        
-        // Initialize @active if passed in
-        if (isset($content['@active']))
-            $this->active($content['@active']); 
     }
     
     public function active($active){

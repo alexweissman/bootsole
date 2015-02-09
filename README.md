@@ -36,6 +36,7 @@ Through an extensive class [hierarchy](components), Bootsole lets you explicitly
 
 ### PHP
 - 5.4+
+- [Fortress (optional, if you want to load Validation schema)](https://github.com/alexweissman/fortress)
 
 ### Javascript/CSS (included in this repository)
 - jQuery 1.10.2
