@@ -1,5 +1,7 @@
 # Bootsole 0.2.0
 
+**Attention: I have decided to cease development of Bootsole, at least in it's current form.  I still like the concept, but I feel that it is too complicated for most purposes.  The new version of UserFrosting will use Twig, a more widely accepted and simpler templating language.**
+
 ### By Alex Weissman
 
 Copyright (c) 2015
